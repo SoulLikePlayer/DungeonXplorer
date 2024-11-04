@@ -1,0 +1,62 @@
+├── project-root/
+│   ├── app/
+│   │   ├── controllers/        # Contrôleurs pour gérer la logique des pages
+│   │   │   ├── PageController.php
+│   │   │   ├── UserController.php
+│   │   │   └── AdventureController.php
+│   │   │
+│   │   ├── models/             # Modèles pour interagir avec la base de données
+│   │   │   ├── User.php
+│   │   │   ├── Adventure.php
+│   │   │   └── Page.php
+│   │   │
+│   │   ├── views/              # Vues pour afficher les pages web
+│   │   │   ├── layout/         # Layouts (ex. header, footer)
+│   │   │   │   ├── header.php
+│   │   │   │   ├── footer.php
+│   │   │   │   └── navbar.php
+│   │   │   │
+│   │   │   ├── pages/          # Pages spécifiques (CRUD)
+│   │   │   │   ├── home.php
+│   │   │   │   ├── create.php
+│   │   │   │   ├── edit.php
+│   │   │   │   └── view.php
+│   │   │   │
+│   │   │   └── users/          # Pages pour gestion des utilisateurs
+│   │   │       ├── login.php
+│   │   │       ├── register.php
+│   │   │       └── profile.php
+│   │   │
+│   │   ├── core/               # Classes de base pour MVC
+│   │   │   ├── Controller.php  # Classe de base des contrôleurs
+│   │   │   ├── Model.php       # Classe de base des modèles
+│   │   │   └── View.php        # Classe de base des vues
+│   │   │
+│   │   ├── config/             # Fichiers de configuration
+│   │   │   └── config.php      # Configurations globales
+│   │   │
+│   │   └── helpers/            # Fonctions d'aide
+│   │       ├── auth.php        # Fonctions pour authentification
+│   │       └── util.php        # Utilitaires divers
+│   │
+│   ├── public/                 # Dossier public pour l'accès au site
+│   │   ├── index.php           # Point d'entrée principal (front controller)
+│   │   └──assets/             # Fichiers statiques (CSS, JS, images)
+│   │      ├── css/
+│   │      │   └── style.css   # Style principal
+│   │      │
+│   │      │
+│   │      ├── js/
+│   │      │   └── script.js
+│   │      │
+│   │      └── images/         # Images pour le site
+│   │       
+│   │   
+│   │  
+│   │
+│   ├── .gitignore              # Exclusions Git (config, cache, etc.)
+│   ├── composer.json           # Fichier de dépendances (si Composer est utilisé)
+│   ├── README.md               # Documentation du projet
+│   └── sql/                    # Dossier pour les fichiers SQL
+│       └── database.sql        # Script de création de la DB
+
