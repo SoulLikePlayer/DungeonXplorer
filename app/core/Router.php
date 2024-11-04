@@ -1,5 +1,6 @@
 <?php
 
+
 class Router
 {
     private $routes = [];
@@ -23,14 +24,29 @@ class Router
 
         $url = trim($url, '/');
 
-        if (array_key_exists($url, $this->routes)) {
-            list($controllerName, $methodName) = explode('@', $this->routes[$url]);
+        foreach ($this->routes as $route => $controllerMethod) {
+            $routeParts = explode('/', $route);
+            $urlParts = explode('/', $url);
 
-            $controller = new $controllerName();
-            $controller->$methodName();
-        } else {
-            echo '<h2>La page demandée n\'existe pas</h2>';
+            if (count($routeParts) === count($urlParts)) {
+                $params = [];
+                $isMatch = true;
+                foreach ($routeParts as $index => $part) {
+                    if (preg_match('/^{\w+}$/', $part)) {
+                        $params[] = $urlParts[$index];
+                    } elseif ($part !== $urlParts[$index]) {
+                        $isMatch = false;
+                        break;
+                    }
+                }
+
+                if ($isMatch) {
+                    list($controllerName, $methodName) = explode('@', $controllerMethod);
+                    $controller = new $controllerName();
+                    call_user_func_array([$controller, $methodName], $params);
+                    return;
+                }
+            }
         }
     }
 }
-

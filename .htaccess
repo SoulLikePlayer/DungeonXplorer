@@ -1,0 +1,11 @@
+# Active la réécriture d'URL
+RewriteEngine On
+
+# Redirige toutes les requêtes vers index.php sauf pour les fichiers et dossiers existants
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Réécrit l'URL vers index.php avec le chemin en paramètre
+RewriteBase /DungeonXplorer/
+RewriteRule ^(.*)$ index.php [QSA,L]
+
