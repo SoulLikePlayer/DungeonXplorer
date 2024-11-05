@@ -5,13 +5,12 @@
     --text-color: #ffffff;
     --link-color: #ffcc00; 
     --hover-color: #ffd700;
-    --font-family: 'Pirata One'
+    --font-family-title: 'Pirata One';
+    --font-family-classic: 'Roboto'
 }
 
 body {
     margin: 0;
-    background-color: var(--background-color);
-    color: var(--text-color);
 }
 
 header{
@@ -19,9 +18,9 @@ header{
 }
 
 h1 {
-    font-family: var(--font-family);
+    font-family: var(--font-family-title) !important;
 }
 
-main{
+.container{
     display: flex;
 }

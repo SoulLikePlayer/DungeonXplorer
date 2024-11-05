@@ -8,20 +8,22 @@
     <div class="success"><?= htmlspecialchars($success) ?></div>
 <?php endif; ?>
 
-<form action="/DungeonXplorer/user/store" method="POST">
-    <div>
-        <label for="username">Nom d'utilisateur</label>
-        <input type="text" name="username" id="username" required>
-    </div>
-    <div>
-        <label for="password">Mot de passe</label>
-        <input type="password" name="password" id="password" required>
-    </div>
-    <div>
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" required>
-    </div>
-    <div>
-        <button type="submit">Créer le compte</button>
-    </div>
-</form>
+<main>
+    <form action="/DungeonXplorer/user/store" method="POST">
+        <div>
+            <label for="username">Nom d'utilisateur</label>
+            <input type="text" name="username" id="username" required>
+        </div>
+        <div>
+            <label for="password">Mot de passe</label>
+            <input type="password" name="password" id="password" required>
+        </div>
+        <div>
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" required>
+        </div>
+        <div>
+            <button type="submit">Créer le compte</button>
+        </div>
+    </form>
+</main>
