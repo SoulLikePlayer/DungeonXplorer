@@ -33,4 +33,52 @@ class UserController extends Controller {
             $this->view('users/create', ['error' => 'Une erreur est survenue lors de la création de votre compte.']);
         }
     }
+
+    // Afficher le formulaire de connexion
+    public function login() {
+        $this->view('users/login');
+    }
+
+    // Traiter la connexion de l'utilisateur
+    public function handleLogin() {
+        $username = $_POST['username'] ?? '';
+        $password = $_POST['password'] ?? '';
+
+        // Vérification de base
+        if (empty($username) || empty($password)) {
+            $this->view('users/login', ['error' => 'Tous les champs sont requis.']);
+            return;
+        }
+
+        $userModel = new User();
+        
+        // Vérifier si l'utilisateur existe
+        $user = $userModel->getUserByUsername($username);
+
+        if ($user && password_verify($password, $user['password'])) {
+            // Si la connexion réussie, on démarre une session et redirige l'utilisateur
+            $_SESSION['user'] = $user;
+            header('Location: /DungeonXplorer');
+        } else {
+            // Sinon, on affiche un message d'erreur
+            $this->view('users/login', ['error' => 'Nom d\'utilisateur ou mot de passe incorrect.']);
+        }
+    }
+
+    // Déconnexion
+    public function logout() {
+        unset($_SESSION['user']);
+        session_destroy();
+        header('Location: /DungeonXplorer');
+    }
+
+    // Profil de l'utilisateur
+    public function profile() {
+        if (!isset($_SESSION['user'])) {
+            header('Location: /DungeonXplorer/user/login');
+            exit;
+        }
+
+        $this->view('/DungeonXplorer/users/profile');
+    }
 }

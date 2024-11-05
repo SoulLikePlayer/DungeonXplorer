@@ -21,7 +21,7 @@ class User extends Model {
         return $stmt->execute();
     }
 
-    // Vérifier si le nom d'utilisateur ou l'email existe déjà
+    // Vérifier si l'utilisateur existe déjà par son nom d'utilisateur ou email
     public function userExists($username, $email) {
         $db = $this->getDatabaseConnection();
 
@@ -31,6 +31,18 @@ class User extends Model {
         // Liaison des paramètres et exécution
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':email', $email);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Récupérer un utilisateur par son nom d'utilisateur
+    public function getUserByUsername($username) {
+        $db = $this->getDatabaseConnection();
+
+        $query = 'SELECT * FROM Account WHERE username = :username';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':username', $username);
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);

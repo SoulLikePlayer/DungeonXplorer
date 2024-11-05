@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DungeonXplorer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Pirata One' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
     <link rel="stylesheet" href="public/assets/css/style.css">
@@ -20,14 +21,20 @@
 
         require 'app/core/Router.php';
         require 'app/controllers/HomeController.php';
+        require 'app/controllers/UserController.php';
 
         $router = new Router('DungeonXplorer');
 
+        /*Route de la page principal*/
         $router->addRoute('', 'HomeController@index');
 
-        $router->addRoute('', 'HomeController@index');           
+        /*Route lié au compte*/
         $router->addRoute('user/create', 'UserController@create');
         $router->addRoute('user/store', 'UserController@store');
+        $router->addRoute('user/login', 'UserController@login');
+        $router->addRoute('user/handleLogin', 'UserController@handleLogin');
+        $router->addRoute('user/logout', 'UserController@logout');
+
 
         $router->route(trim($_SERVER['REQUEST_URI'], '/'));
         
