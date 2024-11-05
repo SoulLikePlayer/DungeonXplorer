@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DungeonXplorer</title>
+    <link rel="stylesheet" href="/public/assets/css/style.css">
+</head>
 <?php
 
 ini_set('display_errors', 1);
@@ -16,10 +24,10 @@ $router = new Router('DungeonXplorer');
 
 // Ajout des routes
 $router->addRoute('', 'HomeController@index');            // Page d'accueil
-/*$router->addRoute('adventures', 'AdventureController@index'); // Liste des aventures
-$router->addRoute('adventures/view', 'AdventureController@view'); // Vue d'une aventure spécifique
-$router->addRoute('adventures/create', 'AdventureController@create'); // Création d'une aventure*/
+$router->addRoute('user/create', 'UserController@create');
+$router->addRoute('user/store', 'UserController@store');
 
 // Appel de la méthode route
 $router->route(trim($_SERVER['REQUEST_URI'], '/'));
-
+?>
+</html>

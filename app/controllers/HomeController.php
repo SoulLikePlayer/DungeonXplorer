@@ -1,5 +1,7 @@
 <?php
 
+require_once './app/config/config.php';
+
 class HomeController
 {
     public function index()
