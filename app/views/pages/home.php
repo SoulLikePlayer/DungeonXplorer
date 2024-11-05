@@ -1,8 +1,10 @@
-    <main>
-        <section>
-            <h2>À propos de notre application</h2>
-            <p>Cette application est développée pour l'association "Les Aventuriers du Val Perdu". Découvrez des histoires où chaque choix compte et faites évoluer votre propre aventure.</p>
-        </section>
-    </main>
+<main>
+    <section id="account-section">
+        <p>Partie du compte, héro</p>
+    </section>
+    <section id="story-section">
+        <p>Partie Histoire, connexion, deconnexion<p>
+    </section>
+</main>
 
 

@@ -4,16 +4,24 @@
     --accent-color: #ffcc00;
     --text-color: #ffffff;
     --link-color: #ffcc00; 
-    --hover-color: #ffd700; 
+    --hover-color: #ffd700;
+    --font-family: 'Pirata One'
 }
 
 body {
     margin: 0;
-    font-family: 'Garamond', serif;
     background-color: var(--background-color);
     color: var(--text-color);
 }
 
 header{
     text-align: center;
+}
+
+h1 {
+    font-family: var(--font-family);
+}
+
+main{
+    display: flex;
 }
