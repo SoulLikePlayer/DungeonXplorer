@@ -1,0 +1,19 @@
+:root {
+    --background-color: #1a1a1a; 
+    --primary-color: #c0c0c0; 
+    --accent-color: #ffcc00;
+    --text-color: #ffffff;
+    --link-color: #ffcc00; 
+    --hover-color: #ffd700; 
+}
+
+body {
+    margin: 0;
+    font-family: 'Garamond', serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header{
+    text-align: center;
+}

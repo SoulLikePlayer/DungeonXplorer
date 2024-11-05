@@ -4,30 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DungeonXplorer</title>
-    <link rel="stylesheet" href="/public/assets/css/style.css">
+    <link rel="stylesheet" href="public/assets/css/style.css">
 </head>
-<?php
+<body>
+    <?php
+        require_once 'app/views/layout/header.php';
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
 
-require 'app/autoload.php';
+        require 'app/autoload.php';
 
+        require 'app/core/Router.php';
+        require 'app/controllers/HomeController.php';
 
-require 'app/core/Router.php';
-require 'app/controllers/HomeController.php';
-/*require 'controllers/AdventureController.php';*/
+        $router = new Router('DungeonXplorer');
 
-// Instanciation du routeur
-$router = new Router('DungeonXplorer');
+        $router->addRoute('', 'HomeController@index');
 
-// Ajout des routes
-$router->addRoute('', 'HomeController@index');            // Page d'accueil
-$router->addRoute('user/create', 'UserController@create');
-$router->addRoute('user/store', 'UserController@store');
+        $router->addRoute('', 'HomeController@index');           
+        $router->addRoute('user/create', 'UserController@create');
+        $router->addRoute('user/store', 'UserController@store');
 
-// Appel de la méthode route
-$router->route(trim($_SERVER['REQUEST_URI'], '/'));
-?>
+        $router->route(trim($_SERVER['REQUEST_URI'], '/'));
+        
+        require_once 'app/views/layout/footer.php';
+    ?>
+
 </html>

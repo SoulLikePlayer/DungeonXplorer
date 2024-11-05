@@ -1,9 +1,3 @@
-<body>
-    <header>
-        <h1>Bienvenue sur "Livre dont vous êtes le héros"</h1>
-        <p>Explorez des aventures interactives dans cet univers captivant !</p>
-    </header>
-
     <main>
         <section>
             <h2>À propos de notre application</h2>
@@ -11,9 +5,4 @@
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2024 Les Aventuriers du Val Perdu</p>
-    </footer>
-</body>
-</html>
 
