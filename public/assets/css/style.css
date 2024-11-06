@@ -11,9 +11,12 @@
 
 body {
     margin: 0;
+    font-family: var(--font-family-classic);
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
-header{
+header {
     text-align: center;
 }
 
@@ -21,6 +24,27 @@ h1 {
     font-family: var(--font-family-title) !important;
 }
 
-.container{
+.container {
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+}
+
+.container-items {
+    border: 2px solid var(--primary-color);
+    padding: 20px;
+    background-color: #2c2c2c;
+    width: 30%;
+}
+
+.container-items:nth-child(2) {
+    width: 40%;
+}
+
+.container-items p {
+    margin: 0;
+    font-size: 1.2em;
 }

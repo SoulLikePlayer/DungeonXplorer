@@ -82,6 +82,6 @@ class UserController extends Controller {
             exit;
         }
 
-        $this->view('/DungeonXplorer/users/profile');
+        $this->view('/users/profile');
     }
 }

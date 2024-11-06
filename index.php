@@ -11,7 +11,6 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Pirata One' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-    <link rel="stylesheet" href="public/assets/css/style.css">
 </head>
 <body>
     <?php
@@ -38,6 +37,7 @@ session_start();
         $router->addRoute('user/login', 'UserController@login');
         $router->addRoute('user/handleLogin', 'UserController@handleLogin');
         $router->addRoute('user/logout', 'UserController@logout');
+        $router->addRoute('user/profile', 'UserController@profile');
 
 
         $router->route(trim($_SERVER['REQUEST_URI'], '/'));

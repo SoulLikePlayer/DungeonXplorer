@@ -1,12 +1,12 @@
 <main>
-    <div class="contaier">
-        <section id="account-section">
+    <div class="container">
+        <div class="container-items">
             <p>Partie du compte, héro</p>
-        </section>
-        <section id="story-section">
-            <p>Partie Histoire, connexion, deconnexion<p>
-        </section>
+        </div>
+        <div class="container-items">
+            <p>Partie Histoire, connexion, déconnexion</p>
+        </div>
+        <div class="container-items">
+        </div>
     </div>    
 </main>
-
-
