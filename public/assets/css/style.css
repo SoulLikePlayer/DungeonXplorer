@@ -48,3 +48,13 @@ h1 {
     margin: 0;
     font-size: 1.2em;
 }
+
+.container-items:nth-child(2) #HistoireTitre{
+    font-family: var(--font-family-title) !important;
+    text-align: center;
+}
+
+.container-items:nth-child(2) p{
+    font-family: var(--font-family-title) !important;
+    font-style: italic;
+}
