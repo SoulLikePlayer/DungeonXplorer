@@ -59,7 +59,8 @@ class UserController extends Controller {
             // Si la connexion réussie, on démarre une session et redirige l'utilisateur
             $_SESSION['user'] = $user;
             header('Location: /DungeonXplorer');
-            exit();
+            ob_end_flush();
+            exit;
         } else {
             // Sinon, on affiche un message d'erreur
             $this->view('users/login', ['error' => 'Nom d\'utilisateur ou mot de passe incorrect.']);
@@ -77,6 +78,7 @@ class UserController extends Controller {
     public function profile() {
         if (!isset($_SESSION['user'])) {
             header('Location: /DungeonXplorer/user/login');
+            ob_end_flush();
             exit;
         }
 

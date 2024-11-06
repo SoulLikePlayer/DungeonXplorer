@@ -10,6 +10,7 @@ class Router
     {
         $this->prefix = trim($prefix, '/');
     }
+    
 
     public function addRoute($uri, $controllerMethod)
     {
