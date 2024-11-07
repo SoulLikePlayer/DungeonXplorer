@@ -25,6 +25,7 @@ session_start();
         require 'app/core/Router.php';
         require 'app/controllers/HomeController.php';
         require 'app/controllers/UserController.php';
+        require 'app/controllers/ChapterController.php';
 
         $router = new Router('DungeonXplorer');
 
@@ -38,6 +39,9 @@ session_start();
         $router->addRoute('user/handleLogin', 'UserController@handleLogin');
         $router->addRoute('user/logout', 'UserController@logout');
         $router->addRoute('user/profile', 'UserController@profile');
+
+        /*Route lié pour l'histoire*/ 
+        $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter'); 
 
 
         $router->route(trim($_SERVER['REQUEST_URI'], '/'));
