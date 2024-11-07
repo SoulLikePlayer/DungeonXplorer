@@ -11,6 +11,16 @@ class Chapter extends Model {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getLinkById($chapterId){
+        $db = $this->getDatabaseConnection();
+
+        $stmt = $db->prepare("SELECT * FROM Links WHERE chapter_id = :id");
+        $stmt->bindParam(':id', $chapterId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getAllChapters() {
         $db = $this->getDatabaseConnection();
         $stmt = $db->query("SELECT * FROM Chapter ORDER BY id ASC");

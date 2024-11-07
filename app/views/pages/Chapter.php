@@ -1,8 +1,11 @@
+<?php
+    $_SESSION["Chapitre"] = $chapter['id']
+?>
 <main>
     <div class="story-container">
-        <h2>Chapitre <?= htmlspecialchars($chapter['id']) ?></h2>
+        <h2>Chapitre <?= htmlspecialchars($chapter['id'] ?? 'Inconnu') ?></h2>
         <div class="chapter-content">
-            <p><?= nl2br(htmlspecialchars($chapter['content'])) ?></p> 
+            <p><?= nl2br(htmlspecialchars($chapter['content'] ?? 'Aucun contenu disponible')) ?></p> 
         </div>
 
         <?php if ($chapter['image']): ?>
@@ -10,6 +13,16 @@
                 <img src="<?= htmlspecialchars($chapter['image']) ?>" alt="Image du chapitre" class="img-fluid">
             </div>
         <?php endif; ?>
+
+        <div class="links">
+            <?php foreach ($links as $link): ?>
+                <div class="link">
+                    <a href="/DungeonXplorer/chapter/view/<?= htmlspecialchars($link['next_chapter_id'] ?? '#') ?>">
+                        <?= nl2br(htmlspecialchars($link['description'] ?? 'Pas de description')) ?>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
 
         <div class="navigation">
             <a href="/DungeonXplorer">Retour à l'accueil</a> 
