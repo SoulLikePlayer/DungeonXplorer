@@ -47,4 +47,42 @@ class User extends Model {
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    // Récupérer un utilisateur par son ID
+    public function getUserById($id) {
+        $db = $this->getDatabaseConnection();
+
+        $query = 'SELECT * FROM Account WHERE id = :id';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Mettre à jour les informations d'un utilisateur
+    public function updateUser($id, $username, $email) {
+        $db = $this->getDatabaseConnection();
+
+        $query = 'UPDATE Account SET username = :username, email = :email WHERE id = :id';
+        $stmt = $db->prepare($query);
+
+        // Liaison des paramètres et exécution
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':id', $id);
+
+        return $stmt->execute();
+    }
+
+    // Supprimer un utilisateur par ID
+    public function deleteUser($id) {
+        $db = $this->getDatabaseConnection();
+
+        $query = 'DELETE FROM Account WHERE id = :id';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':id', $id);
+
+        return $stmt->execute();
+    }
 }

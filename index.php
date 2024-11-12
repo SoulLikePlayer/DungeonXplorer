@@ -11,6 +11,7 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Pirata One' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/style.css">
 </head>
 <body>
     <?php
@@ -39,14 +40,17 @@ session_start();
         $router->addRoute('user/handleLogin', 'UserController@handleLogin');
         $router->addRoute('user/logout', 'UserController@logout');
         $router->addRoute('user/profile', 'UserController@profile');
+        $router->addRoute('user/edit/{id}', 'UserController@edit');         // Route pour éditer un utilisateur
+        $router->addRoute('user/update/{id}', 'UserController@update');     // Route pour mettre à jour un utilisateur
+        $router->addRoute('user/delete/{id}', 'UserController@delete');     // Route pour supprimer un utilisateur
 
         /*Route lié pour l'histoire*/ 
         $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter'); 
 
-
+        // Traiter la route demandée
         $router->route(trim($_SERVER['REQUEST_URI'], '/'));
         
         require_once 'app/views/layout/footer.php';
     ?>
-
+</body>
 </html>

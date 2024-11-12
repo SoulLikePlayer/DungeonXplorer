@@ -16,7 +16,7 @@
 │   │   │   │   ├── footer.php
 │   │   │   │   └── navbar.php
 │   │   │   │
-│   │   │   ├── pages/          # Pages spécifiques (CRUD)
+│   │   │   ├── pages/          # Pages spécifiques
 │   │   │   │   ├── home.php
 │   │   │   │   ├── create.php
 │   │   │   │   ├── edit.php
