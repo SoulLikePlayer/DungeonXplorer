@@ -12,6 +12,8 @@
     --font-family-classic: 'Roboto'
 }
 
+/********PAGE ACCUEIL******/
+
 body {
     margin: 0;
     font-family: var(--font-family-classic);
@@ -60,4 +62,25 @@ h1 {
 .container-items:nth-child(2) p{
     font-family: var(--font-family-title) !important;
     font-style: italic;
+}
+
+/***********FIN***********/
+
+/****CHAPITRE PARTIE*****/
+.chapter-content{
+    font-family: var(--font-family-classic);
+}
+
+.links{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+}
+
+#ChapterTitle{
+    font-family: var(--font-family-title);
+    text-align: center;
 }

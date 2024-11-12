@@ -3,7 +3,7 @@
 ?>
 <main>
     <div class="story-container">
-        <h2>Chapitre <?= htmlspecialchars($chapter['id'] ?? 'Inconnu') ?></h2>
+        <h2 id="ChapterTitle">Chapitre <?= htmlspecialchars($chapter['id'] ?? 'Inconnu') ?></h2>
         <div class="chapter-content">
             <p><?= nl2br(htmlspecialchars($chapter['content'] ?? 'Aucun contenu disponible')) ?></p> 
         </div>
@@ -18,7 +18,7 @@
             <?php foreach ($links as $link): ?>
                 <div class="link">
                     <a href="/DungeonXplorer/chapter/view/<?= htmlspecialchars($link['next_chapter_id'] ?? '#') ?>">
-                        <?= nl2br(htmlspecialchars($link['description'] ?? 'Pas de description')) ?>
+                        <button><?= nl2br(htmlspecialchars($link['description'] ?? 'Pas de description')) ?></button>
                     </a>
                 </div>
             <?php endforeach; ?>
