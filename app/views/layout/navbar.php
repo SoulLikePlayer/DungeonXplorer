@@ -10,9 +10,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/DungeonXplorer">Accueil</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/DungeonXplorer/adventure">Aventures</a>
-                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/DungeonXplorer/about">À propos</a>
                 </li>
