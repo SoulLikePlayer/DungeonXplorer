@@ -5,9 +5,14 @@
     --text-color: #ffffff;
     --link-color: #ffcc00; 
     --hover-color: #ffd700;
+    --button-color: #C4975E;
+    --succed-confirmation: #4A7A66;
+    --warning-error : #8B1E1E;
     --font-family-title: 'Pirata One';
     --font-family-classic: 'Roboto'
 }
+
+/********PAGE ACCUEIL******/
 
 body {
     margin: 0;
@@ -34,7 +39,7 @@ h1 {
 }
 
 .container-items {
-    border: 2px solid var(--primary-color);
+    border: 2px solid;
     padding: 20px;
     background-color: #2c2c2c;
     width: 30%;
@@ -47,4 +52,35 @@ h1 {
 .container-items p {
     margin: 0;
     font-size: 1.2em;
+}
+
+.container-items:nth-child(2) #HistoireTitre{
+    font-family: var(--font-family-title) !important;
+    text-align: center;
+}
+
+.container-items:nth-child(2) p{
+    font-family: var(--font-family-title) !important;
+    font-style: italic;
+}
+
+/***********FIN***********/
+
+/****CHAPITRE PARTIE*****/
+.chapter-content{
+    font-family: var(--font-family-classic);
+}
+
+.links{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+}
+
+#ChapterTitle{
+    font-family: var(--font-family-title);
+    text-align: center;
 }
