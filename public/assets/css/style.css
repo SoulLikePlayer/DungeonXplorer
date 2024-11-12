@@ -45,6 +45,11 @@ h1 {
     width: 30%;
 }
 
+.container-items:not(:nth-child(2)){
+    margin-top: 1.5vw;
+    max-width: 25%;
+}
+
 .container-items:nth-child(2) {
     width: 40%;
 }
