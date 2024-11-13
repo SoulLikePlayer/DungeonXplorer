@@ -47,6 +47,9 @@ session_start();
         /*Route lié pour l'histoire*/ 
         $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter'); 
 
+        /*Route lié au <hero></hero>*/
+        $router->addRoute('hero/store', 'HeroController@store');
+
         // Traiter la route demandée
         $router->route(trim($_SERVER['REQUEST_URI'], '/'));
         

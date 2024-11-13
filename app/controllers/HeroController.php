@@ -53,13 +53,11 @@ class HeroController extends Controller {
         
         // Vérification de l'identité de l'utilisateur
         if ($id === $_SESSION['user']['id']) {
-            $userModel->deleteUser($id);
-            unset($_SESSION['user']);
-            session_destroy();
-            header('Location: /DungeonXplorer');
+            $heroModel->deleteHero($id);
+            
             exit;
         }
 
-        $this->view('users/profile', ['error' => 'Vous ne pouvez pas supprimer ce compte.']);
+        $this->view('pages/home', ['error' => 'Vous ne pouvez pas supprimer ce personnage.']);
     }
 }
