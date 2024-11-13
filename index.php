@@ -27,6 +27,7 @@ session_start();
         require 'app/controllers/HomeController.php';
         require 'app/controllers/UserController.php';
         require 'app/controllers/ChapterController.php';
+        require 'app/controllers/InventoryController.php';
 
         $router = new Router('DungeonXplorer');
 
@@ -49,6 +50,9 @@ session_start();
 
         // Traiter la route demandée
         $router->route(trim($_SERVER['REQUEST_URI'], '/'));
+
+        /* Route lié à l'inventaire */
+        $route->addRoute('inventory/test','InventoryController@test');
         
         require_once 'app/views/layout/footer.php';
     ?>
