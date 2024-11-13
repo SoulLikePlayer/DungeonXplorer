@@ -41,7 +41,7 @@ class Hero extends Model {
 
     public function getHeroByUserId($userId) {
         $db = $this->getDatabaseConnection();
-        $query = 'SELECT h.*, c.name AS classe_name FROM Hero h LEFT JOIN Classe c ON h.classe_id = c.id WHERE h.id = :userId';
+        $query = 'SELECT h.*, c.name AS classe_name FROM Hero h LEFT JOIN Class c ON h.class_id = c.id WHERE h.id = :userId';
         $stmt = $db->prepare($query);
         $stmt->bindParam(':userId', $userId);
         $stmt->execute();

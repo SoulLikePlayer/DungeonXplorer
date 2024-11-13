@@ -1,12 +1,35 @@
 <main>
     <div class="container">
-        <div class="container-items">
-            <?php if (isset($_SESSION['user']['hero_id'])): ?>
-                <?php var_dump($_SESSION['user']['hero_id']) ?>
-            <?php else: ?>
-                <p>Aucun héros créé. Veuillez créer un personnage pour commencer votre aventure.</p>
-            <?php endif; ?>
-        </div>
+    <div class="container-items">
+         <?php if (isset($_SESSION['user']['hero'])): ?>
+            <?php $hero = $_SESSION['user']['hero']; ?> 
+            <h2>Personnage: <?= htmlspecialchars($hero['firstname']) . " " . htmlspecialchars($hero['lastname']) ?>
+            </h2> <p><strong>Classe:</strong> <?= htmlspecialchars($hero['classe_name']) ?></p>
+            <p><strong>Biographie:</strong> <?= htmlspecialchars($hero['biography']) ?>
+            </p> <h3>Statistiques</h3> <ul>
+                 <li><strong>Points de vie (PV):</strong> <?= htmlspecialchars($hero['pv']) ?></li> 
+                 <li><strong>Mana:</strong> <?= htmlspecialchars($hero['mana']) ?></li>
+                 <li><strong>Force:</strong> <?= htmlspecialchars($hero['strength']) ?></li>
+                 <li><strong>Initiative:</strong> <?= htmlspecialchars($hero['initiative']) ?></li>
+                 <li><strong>Armure:</strong> <?= $hero['armor'] ? htmlspecialchars($hero['armor']) : 'Aucune' ?></li>
+            </ul>
+            
+            <h3>Équipement</h3> <ul> 
+                <li><strong>Arme principale:</strong> <?= $hero['primary_weapon'] ? htmlspecialchars($hero['primary_weapon']) : 'Aucune' ?></li> 
+                <li><strong>Arme secondaire:</strong> <?= $hero['secondary_weapon'] ? htmlspecialchars($hero['secondary_weapon']) : 'Aucune' ?></li> 
+                <li><strong>Bouclier:</strong> <?= $hero['shield'] ? htmlspecialchars($hero['shield']) : 'Aucun' ?></li> 
+            </ul> 
+            
+            <h3>Autres détails</h3> <ul> 
+                <li><strong>Niveau actuel:</strong> <?= htmlspecialchars($hero['current_level']) ?></li>
+                 <li><strong>XP:</strong> <?= htmlspecialchars($hero['xp']) ?></li> 
+                 <li><strong>Poids maximal:</strong> <?= htmlspecialchars($hero['poids_max']) ?> kg</li> 
+                 <li><strong>Nombre d'objets max:</strong> <?= htmlspecialchars($hero['nb_items_max']) ?></li> 
+            </ul> 
+        <?php else: ?>
+             <p>Aucun héros créé. Veuillez créer un personnage pour commencer votre aventure.</p>
+        <?php endif; ?> 
+    </div> 
         
         <!-- Conteneur pour l'histoire et la navigation -->
         <div class="container-items">
