@@ -1,20 +1,17 @@
 <?php
-
 class InventoryController extends Controller {
-
     public function test(){
-        $this->view('users/inventory');
-
         $username = $_POST['username'] ?? '';
         $password = $_POST['password'] ?? '';
         $email = $_POST['email'] ?? '';
 
         $test = new Inventory();
-        $test->getInventory($username, $password, $email);
-        $_SESSION['inventaire'] = $test;
+        $inventory = $test->getInventory($username, $password, $email);
+
+        // Stocker l'inventaire récupéré en session
+        $_SESSION['inventaire'] = $inventory;
 
         $this->view('users/inventorytest');
     }
-
 }
-?>
+

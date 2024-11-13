@@ -48,11 +48,12 @@ session_start();
         /*Route lié pour l'histoire*/ 
         $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter'); 
 
+        /* Route lié à l'inventaire */
+        $router->addRoute('inventory/test','InventoryController@test');
+
         // Traiter la route demandée
         $router->route(trim($_SERVER['REQUEST_URI'], '/'));
 
-        /* Route lié à l'inventaire */
-        $route->addRoute('inventory/test','InventoryController@test');
         
         require_once 'app/views/layout/footer.php';
     ?>
