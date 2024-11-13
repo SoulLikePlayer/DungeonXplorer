@@ -1,12 +1,12 @@
 :root {
     --background-color: #1a1a1a; /* Fond noir doux */
-    --primary-color: #c0c0c0;
-    --accent-color: #a94444; /* Rouge profond pour l'ambiance médiévale sombre */
+    --primary-color: #c0c0c0; 
+    --accent-color: #c4975e; /* Or sale pour l'ambiance médiévale sombre */
     --text-color: #e5e5e5; /* Gris très clair pour texte principal */
-    --link-color: #a94444;
-    --hover-color: #ff4c4c; /* Rouge vif pour l'effet de survol */
-    --button-color: #a94444;
-    --succed-confirmation: #4a7a66;
+    --link-color: #c4975e; 
+    --hover-color: #ffd700; /* Jaune doré pour l'effet de survol */
+    --button-color: #c4975e; 
+    --succed-confirmation: #4a7a66; 
     --warning-error: #8b1e1e; /* Rouge profond pour les erreurs */
     --font-family-title: 'Pirata One'; /* Police gothique */
     --font-family-classic: 'Roboto'; /* Police classique pour le texte */
@@ -14,9 +14,79 @@
 
 /********PAGE ACCUEIL******/
 
+body {
+    margin: 0;
+    font-family: var(--font-family-classic);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+header {
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.7); 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+}
+
+h1 {
+    font-family: var(--font-family-title) !important;
+    font-size: 3em;
+    color: var(--text-color);
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Ombre au texte pour donner de la profondeur */
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-family: var(--font-family-title) !important;
+    font-size: 2.5em;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    flex-wrap: wrap;
+}
+
+.container-items {
+    border: 2px solid var(--primary-color);
+    padding: 20px;
+    background-color: #2e2e2e;
+    width: 30%;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8); /* Ombre portée pour profondeur */
+    transition: all 0.3s ease;
+    background-size: cover;
+    background-position: center;
+}
+
+.container-items:not(:nth-child(2)){
+    margin-top: 1.5vw;
+    max-width: 25%;
+}
+
+.container-items:nth-child(2) {
+    width: 40%;
+}
 .container-items:hover {
     background-color: #3b3b3b;
-    box-shadow: 0 0 15px rgba(255, 76, 76, 0.5); /* Lueur rouge au survol */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); /* Lueur dorée au survol */
+}
+
+.container-items p {
+    margin: 0;
+    font-size: 1.2em;
+    color: var(--text-color);
 }
 
 .container-items #HistoireTitre {
@@ -27,17 +97,74 @@
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); /* Ombre pour plus d'impact visuel */
 }
 
+.container-items p {
+    font-family: var(--font-family-classic) !important;
+    font-style: italic;
+    color: var(--primary-color);
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+button {
+    background-color: var(--button-color);
+    color: var(--text-color);
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+
 button:hover {
     background-color: var(--hover-color);
     transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(255, 76, 76, 0.7); /* Lueur rouge au survol */
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.7);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+a {
+    text-decoration: none;
+}
+
+a:visited {
+    color: var(--accent-color);
 }
 
 a:hover {
     color: var(--hover-color);
 }
 
+/***********FIN***********/
+
 /****CHAPITRE PARTIE*****/
+.chapter-content {
+    font-family: var(--font-family-classic);
+    color: var(--text-color);
+    line-height: 1.7;
+    background-color: rgba(0, 0, 0, 0.6); /* Couche sombre sous le contenu */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+}
+
 #ChapterTitle {
     font-family: var(--font-family-title);
     text-align: center;
@@ -45,4 +172,3 @@ a:hover {
     color: var(--accent-color);
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
 }
-
