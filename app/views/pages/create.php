@@ -9,7 +9,7 @@
 <?php endif; ?>
 
 <main>
-    <form action="/DungeonXplorer/user/store" method="POST">
+    <form action="/DungeonXplorer/hero/store" method="POST">
         <div>
             <label for="lastname">Nom du personnage</label>
             <input type="text" name="lastname" id="lastname" required>
@@ -20,11 +20,11 @@
         </div>
         <div>
             <label for="class">Classe du personnage</label>
-            <input type="select" name="class" id="class" required>
-                <option valeur="mage">Mage</option>
-                <option valeur="voleur">Voleur</option>
-                <option valeur="barbare">Barbare</option>
-            </input>
+            <select name="class" id="class" required>
+                <?php foreach ($classes as $class): ?>
+                    <option value="<?= htmlspecialchars($class['name']) ?>"><?= htmlspecialchars($class['name']) ?></option>
+                <?php endforeach; ?>
+            </select>
         </div>
         <div>
             <label for="bio">Biographie/Histoire du personnage</label>
@@ -35,3 +35,4 @@
         </div>
     </form>
 </main>
+

@@ -2,61 +2,50 @@
 
 class Hero extends Model {
 
-    // Ajouter un personnage à la base de données
-    public function createHero($lastname, $firstname, $class, $bio) {
+    public function createHero($lastname, $firstname, $classId, $biography, $pv, $mana, $strength, $initiative) {
         $db = $this->getDatabaseConnection();
-        
-        // Requête SQL pour insérer un nouveau personnage
         $idt = $_SESSION['user']['id'];
-        $query = 'INSERT INTO Hero (id, lastname, firstname, class_id, biography) VALUES (:idt, :lastname, :firstname, (select class_id from Class where name = :class), :bio)';
+        $query = 'INSERT INTO Hero (id, lastname, firstname, class_id, biography, pv, mana, strength, initiative)
+                  VALUES (:idt, :lastname, :firstname, :classId, :biography, :pv, :mana, :strength, :initiative)';
         $stmt = $db->prepare($query);
-
-        // Liaison des paramètres et exécution
+        $stmt->bindParam(':idt', $idt);
         $stmt->bindParam(':lastname', $lastname);
         $stmt->bindParam(':firstname', $firstname);
-        $stmt->bindParam(':class', $class);
-
+        $stmt->bindParam(':classId', $classId);
+        $stmt->bindParam(':biography', $biography);
+        $stmt->bindParam(':pv', $pv);
+        $stmt->bindParam(':mana', $mana);
+        $stmt->bindParam(':strength', $strength);
+        $stmt->bindParam(':initiative', $initiative);
         return $stmt->execute();
     }
 
-    // Vérifier si un personnage existe déjà
     public function heroExists() {
         $db = $this->getDatabaseConnection();
-        
         $idt = $_SESSION['user']['id'];
         $query = 'SELECT id FROM Hero WHERE id = :idt';
         $stmt = $db->prepare($query);
-
-        // Liaison des paramètres et exécution
-        $stmt->bindParam(':lastname', $lastname);
-        $stmt->bindParam(':firstname', $firstname);
-        $stmt->bindParam(':class', $class);
-        
+        $stmt->bindParam(':idt', $idt);
         $stmt->execute();
-
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Récupérer un personnage
-    public function getHero($id) {
+    public function getHeroIdByUserId($userId) {
         $db = $this->getDatabaseConnection();
-
-        $query = 'SELECT * FROM Hero WHERE id = :id';
+        $query = 'SELECT hero_id FROM Account WHERE id = :userId';
         $stmt = $db->prepare($query);
-        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':userId', $userId);
         $stmt->execute();
-
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchColumn();
     }
 
-    // Supprimer un utilisateur par ID
-    public function deleteUser($id) {
+    public function getHeroByUserId($userId) {
         $db = $this->getDatabaseConnection();
-
-        $query = 'DELETE FROM Hero WHERE id = :id';
+        $query = 'SELECT h.*, c.name AS classe_name FROM Hero h LEFT JOIN Classe c ON h.classe_id = c.id WHERE h.id = :userId';
         $stmt = $db->prepare($query);
-        $stmt->bindParam(':id', $id);
-
-        return $stmt->execute();
+        $stmt->bindParam(':userId', $userId);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
+

@@ -2,62 +2,53 @@
 
 class HeroController extends Controller {
 
-    // Afficher le formulaire de création de personnage
     public function create() {
-        $this->view('pages/create');
+        $classModel = new ClassModel();
+        $classes = $classModel->getAllClasses();
+        $this->view('pages/create', ['classes' => $classes]);
     }
 
-    // Traiter la création de personnage
     public function store() {
-        $firstname = $_POST['firstname'] ?? '';
         $lastname = $_POST['lastname'] ?? '';
-        $class = $_POST['class'] ?? '';
-        $bio = $_POST['bio'] ?? '';
+        $firstname = $_POST['firstname'] ?? '';
+        $className = $_POST['class'] ?? '';
+        $biography = $_POST['bio'] ?? '';
 
-        // Validation de base
-        if (empty($lastname) || empty($firstname) || empty($class)) {
-            $this->view('pages/create', ['error' => 'Il faut entrer un nom et un prénom et choisir sa classe.']);
+        if (empty($lastname) || empty($firstname) || empty($className)) {
+            $this->view('pages/create', ['error' => 'Nom, prénom et classe sont obligatoires.']);
             return;
         }
 
-        // Vérification si un personnage existe déjà
         $heroModel = new Hero();
+        $classModel = new ClassModel();
+        $classData = $classModel->getClassStats($className);
+
         if ($heroModel->heroExists()) {
-            $this->view('pages/create', ['error' => 'Êtes vous sûr de vouloir supprimer votre ancien personnage et en créer un nouveau ?']);
+            $this->view('pages/create', ['error' => 'Un héros existe déjà pour cet utilisateur.']);
             return;
         }
 
-        // Création du personnage
-        if ($heroModel->createHero($lastname, $firstname, $class, $bio)) {
-            $this->view('pages/home', ['success' => 'Votre personnage a été créé avec succès.']);
+        if ($classData) {
+            $heroCreated = $heroModel->createHero(
+                $lastname,
+                $firstname,
+                $classData['id'],
+                $biography,
+                $classData['base_pv'],
+                $classData['base_mana'],
+                $classData['strength'],
+                $classData['initiative']
+            );
+
+            if ($heroCreated) {
+                $_SESSION['user']['hero'] = $heroModel->getHeroByUserId($_SESSION['user']['id']);
+                $this->view('pages/home', ['success' => 'Votre personnage a été créé avec succès.']);
+            } else {
+                $this->view('pages/create', ['error' => 'Erreur lors de la création du personnage.']);
+            }
         } else {
-            $this->view('pages/create', ['error' => 'Une erreur est survenue lors de la création de votre personnage.']);
+            $this->view('pages/create', ['error' => 'Classe non valide.']);
         }
-    }
-
-        $heroModel = new Hero();
-        
-        // Vérifier si le hero existe
-        $hero = $heroModel->getHero($_SESSION['user']['id']);
-
-        if ($hero) {
-            
-        } else {
-            
-        }
-    }
-
-    // Supprimer le personnage
-    public function delete($id) {
-        $heroModel = new Hero();
-        
-        // Vérification de l'identité de l'utilisateur
-        if ($id === $_SESSION['user']['id']) {
-            $heroModel->deleteHero($id);
-            
-            exit;
-        }
-
-        $this->view('pages/home', ['error' => 'Vous ne pouvez pas supprimer ce personnage.']);
     }
 }
+
