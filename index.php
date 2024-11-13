@@ -27,6 +27,7 @@ session_start();
         require 'app/controllers/HomeController.php';
         require 'app/controllers/UserController.php';
         require 'app/controllers/ChapterController.php';
+        require 'app/controllers/HeroController.php';
 
         $router = new Router('DungeonXplorer');
 
@@ -46,6 +47,10 @@ session_start();
 
         /*Route lié pour l'histoire*/ 
         $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter'); 
+
+        /*Route lié au hero*/
+        $router->addRoute('hero/store', 'HeroController@store');
+        $router->addRoute('hero/create', 'HeroController@create');
 
         // Traiter la route demandée
         $router->route(trim($_SERVER['REQUEST_URI'], '/'));

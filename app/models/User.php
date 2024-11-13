@@ -48,6 +48,16 @@ class User extends Model {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getHeroByUserId($userId) {
+        $db = $this->getDatabaseConnection();
+        $query = 'SELECT h.*, c.name AS classe_name FROM Hero h LEFT JOIN Class c ON h.class_id = c.id WHERE h.id = :userId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':userId', $userId);
+        $stmt->execute();
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     // Récupérer un utilisateur par son ID
     public function getUserById($id) {
         $db = $this->getDatabaseConnection();
