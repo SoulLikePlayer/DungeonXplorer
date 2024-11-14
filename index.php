@@ -28,7 +28,6 @@ session_start();
         require 'app/controllers/UserController.php';
         require 'app/controllers/ChapterController.php';
         require 'app/controllers/InventoryController.php';
-
         require 'app/controllers/HeroController.php';
 
         $router = new Router('DungeonXplorer');
