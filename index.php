@@ -29,6 +29,8 @@ session_start();
         require 'app/controllers/ChapterController.php';
         require 'app/controllers/InventoryController.php';
 
+        require 'app/controllers/HeroController.php';
+
         $router = new Router('DungeonXplorer');
 
         /*Route de la page principal*/
@@ -48,8 +50,14 @@ session_start();
         /*Route lié pour l'histoire*/ 
         $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter'); 
 
+
         /* Route lié à l'inventaire */
         $router->addRoute('inventory/test','InventoryController@test');
+
+        /*Route lié au hero*/
+        $router->addRoute('hero/store', 'HeroController@store');
+        $router->addRoute('hero/create', 'HeroController@create');
+
 
         // Traiter la route demandée
         $router->route(trim($_SERVER['REQUEST_URI'], '/'));
