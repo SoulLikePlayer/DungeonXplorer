@@ -42,7 +42,8 @@ class HeroController extends Controller {
 
             if ($heroCreated) {
                 $_SESSION['user']['hero'] = $heroModel->getHeroByUserId($_SESSION['user']['id']);
-                $this->view('pages/home', ['success' => 'Votre personnage a été créé avec succès.']);
+                header("Location: /DungeonXplorer/inventory/loadInventory");
+                exit;
             } else {
                 $this->view('pages/create', ['error' => 'Erreur lors de la création du personnage.']);
             }

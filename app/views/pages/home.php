@@ -49,8 +49,18 @@
         </div>
         
         <div class="container-items">
-            <!-- Conteneur supplémentaire pour autres informations -->
-        </div>
+            <?php if (isset($_SESSION['user']['inventory'])): ?>
+                <h2>Inventaire</h2>
+                <?php foreach($_SESSION['user']['inventory'] as $item):?>
+                    <p><?=htmlspecialchars($item['name']) ?> : </p><ul>
+                        <li>Description : <?=htmlspecialchars($item['description']) ?></li>
+                        <li>Poids : <?=htmlspecialchars($item['poids']) ?></li>
+                        <li>Place dans l'inventaire: <?=htmlspecialchars($item['unite_inv']) ?></li>
+                    </ul>
+                <?php endforeach; ?>    
+            <?php else: ?>
+                <p>Inventaire vide.</p>
+            <?php endif; ?> 
     </div>    
 </main>
 
