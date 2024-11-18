@@ -12,6 +12,7 @@ session_start();
     <link href='https://fonts.googleapis.com/css?family=Pirata One' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
     <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/style.css">
+    <link rel="icon" href="public/assets/image/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <?php
