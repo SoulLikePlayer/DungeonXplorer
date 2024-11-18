@@ -3,7 +3,7 @@
 ?>
 <main>
     <div class="story-container">
-        <h2 id="ChapterTitle">Chapitre <?= htmlspecialchars($chapter['id'] ?? 'Inconnu') ?></h2>
+        <h2 id="ChapterTitle"><?= htmlspecialchars($chapter['titre'] ?? 'Inconnu') ?></h2>
         <div class="chapter-content">
             <p><?= nl2br(htmlspecialchars($chapter['content'] ?? 'Aucun contenu disponible')) ?></p> 
         </div>
