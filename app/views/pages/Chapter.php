@@ -2,6 +2,7 @@
     $_SESSION["Chapitre"] = $chapter['id']
 ?>
 <main>
+    <p><?= var_dump($chapter) ?></p>
     <div class="story-container">
         <h2 id="ChapterTitle"><?= htmlspecialchars($chapter['titre'] ?? 'Inconnu') ?></h2>
         <div class="chapter-content">
