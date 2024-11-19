@@ -56,7 +56,6 @@ class UserController extends Controller {
         $user = $userModel->getUserByUsername($username);
 
         if ($user && password_verify($password, $user['password'])) {
-            // Si la connexion réussie, on démarre une session et redirige l'utilisateur
             $_SESSION['user'] = $user;
             
             $hero = $userModel->getHeroByUserId($user['id']);
