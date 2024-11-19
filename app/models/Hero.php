@@ -47,5 +47,15 @@ class Hero extends Model {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function setArmeHero($primaryWeapon, $secondaryWeapon, $heroId) {
+        $db = $this->getDatabaseConnection();
+        $query = 'UPDATE Hero SET primary_weapon_id = :primary, secondary_weapon_id = :secondary WHERE id = :heroId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':primary', $primaryWeapon);
+        $stmt->bindParam(':secondary', $secondaryWeapon);
+        $stmt->bindParam(':heroId', $heroId);
+        $stmt->execute();
+    }
 }
 

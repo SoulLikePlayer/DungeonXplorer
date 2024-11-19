@@ -15,9 +15,8 @@
             </ul>
             
             <h3>Équipement</h3> <ul> 
-                <li><strong>Arme principale:</strong> <?= $hero['primary_weapon'] ? htmlspecialchars($hero['primary_weapon']) : 'Aucune' ?></li> 
-                <li><strong>Arme secondaire:</strong> <?= $hero['secondary_weapon'] ? htmlspecialchars($hero['secondary_weapon']) : 'Aucune' ?></li> 
-                <li><strong>Bouclier:</strong> <?= $hero['shield'] ? htmlspecialchars($hero['shield']) : 'Aucun' ?></li> 
+                <li><strong>Arme principale:</strong> <?= $hero['primary_weapon_id'] ? htmlspecialchars($hero['primary_weapon']) : 'Aucune' ?></li> 
+                <li><strong>Arme secondaire:</strong> <?= $hero['secondary_weapon_id'] ? htmlspecialchars($hero['secondary_weapon']) : 'Aucune' ?></li> 
             </ul> 
             
             <h3>Autres détails</h3> <ul> 
