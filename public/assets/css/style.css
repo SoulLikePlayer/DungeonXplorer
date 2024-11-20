@@ -227,3 +227,22 @@ a:hover {
 .combat-buttons button:active {
     transform: translateY(1px);
 }
+
+.combat-info {
+    background-color: #333; /* Fond sombre pour contraster avec les informations */
+    color: #f5f5f5; /* Texte clair pour les informations */
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.combat-info p {
+    margin: 0;
+    font-family: var(--font-family-classic);
+}
+
+.combat-info strong {
+    color: var(--accent-color); /* Accentuer les labels comme "Héros" et "Monstre" */
+}

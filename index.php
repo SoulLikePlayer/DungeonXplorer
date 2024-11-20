@@ -47,6 +47,10 @@ session_start();
         $router->addRoute('user/update/{id}', 'UserController@update');     // Route pour mettre à jour un utilisateur
         $router->addRoute('user/delete/{id}', 'UserController@delete');     // Route pour supprimer un utilisateur
 
+        $router->addRoute('combat/start', 'CombatController@startCombat');
+        $router->addRoute('combat/attack', 'CombatController@attack');
+
+
         /*Route lié pour l'histoire*/ 
         $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter'); 
 
