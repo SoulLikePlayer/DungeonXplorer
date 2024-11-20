@@ -14,32 +14,47 @@ document.getElementById('startCombatButton').addEventListener('click', function(
         initiative: parseInt(this.dataset.monsterInitiative)
     };
 
-    // Récupérer les liens de redirection
     const nextChapterWin = this.dataset.nextChapterWin;
     const nextChapterLose = this.dataset.nextChapterLose;
 
-    // Update combat info
-    document.getElementById('heroName').textContent = hero.name;
-    document.getElementById('heroPv').textContent = hero.pv;
-    document.getElementById('monsterName').textContent = monster.name;
-    document.getElementById('monsterPv').textContent = monster.pv;
+    const heroInitiativeRoll = rollDie() + hero.initiative;
+    const monsterInitiativeRoll = rollDie() + monster.initiative;
 
-    // Hide "Commencer le combat" button and show the combat action buttons
-    document.getElementById('combatMessage').textContent = `Le combat commence contre ${monster.name}`;
+    displayCombatMessage(`${hero.name} lance un dé pour l'initiative : ${heroInitiativeRoll}`);
+    displayCombatMessage(`${monster.name} lance un dé pour l'initiative : ${monsterInitiativeRoll}`);
+
+    let firstAttacker;
+
+    if (heroInitiativeRoll > monsterInitiativeRoll) {
+        firstAttacker = 'hero';
+    } else if (heroInitiativeRoll < monsterInitiativeRoll) {
+        firstAttacker = 'monster';
+    } else {
+        if (hero.isThief) {
+            firstAttacker = 'hero';
+        } else {
+            firstAttacker = 'monster';
+        }
+    }
+
+    if (firstAttacker === 'hero') {
+        displayCombatMessage(`${hero.name} attaque en premier !`);
+    } else {
+        displayCombatMessage(`${monster.name} attaque en premier !`);
+        performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose);
+    }
+
     document.getElementById('startCombatButton').style.display = 'none';
     document.getElementById('combatActions').style.display = 'block';
 
-    // Attaque physique
     document.getElementById('attackButton').addEventListener('click', function() {
-        performHeroAttack(hero, monster, nextChapterWin, nextChapterLose); // Commencer l'attaque du héros
+        performHeroAttack(hero, monster, nextChapterWin, nextChapterLose);
     });
-
-    // Utiliser un objet (fonctionnalité à ajouter selon ta logique)
+    
     document.getElementById('useItemButton').addEventListener('click', function() {
         displayCombatMessage("Utiliser un objet (fonctionnalité à implémenter)");
     });
-
-    // Fuir (fonctionnalité à ajouter selon ta logique)
+    
     document.getElementById('runButton').addEventListener('click', function() {
         displayCombatMessage("Fuir (fonctionnalité à implémenter)");
     });
@@ -66,25 +81,20 @@ function performHeroAttack(hero, monster, nextChapterWin, nextChapterLose) {
     const defense = calculateDefense(monster);
     const damage = Math.max(0, attack - defense);
 
-    // Afficher message de l'attaque du héros
     displayCombatMessage(`${hero.name} attaque ${monster.name} et inflige ${damage} dégâts`);
 
-    // Mettre à jour les PV du monstre
     monster.pv -= damage;
-    document.getElementById('monsterPv').textContent = min(0, monster.pv);
+    document.getElementById('monsterPv').textContent = Math.max(0, monster.pv);
 
-    // Vérifier si le monstre est mort
     if (monster.pv <= 0) {
         displayCombatMessage(`${monster.name} a été vaincu !`);
-        // Rediriger après la victoire
         setTimeout(function() {
             window.location.href = `/DungeonXplorer/chapter/view/${nextChapterWin}`;
-        }, 1500); // Attendre 1.5 seconde avant la redirection
+        }, 1500);
     } else {
-        // Le monstre attaque après un délai
         setTimeout(function() {
             performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose);
-        }, 1500); // Attente de 1.5 seconde avant que le monstre attaque
+        }, 1500);
     }
 }
 
@@ -93,20 +103,16 @@ function performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose) {
     const defense = calculateDefense(hero);
     const damage = Math.max(0, attack - defense);
 
-    // Afficher message de l'attaque du monstre
     displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts`);
 
-    // Mettre à jour les PV du héros
     hero.pv -= damage;
-    document.getElementById('heroPv').textContent = hero.pv;
+    document.getElementById('heroPv').textContent = Math.max(0, hero.pv);
 
-    // Vérifier si le héros est mort
     if (hero.pv <= 0) {
         displayCombatMessage(`${hero.name} a été vaincu !`);
-        // Rediriger après la défaite
         setTimeout(function() {
             window.location.href = `/DungeonXplorer/chapter/view/${nextChapterLose}`;
-        }, 1500); // Attendre 1.5 seconde avant la redirection
+        }, 1500);
     }
 }
 
@@ -114,5 +120,5 @@ function displayCombatMessage(message) {
     const messageElement = document.createElement('p');
     messageElement.textContent = message;
     document.getElementById('combatMessages').appendChild(messageElement);
-    document.getElementById('combatMessages').scrollTop = document.getElementById('combatMessages').scrollHeight; // Scroll automatique vers le bas
+    document.getElementById('combatMessages').scrollTop = document.getElementById('combatMessages').scrollHeight;
 }
