@@ -3,7 +3,7 @@
     <div class="container-items">
          <?php if (isset($_SESSION['user']['hero'])): ?>
             <?php $hero = $_SESSION['user']['hero']; ?> 
-            <p><?= var_dump($hero) ?></p>
+            <!--<p><?= var_dump($hero) ?></p>-->
 
             <h2>Personnage: <?= htmlspecialchars($hero['hero_firstname']) . " " . htmlspecialchars($hero['hero_lastname']) ?></h2>
 
@@ -22,8 +22,18 @@
 
             <h3>Équipement</h3>
             <ul>
-                <li><strong>Arme principale:</strong> <?= $hero['primary_weapon_name'] ? htmlspecialchars($hero['primary_weapon_name']) : 'Aucune' ?></li>
-                <li><strong>Arme secondaire:</strong> <?= $hero['secondary_weapon_name'] ? htmlspecialchars($hero['secondary_weapon_name']) : 'Aucune' ?></li>
+                <li><strong>Arme principale:</strong> <?= $hero['primary_weapon_name'] ? htmlspecialchars($hero['primary_weapon_name']) : 'Aucune' ?>
+                <ul>
+                    <li><strong>Bonus de dégâts:</strong> <?= $hero['primary_weapon_damage_bonus'] ?></li>
+                    <li><strong>Bonus de défense:</strong> <?= $hero['primary_weapon_defense_bonus'] ?></li></li>
+                </ul>
+                </li>
+                <li><strong>Arme secondaire:</strong> <?= $hero['secondary_weapon_name'] ? htmlspecialchars($hero['secondary_weapon_name']) : 'Aucune' ?>
+                <ul>
+                    <li><strong>Bonus de dégâts:</strong> <?= $hero['secondary_weapon_damage_bonus'] ?></li>
+                    <li><strong>Bonus de défense:</strong> <?= $hero['secondary_weapon_defense_bonus'] ?></li></li>
+                </ul>
+                </li>
             </ul>
 
             <h3>Armure</h3>
@@ -39,6 +49,7 @@
                 <li><strong>XP:</strong> <?= htmlspecialchars($hero['xp']) ?></li>
                 <li><strong>Poids maximal:</strong> <?= htmlspecialchars($hero['poids_max']) ?> kg</li>
                 <li><strong>Nombre d'objets max:</strong> <?= htmlspecialchars($hero['nb_items_max']) ?></li>
+                <li><strong> Bonus de défense :</strong> <?= htmlspecialchars($hero['total_defense_bonus']) ?></li>
             </ul>
 
         <?php else: ?>

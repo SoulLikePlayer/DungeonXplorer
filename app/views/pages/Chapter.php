@@ -26,24 +26,38 @@
                         data-hero-strength="<?= htmlspecialchars($_SESSION['user']['hero']['strength']) ?>"
                         data-hero-initiative="<?= htmlspecialchars($_SESSION['user']['hero']['initiative']) ?>"
                         data-hero-is-thief="<?= htmlspecialchars($_SESSION['user']['hero']['class_id'] == 3 ? 'true' : 'false') ?>"
+                        data-hero-primary-weapon-name="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_name']) ?>"
+                        data-hero-primary-weapon-damage-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_damage_bonus']) ?>"
+                        data-hero-primary-weapon-defense-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_defense_bonus']) ?>"
+                        data-hero-secondary-weapon-name="<?= htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_name']) ?>"
+                        data-hero-secondary-weapon-damage-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_damage_bonus']) ?>"
+                        data-hero-secondary-weapon-defense-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_defense_bonus']) ?>"
+                        data-hero-total-defense-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['total_defense_bonus']) ?>"
                         data-monster-name="<?= htmlspecialchars($_SESSION['monster']['name']) ?>"
                         data-monster-pv="<?= htmlspecialchars($_SESSION['monster']['pv']) ?>"
                         data-monster-strength="<?= htmlspecialchars($_SESSION['monster']['strength']) ?>"
                         data-monster-initiative="<?= htmlspecialchars($_SESSION['monster']['initiative']) ?>"
                         data-next-chapter-win="<?= htmlspecialchars($links[0]['next_chapter_id']) ?>"
-                        data-next-chapter-lose="<?= htmlspecialchars($links[1]['next_chapter_id']) ?>">
-                    Commencer le combat
-                </button>
-                <div class="combat-actions" id="combatActions" style="display: none;">
-                    <div id="combatInfo">
-                        <p><strong>Héros : </strong><span id="heroName"></span> | PV : <span id="heroPv"></span></p>
-                        <p><strong>Monstre : </strong><span id="monsterName"></span> | PV : <span id="monsterPv"></span></p>
-                    </div>
-                    <div id="combatMessages" class="combat-messages"></div> <!-- Zone des messages de combat -->
-                    <div class="combat-buttons">
-                        <button id="attackButton">Attaquer</button>
-                        <button id="useItemButton">Utiliser un objet</button>
-                        <button id="runButton">Fuir</button>
+                        data-next-chapter-lose="<?= htmlspecialchars($links[1]['next_chapter_id']) ?>"
+                    >
+                        Commencer le combat
+                    </button>
+
+                    <div class="combat-actions" id="combatActions" style="display: none;">
+                        <div id="combatInfo">
+                            <p><strong>Héros : </strong><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span> | PV : <span id="heroPv"></span></p>
+                            <p><strong>Monstre : </strong><span id="monsterName"><?= htmlspecialchars($_SESSION['monster']['name'])?></span> | PV : <span id="monsterPv"></span></p>
+                        </div>
+                        <div id="combatMessages" class="combat-messages"></div> <!-- Zone des messages de combat -->
+                        <div class="combat-buttons">
+                            <select id="weaponChoice">
+                                <option value="primary">Arme principale : <?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_name']) ?></option>
+                                <option value="secondary">Arme secondaire : <?= htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_name']) ?></option>
+                            </select>
+                            <button id="attackButton">Attaquer</button>
+                            <button id="useItemButton">Utiliser un objet</button>
+                            <button id="runButton">Fuir</button>
+                        </div>
                     </div>
                 </div>
             <?php else: ?>
@@ -63,3 +77,4 @@
     </div>
     <script src="../../public/assets/js/combat.js"></script>
 </main>
+

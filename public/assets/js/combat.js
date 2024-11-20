@@ -4,7 +4,14 @@ document.getElementById('startCombatButton').addEventListener('click', function(
         pv: parseInt(this.dataset.heroPv),
         strength: parseInt(this.dataset.heroStrength),
         initiative: parseInt(this.dataset.heroInitiative),
-        isThief: this.dataset.heroIsThief === 'true'
+        isThief: this.dataset.heroIsThief === 'true',
+        primaryWeaponName: this.dataset.heroPrimaryWeaponName,
+        primaryWeaponDamageBonus: this.dataset.heroPrimaryWeaponDamageBonus,
+        primaryWeaponDefenseBonus: this.dataset.heroPrimaryWeaponDefenseBonus,
+        secondaryWeaponName: this.dataset.heroSecondaryWeaponName,
+        secondaryWeaponDamageBonus: this.dataset.heroSecondaryWeaponDamageBonus,
+        secondaryWeaponDefenseBonus: this.dataset.heroSecondaryWeaponDefenseBonus,
+        totalDefenseBonus: this.dataset.heroTotalDefenseBonus
     };
 
     const monster = {
@@ -22,6 +29,9 @@ document.getElementById('startCombatButton').addEventListener('click', function(
 
     displayCombatMessage(`${hero.name} lance un dé pour l'initiative : ${heroInitiativeRoll}`);
     displayCombatMessage(`${monster.name} lance un dé pour l'initiative : ${monsterInitiativeRoll}`);
+
+    document.getElementById('monsterPv').textContent = monster.pv;
+    document.getElementById('heroPv').textContent = hero.pv;
 
     let firstAttacker;
 
@@ -69,19 +79,42 @@ function calculateAttack(character) {
 }
 
 function calculateDefense(character) {
+    let defense = 0;
     if (character.isThief) {
-        return rollDie() + Math.floor(character.initiative / 2);
+        defense += rollDie() + Math.floor(character.initiative / 2);
     } else {
-        return rollDie() + Math.floor(character.strength / 2);
+        defense += rollDie() + Math.floor(character.strength / 2);
     }
+    defense += parseInt(character.totalDefenseBonus || 0); 
+    return defense;
+}
+
+function getWeaponBonus(hero, weaponChoice) {
+    if (weaponChoice === 'primary') {
+        return {
+            damageBonus: parseInt(hero.primaryWeaponDamageBonus),
+            defenseBonus: parseInt(hero.primaryWeaponDefenseBonus),
+            weaponName: hero.primaryWeaponName
+        };
+    } else if (weaponChoice === 'secondary') {
+        return {
+            damageBonus: parseInt(hero.secondaryWeaponDamageBonus),
+            defenseBonus: parseInt(hero.secondaryWeaponDefenseBonus),
+            weaponName: hero.secondaryWeaponName
+        };
+    }
+    return { damageBonus: 0, defenseBonus: 0, weaponName: 'Aucune arme' };
 }
 
 function performHeroAttack(hero, monster, nextChapterWin, nextChapterLose) {
-    const attack = calculateAttack(hero);
+    const weaponChoice = document.getElementById('weaponChoice').value;
+    const weaponBonus = getWeaponBonus(hero, weaponChoice);
+
+    const attack = rollDie() + hero.strength + weaponBonus.damageBonus;
     const defense = calculateDefense(monster);
     const damage = Math.max(0, attack - defense);
 
-    displayCombatMessage(`${hero.name} attaque ${monster.name} et inflige ${damage} dégâts`);
+    displayCombatMessage(`${hero.name} attaque avec ${weaponBonus.weaponName} et inflige ${damage} dégâts`);
 
     monster.pv -= damage;
     document.getElementById('monsterPv').textContent = Math.max(0, monster.pv);
