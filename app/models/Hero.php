@@ -43,7 +43,6 @@ class Hero extends Model {
         h.strength,
         h.initiative,
         h.armor,
-        h.spell_list,
         h.xp,
         h.current_level,
         h.poids_max,

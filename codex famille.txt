@@ -1,0 +1,74 @@
+1. Codex Umbrae (Magie des Ombres et de la Nuit)
+
+    Description : La magie des ténèbres, de l'ombre et de la peur. Les adeptes de cette famille contrôlent l'obscurité, les illusions et manipulent la peur des créatures vivantes.
+    Spécialités : Invisibilité, manipulation des ombres, contrôle des peurs, et illusions effrayantes.
+
+2. Codex Thanatos (Magie de la Mort et des Âmes)
+
+    Description : La famille des mages spécialisés dans la manipulation des âmes, la nécromancie et les rituels liés à la mort. Ils peuvent contrôler les morts-vivants et emprisonner des esprits dans des artefacts magiques.
+    Spécialités : Nécromancie, résurrection, malédictions des âmes, captation des esprits.
+
+3. Codex Carnifex (Magie du Sang et de la Violence)
+
+    Description : La magie du sacrifice, du sang et de la brutalité. Les adeptes de ce codex utilisent leur propre sang (ou celui d'autres) pour activer des pouvoirs magiques puissants, souvent à un prix terrifiant.
+    Spécialités : Rituels de sang, transferts d'énergie vitale, renforcement physique par des sacrifices.
+
+4. Codex Obsidianus (Magie des Cristaux et des Ténèbres)
+
+    Description : Cette famille maîtrise la magie des cristaux maudits, utilisés pour emprisonner les âmes ou amplifier les pouvoirs magiques. Ces cristaux peuvent être utilisés pour déformer la réalité ou manipuler des entités surnaturelles.
+    Spécialités : Cristallisation des âmes, pièges dimensionnels, créations d'artefacts puissants.
+
+5. Codex Inferna (Magie du Feu et de la Destruction)
+
+    Description : La famille des pyromanciens et des destructeurs. Ils utilisent le feu et les flammes infernales comme des armes de guerre, capables de détruire toute une armée ou une cité.
+    Spécialités : Incantations de feu, dévastation explosive, malédictions incendiaires.
+
+6. Codex Venenum (Magie des Poisons et des Maladies)
+
+    Description : Les mages de cette famille sont des maîtres de la manipulation des poisons, des malédictions et des maladies. Leur magie permet de corrompre et de tuer par des moyens invisibles, lents et insidieux.
+    Spécialités : Fabrication de poisons, malédictions dégénératives, épidémies magiques.
+
+7. Codex Noctis (Magie des Cieux Noirs et des Étoiles Maudites)
+
+    Description : Une famille de mages qui utilise les forces occultes des étoiles et des constellations oubliées pour invoquer des créatures et des pouvoirs venus des abysses célestes.
+    Spécialités : Magie astrale, invocations d’entités cosmiques, manipulation des cycles lunaires et stellaires.
+
+8. Codex Fulgoris (Magie de la Foudre et des Tempêtes)
+
+    Description : Les adeptes de cette famille manipulent les éléments de l’air et de la foudre, lançant des éclairs dévastateurs ou provoquant des tempêtes cataclysmiques.
+    Spécialités : Contrôle des tempêtes, foudre destructrice, manipulation de l’atmosphère.
+
+9. Codex Mortis (Magie des Corps Décomposés et des Restes)
+
+    Description : La famille des mages spécialisés dans l'horreur et l'arcane des cadavres. Ils peuvent réanimer les morts pour qu'ils servent leur volonté ou extraire des pouvoirs occultes des corps en décomposition.
+    Spécialités : Nécromancie avancée, manipulation des restes humains et animaux, création de créatures grotesques.
+
+10. Codex Arcanum (Magie de la Connaissance Perdue et des Secrets Anciens)
+
+    Description : Ce codex est lié à la recherche de connaissances interdites et anciennes. Ceux qui le maîtrisent peuvent manipuler les mémoires ancestrales et ouvrir des portails vers des dimensions oubliées.
+    Spécialités : Manipulation du savoir ancien, exploration des dimensions parallèles, prédiction de l’avenir à travers des rites occultes.
+
+11. Codex Malachior (Magie de l’Esprit et du Contrôle Mental)
+
+    Description : Maîtres des manipulations mentales, ces mages sont capables d’implanter des idées, des souvenirs et de contrôler l’esprit d’autrui. Leur magie repose sur l’influence psychologique et les manipulations subtiles.
+    Spécialités : Contrôle mental, projection de pensées, illusions psychiques.
+
+12. Codex Venator (Magie de la Traque et de la Chasse)
+
+    Description : Les mages de cette famille sont des traqueurs. Ils utilisent la magie pour suivre et capturer leurs proies, exploitant des sorts permettant de sentir la présence de créatures et d’utiliser des malédictions pour les affaiblir.
+    Spécialités : Magie de détection, malédictions de chasse, pièges magiques.
+
+13. Codex Tenebris (Magie des Rituels et des Sacrifices)
+
+    Description : Ces mages sont des experts en rituels magiques sombres et en sacrifices. Ils accomplissent des cérémonies où la douleur et le sacrifice sont nécessaires pour canaliser de puissants pouvoirs obscurs.
+    Spécialités : Rituels de puissance, sacrifices de sang, envoûtements à travers des pactes de sang.
+
+14. Codex Lugdor (Magie des Cieux Abandonnés et des Rituels Perdus)
+
+    Description : Les adeptes de cette magie contrôlent les esprits des anciens dieux oubliés. Leur pouvoir provient de pactes avec des entités des cieux anciens, souvent malveillantes et capricieuses.
+    Spécialités : Invocation de dieux déchus, manipulation des énergies célestes corrompues, rituels interdits.
+
+15. Codex Ferox (Magie de la Bête et de la Transformation)
+
+    Description : Maîtres de la magie bestiale, ces mages peuvent se transformer en créatures sauvages ou invoquer des bêtes monstrueuses pour les aider dans leurs tâches.
+    Spécialités : Métamorphose en créatures, invocation de bêtes infernales, manipulation des instincts animaux.
