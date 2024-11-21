@@ -20,7 +20,6 @@
             <?php if ($chapter['chapter_type'] === 'combat'): ?>
                 <div class="combat-container" id="combatContainer">
                     <h3 id="combatMessage">Un combat commence contre <?= htmlspecialchars($_SESSION['monster']['name']) ?></h3>
-                    <p><?=var_dump($_SESSION['monster'])?></p>
                     <button id="startCombatButton" 
                         
                         data-hero-name="<?= htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname']) ?>"

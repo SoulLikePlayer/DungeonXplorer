@@ -107,7 +107,6 @@ function performHeroAttack(hero, monster, nextChapterWin, nextChapterLose) {
 
     if (monster.pv <= 0) {
         displayCombatMessage(`${monster.name} a été vaincu !`);
-        console.log(monster.loot)
         handleLoot(monster.loot);
         setTimeout(() => window.location.href = `/DungeonXplorer/chapter/view/${nextChapterWin}`, 3000);
     } else {

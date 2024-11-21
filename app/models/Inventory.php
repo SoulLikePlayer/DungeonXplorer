@@ -3,7 +3,6 @@ class Inventory extends Model {
     public function getInventory() {
         $db = $this->getDatabaseConnection();
 
-        // Récupérer l'inventaire pour le hero_id
         $inventoryQuery = '
             SELECT Items.id, Items.name, Items.description, Items.poids, Items.unite_inv
             FROM Inventory
@@ -16,5 +15,20 @@ class Inventory extends Model {
 
         return $inventoryStmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function addItemToInventory($heroId, $itemId, $quantity) {
+        $db = $this->getDatabaseConnection();
+        
+        $queryInsert = 'INSERT INTO Inventory (hero_id, item_id) VALUES (:hero_id, :item_id)';
+        $stmtInsert = $db->prepare($queryInsert);
+    
+        for ($i = 0; $i < $quantity; $i++) {
+            $stmtInsert->bindParam(':hero_id', $heroId, PDO::PARAM_INT);
+            $stmtInsert->bindParam(':item_id', $itemId, PDO::PARAM_INT); 
+            $stmtInsert->execute();
+        }
+    }
+    
+    
+    
 }
 

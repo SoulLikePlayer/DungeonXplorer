@@ -10,5 +10,24 @@ class InventoryController extends Controller {
          header("Location: /DungeonXplorer"); 
          exit;
     }
+
+    public function saveLoot() {
+        $data = json_decode(file_get_contents('php://input'), true);
+    
+        if (isset($data['itemId']) && isset($data['quantity']) && isset($_SESSION['user']['id'])) {
+            $heroId = $_SESSION['user']['id'];
+            $itemId = $data['itemId'];
+            $quantity = $data['quantity'];
+    
+            $inventoryModel = new Inventory();
+            $inventoryModel->addItemToInventory($heroId, $itemId, $quantity);
+    
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Données invalides']);
+        }
+    }
+    
+    
 }
 

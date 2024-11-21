@@ -50,7 +50,7 @@ class Monster extends Model {
     public function getLootById($id){
         $db = $this->getDatabaseConnection();
 
-        $query = 'SELECT i.name AS name, l.quantity AS quantity, l.probability AS proba
+        $query = 'SELECT l.item_id as id, i.name AS name, l.quantity AS quantity, l.probability AS proba
                   FROM Monster m 
                   JOIN Loot l ON m.id = l.id_monster
                   JOIN Items i ON l.item_id = i.id

@@ -53,6 +53,8 @@ session_start();
 
         /* Route lié à l'inventaire */
         $router->addRoute('inventory/loadInventory','InventoryController@loadInventory');
+        $router->addRoute('inventory/saveLoot', 'InventoryController@saveLoot');
+
 
         /*Route lié au hero*/
         $router->addRoute('hero/store', 'HeroController@store');
