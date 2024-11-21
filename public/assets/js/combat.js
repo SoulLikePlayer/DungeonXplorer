@@ -1,4 +1,4 @@
-document.getElementById('startCombatButton').addEventListener('click', function() {
+document.getElementById('startCombatButton').addEventListener('click', function () {
     const hero = {
         name: this.dataset.heroName,
         pv: parseInt(this.dataset.heroPv),
@@ -6,24 +6,29 @@ document.getElementById('startCombatButton').addEventListener('click', function(
         initiative: parseInt(this.dataset.heroInitiative),
         isThief: this.dataset.heroIsThief === 'true',
         primaryWeaponName: this.dataset.heroPrimaryWeaponName,
-        primaryWeaponDamageBonus: this.dataset.heroPrimaryWeaponDamageBonus,
-        primaryWeaponDefenseBonus: this.dataset.heroPrimaryWeaponDefenseBonus,
+        primaryWeaponDamageBonus: parseInt(this.dataset.heroPrimaryWeaponDamageBonus),
+        primaryWeaponDefenseBonus: parseInt(this.dataset.heroPrimaryWeaponDefenseBonus),
         secondaryWeaponName: this.dataset.heroSecondaryWeaponName,
-        secondaryWeaponDamageBonus: this.dataset.heroSecondaryWeaponDamageBonus,
-        secondaryWeaponDefenseBonus: this.dataset.heroSecondaryWeaponDefenseBonus,
-        totalDefenseBonus: this.dataset.heroTotalDefenseBonus
+        secondaryWeaponDamageBonus: parseInt(this.dataset.heroSecondaryWeaponDamageBonus),
+        secondaryWeaponDefenseBonus: parseInt(this.dataset.heroSecondaryWeaponDefenseBonus),
+        totalDefenseBonus: parseInt(this.dataset.heroTotalDefenseBonus)
     };
 
     const monster = {
         name: this.dataset.monsterName,
         pv: parseInt(this.dataset.monsterPv),
         strength: parseInt(this.dataset.monsterStrength),
-        initiative: parseInt(this.dataset.monsterInitiative)
+        initiative: parseInt(this.dataset.monsterInitiative),
+        loot: JSON.parse(this.dataset.monsterLoot || '[]')
     };
 
     const nextChapterWin = this.dataset.nextChapterWin;
     const nextChapterLose = this.dataset.nextChapterLose;
 
+    initializeCombat(hero, monster, nextChapterWin, nextChapterLose);
+});
+
+function initializeCombat(hero, monster, nextChapterWin, nextChapterLose) {
     const heroInitiativeRoll = rollDie() + hero.initiative;
     const monsterInitiativeRoll = rollDie() + monster.initiative;
 
@@ -33,42 +38,31 @@ document.getElementById('startCombatButton').addEventListener('click', function(
     document.getElementById('monsterPv').textContent = monster.pv;
     document.getElementById('heroPv').textContent = hero.pv;
 
-    let firstAttacker;
+    let firstAttacker =
+        heroInitiativeRoll > monsterInitiativeRoll ||
+        (heroInitiativeRoll === monsterInitiativeRoll && hero.isThief)
+            ? 'hero'
+            : 'monster';
 
-    if (heroInitiativeRoll > monsterInitiativeRoll) {
-        firstAttacker = 'hero';
-    } else if (heroInitiativeRoll < monsterInitiativeRoll) {
-        firstAttacker = 'monster';
-    } else {
-        if (hero.isThief) {
-            firstAttacker = 'hero';
-        } else {
-            firstAttacker = 'monster';
-        }
-    }
-
-    if (firstAttacker === 'hero') {
-        displayCombatMessage(`${hero.name} attaque en premier !`);
-    } else {
-        displayCombatMessage(`${monster.name} attaque en premier !`);
+    if (firstAttacker === 'monster') {
         performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose);
     }
 
     document.getElementById('startCombatButton').style.display = 'none';
     document.getElementById('combatActions').style.display = 'block';
 
-    document.getElementById('attackButton').addEventListener('click', function() {
+    document.getElementById('attackButton').addEventListener('click', function () {
         performHeroAttack(hero, monster, nextChapterWin, nextChapterLose);
     });
-    
-    document.getElementById('useItemButton').addEventListener('click', function() {
+
+    document.getElementById('useItemButton').addEventListener('click', function () {
         displayCombatMessage("Utiliser un objet (fonctionnalité à implémenter)");
     });
-    
-    document.getElementById('runButton').addEventListener('click', function() {
+
+    document.getElementById('runButton').addEventListener('click', function () {
         displayCombatMessage("Fuir (fonctionnalité à implémenter)");
     });
-});
+}
 
 function rollDie() {
     return Math.floor(Math.random() * 6) + 1;
@@ -79,31 +73,24 @@ function calculateAttack(character) {
 }
 
 function calculateDefense(character) {
-    let defense = 0;
-    if (character.isThief) {
-        defense += rollDie() + Math.floor(character.initiative / 2);
-    } else {
-        defense += rollDie() + Math.floor(character.strength / 2);
-    }
-    defense += parseInt(character.totalDefenseBonus || 0); 
-    return defense;
+    const baseDefense = character.isThief
+        ? rollDie() + Math.floor(character.initiative / 2)
+        : rollDie() + Math.floor(character.strength / 2);
+    return baseDefense + (character.totalDefenseBonus || 0);
 }
 
 function getWeaponBonus(hero, weaponChoice) {
-    if (weaponChoice === 'primary') {
-        return {
-            damageBonus: parseInt(hero.primaryWeaponDamageBonus),
-            defenseBonus: parseInt(hero.primaryWeaponDefenseBonus),
-            weaponName: hero.primaryWeaponName
-        };
-    } else if (weaponChoice === 'secondary') {
-        return {
-            damageBonus: parseInt(hero.secondaryWeaponDamageBonus),
-            defenseBonus: parseInt(hero.secondaryWeaponDefenseBonus),
-            weaponName: hero.secondaryWeaponName
-        };
-    }
-    return { damageBonus: 0, defenseBonus: 0, weaponName: 'Aucune arme' };
+    return weaponChoice === 'primary'
+        ? {
+              damageBonus: hero.primaryWeaponDamageBonus,
+              defenseBonus: hero.primaryWeaponDefenseBonus,
+              weaponName: hero.primaryWeaponName
+          }
+        : {
+              damageBonus: hero.secondaryWeaponDamageBonus,
+              defenseBonus: hero.secondaryWeaponDefenseBonus,
+              weaponName: hero.secondaryWeaponName
+          };
 }
 
 function performHeroAttack(hero, monster, nextChapterWin, nextChapterLose) {
@@ -114,20 +101,17 @@ function performHeroAttack(hero, monster, nextChapterWin, nextChapterLose) {
     const defense = calculateDefense(monster);
     const damage = Math.max(0, attack - defense);
 
-    displayCombatMessage(`${hero.name} attaque avec ${weaponBonus.weaponName} et inflige ${damage} dégâts`);
-
+    displayCombatMessage(`${hero.name} attaque avec ${weaponBonus.weaponName} et inflige ${damage} dégâts.`);
     monster.pv -= damage;
     document.getElementById('monsterPv').textContent = Math.max(0, monster.pv);
 
     if (monster.pv <= 0) {
         displayCombatMessage(`${monster.name} a été vaincu !`);
-        setTimeout(function() {
-            window.location.href = `/DungeonXplorer/chapter/view/${nextChapterWin}`;
-        }, 1500);
+        console.log(monster.loot)
+        handleLoot(monster.loot);
+        setTimeout(() => window.location.href = `/DungeonXplorer/chapter/view/${nextChapterWin}`, 3000);
     } else {
-        setTimeout(function() {
-            performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose);
-        }, 1500);
+        performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose);
     }
 }
 
@@ -136,22 +120,20 @@ function performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose) {
     const defense = calculateDefense(hero);
     const damage = Math.max(0, attack - defense);
 
-    displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts`);
-
+    displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts.`);
     hero.pv -= damage;
     document.getElementById('heroPv').textContent = Math.max(0, hero.pv);
 
     if (hero.pv <= 0) {
         displayCombatMessage(`${hero.name} a été vaincu !`);
-        setTimeout(function() {
-            window.location.href = `/DungeonXplorer/chapter/view/${nextChapterLose}`;
-        }, 1500);
+        setTimeout(() => window.location.href = `/DungeonXplorer/chapter/view/${nextChapterLose}`, 1500);
     }
 }
 
 function displayCombatMessage(message) {
     const messageElement = document.createElement('p');
     messageElement.textContent = message;
-    document.getElementById('combatMessages').appendChild(messageElement);
-    document.getElementById('combatMessages').scrollTop = document.getElementById('combatMessages').scrollHeight;
+    const combatMessages = document.getElementById('combatMessages');
+    combatMessages.appendChild(messageElement);
+    combatMessages.scrollTop = combatMessages.scrollHeight;
 }

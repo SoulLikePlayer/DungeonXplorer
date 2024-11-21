@@ -20,7 +20,9 @@
             <?php if ($chapter['chapter_type'] === 'combat'): ?>
                 <div class="combat-container" id="combatContainer">
                     <h3 id="combatMessage">Un combat commence contre <?= htmlspecialchars($_SESSION['monster']['name']) ?></h3>
+                    <p><?=var_dump($_SESSION['monster'])?></p>
                     <button id="startCombatButton" 
+                        
                         data-hero-name="<?= htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname']) ?>"
                         data-hero-pv="<?= htmlspecialchars($_SESSION['user']['hero']['pv']) ?>"
                         data-hero-strength="<?= htmlspecialchars($_SESSION['user']['hero']['strength']) ?>"
@@ -39,6 +41,7 @@
                         data-monster-initiative="<?= htmlspecialchars($_SESSION['monster']['initiative']) ?>"
                         data-next-chapter-win="<?= htmlspecialchars($links[0]['next_chapter_id']) ?>"
                         data-next-chapter-lose="<?= htmlspecialchars($links[1]['next_chapter_id']) ?>"
+                        data-monster-loot='<?= json_encode($_SESSION['monster']['loot']) ?>'
                     >
                         Commencer le combat
                     </button>
@@ -48,7 +51,7 @@
                             <p><strong>Héros : </strong><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span> | PV : <span id="heroPv"></span></p>
                             <p><strong>Monstre : </strong><span id="monsterName"><?= htmlspecialchars($_SESSION['monster']['name'])?></span> | PV : <span id="monsterPv"></span></p>
                         </div>
-                        <div id="combatMessages" class="combat-messages"></div> <!-- Zone des messages de combat -->
+                        <div id="combatMessages" class="combat-messages"></div>
                         <div class="combat-buttons">
                             <select id="weaponChoice">
                                 <option value="primary">Arme principale : <?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_name']) ?></option>
@@ -59,7 +62,14 @@
                             <button id="runButton">Fuir</button>
                         </div>
                     </div>
+
+                    <div id="lootContainer" style="display: none; margin-top: 20px;">
+                        <h3>Loot obtenu :</h3>
+                        <div id="lootList"></div>
+                    </div>
                 </div>
+                <script src="../../public/assets/js/lootSystem.js"></script>
+                <script src="../../public/assets/js/combat.js"></script>
             <?php else: ?>
                 <?php foreach ($links as $link): ?>
                     <div class="link">
@@ -75,6 +85,4 @@
             <a href="/DungeonXplorer">Retour à l'accueil</a> 
         </div>
     </div>
-    <script src="../../public/assets/js/combat.js"></script>
 </main>
-

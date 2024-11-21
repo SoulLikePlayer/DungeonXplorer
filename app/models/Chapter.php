@@ -29,6 +29,7 @@ class Chapter extends Model {
             // Enregistrer les informations du monstre dans la session
             if ($monster) {
                 $_SESSION['monster'] = $monster;
+                $_SESSION['monster']['loot'] = $monsterModel->getLootById($chapter['related_monster_id']);
             }
         }
     

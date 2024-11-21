@@ -45,6 +45,25 @@ class Monster extends Model {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    // obtenir les loots des monstre selon l'id
+
+    public function getLootById($id){
+        $db = $this->getDatabaseConnection();
+
+        $query = 'SELECT i.name AS name, l.quantity AS quantity, l.probability AS proba
+                  FROM Monster m 
+                  JOIN Loot l ON m.id = l.id_monster
+                  JOIN Items i ON l.item_id = i.id
+                  WHERE m.id = :monster_id
+                ';
+        
+        $stmt = $db->prepare($query);
+
+        $stmt->bindParam(':monster_id', $id);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     // Crée un nouveau monstre dans la base de données
     public function createMonster($name, $pv, $mana, $initiative, $strength, $attack, $xp) {

@@ -48,29 +48,5 @@ class MonsterController extends Controller {
             $this->view('pages/create_monster', ['error' => 'Erreur lors de la création du monstre.']);
         }
     }
-
-    // Affiche tous les monstres
-    public function showAll() {
-        $monsterModel = new Monster();
-        $monsters = $monsterModel->getAllMonsters();
-
-        if ($monsters) {
-            $this->view('pages/monsters_list', ['monsters' => $monsters]);
-        } else {
-            $this->view('pages/monsters_list', ['error' => 'Aucun monstre trouvé.']);
-        }
-    }
-
-    // Affiche les détails d'un monstre spécifique
-    public function show($monsterId) {
-        $monsterModel = new Monster();
-        $monster = $monsterModel->getMonsterById($monsterId);
-
-        if ($monster) {
-            $this->view('pages/monster_detail', ['monster' => $monster]);
-        } else {
-            $this->view('pages/monster_detail', ['error' => 'Monstre non trouvé.']);
-        }
-    }
 }
 ?>
