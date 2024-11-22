@@ -3,7 +3,7 @@ class HomeController
 {
     public function index()
     {
-        if (isset($_SESSION['user'])){
+        if (isset($_SESSION['user']['hero'])){
             /*Gestion de héro*/
             $heroModel = new Hero();
             $_SESSION['user']['hero'] = $heroModel->getHeroByUserId($_SESSION['user']['id']);

@@ -128,18 +128,13 @@ class UserController extends Controller {
     }
 
     // Supprimer un utilisateur
-    public function delete($id) {
+    public function delete() {
         $userModel = new User();
         
-        // Vérification de l'identité de l'utilisateur
-        if ($id === $_SESSION['user']['id']) {
-            $userModel->deleteUser($id);
-            unset($_SESSION['user']);
-            session_destroy();
-            header('Location: /DungeonXplorer');
-            exit;
-        }
-
-        $this->view('users/profile', ['error' => 'Vous ne pouvez pas supprimer ce compte.']);
+        $userModel->deleteUser($_SESSION['user']['id']);
+        unset($_SESSION['user']);
+        session_destroy();
+        header('Location: /DungeonXplorer');
+        exit;
     }
 }

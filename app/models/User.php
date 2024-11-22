@@ -147,14 +147,52 @@ class User extends Model {
         return $stmt->execute();
     }
 
-    // Supprimer un utilisateur par ID
     public function deleteUser($id) {
         $db = $this->getDatabaseConnection();
-
-        $query = 'DELETE FROM Account WHERE id = :id';
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':id', $id);
-
-        return $stmt->execute();
-    }
+    
+        // Désactivation des contraintes de clés étrangères pour éviter les erreurs lors de la suppression
+        $db->exec("SET foreign_key_checks = 0");
+    
+        try {
+            // Supprimer les données liées au héros dans Hero_Armor, Hero_Weapons, et Inventory
+            $query = 'DELETE FROM Inventory WHERE hero_id = (SELECT id FROM Hero WHERE id = :heroId)';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':heroId', $id);
+            $stmt->execute();
+    
+            $query = 'DELETE FROM Hero_Weapons WHERE hero_id = :heroId';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':heroId', $id);
+            $stmt->execute();
+    
+            $query = 'DELETE FROM Hero_Armor WHERE hero_id = :heroId';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':heroId', $id);
+            $stmt->execute();
+    
+            // Supprimer le héros lui-même
+            $query = 'DELETE FROM Hero WHERE id = :heroId';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':heroId', $id);
+            $stmt->execute();
+    
+            // Supprimer l'utilisateur dans la table Account
+            $query = 'DELETE FROM Account WHERE id = :id';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+    
+            // Commit des changements
+            $db->commit();
+    
+            // Réactiver les contraintes de clés étrangères
+            $db->exec("SET foreign_key_checks = 1");
+    
+            return true;
+        } catch (Exception $e) {   
+            $db->exec("SET foreign_key_checks = 1");
+            error_log($e->getMessage());
+            return false;
+        }
+    }    
 }

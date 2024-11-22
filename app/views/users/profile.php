@@ -15,6 +15,6 @@
     <button>Modifier le profil</button>
 </a>
 
-<form action="/DungeonXplorer/user/delete/<?= $_SESSION['user']['id'] ?>" method="POST">
+<form action="/DungeonXplorer/user/delete" method="POST">
     <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ?')">Supprimer le compte</button>
 </form>

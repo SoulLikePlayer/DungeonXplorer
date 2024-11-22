@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mer. 20 nov. 2024 à 08:15
+-- Généré le : ven. 22 nov. 2024 à 13:56
 -- Version du serveur : 10.11.6-MariaDB-0+deb12u1
 -- Version de PHP : 8.2.24
 
@@ -31,18 +31,18 @@ CREATE TABLE `Account` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `hero_id` int(11) DEFAULT NULL
+  `email` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `Account`
 --
 
-INSERT INTO `Account` (`id`, `username`, `password`, `email`, `hero_id`) VALUES
-(8, 'testMage', '$2y$10$PuPm0zJzOoATRPqiSVIOq.03CbtDndO8qKA1sJGJ.h0DbxzRXKO32', 'test.mage@gmail.com', NULL),
-(9, 'testGuerrier', '$2y$10$qebjKEVsM7aKzGzAFo7ppOaAq70kyDP79IvPEoW5qy6YD17M6pOBq', 'test.guerrier@gmail.com', NULL),
-(10, 'testVoleur', '$2y$10$sa0n72kjQH.fVdGaqrJM2ujHMZ4HUDFTH.unsuYSNFBgEDqVYWEVm', 'test.voleur@gmail.com', NULL);
+INSERT INTO `Account` (`id`, `username`, `password`, `email`) VALUES
+(8, 'testMage', '$2y$10$PuPm0zJzOoATRPqiSVIOq.03CbtDndO8qKA1sJGJ.h0DbxzRXKO32', 'test.mage@gmail.com'),
+(9, 'testGuerrier', '$2y$10$qebjKEVsM7aKzGzAFo7ppOaAq70kyDP79IvPEoW5qy6YD17M6pOBq', 'test.guerrier@gmail.com'),
+(10, 'testVoleur', '$2y$10$sa0n72kjQH.fVdGaqrJM2ujHMZ4HUDFTH.unsuYSNFBgEDqVYWEVm', 'test.voleur@gmail.com'),
+(11, 'testSuppri', '$2y$10$Rx82nvEl1O5XFjtTl2/NJ.XTA0sP4G70.9iKKeBxvxKMuQkebQ8Fa', 'test.suppr@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -62,19 +62,19 @@ CREATE TABLE `Armor` (
 --
 
 INSERT INTO `Armor` (`item_id`, `defense`, `weight`, `slot`) VALUES
-(4, 20, 25, 'body'),
-(5, 15, 15, 'body'),
-(6, 5, 10, 'head'),
-(13, 20, 5, 'head'),
-(14, 50, 15, 'body'),
-(15, 25, 8, 'legs'),
-(16, 10, 2, 'hands'),
-(19, 15, 3, 'head'),
-(20, 10, 4, 'body'),
-(21, 5, 2, 'hands'),
-(24, 5, 1, 'head'),
-(25, 10, 3, 'body'),
-(26, 5, 2, 'legs');
+(4, 4, 25, 'body'),
+(5, 3, 15, 'body'),
+(6, 2, 10, 'head'),
+(13, 3, 5, 'head'),
+(14, 5, 15, 'body'),
+(15, 4, 8, 'legs'),
+(16, 2, 2, 'hands'),
+(19, 2, 3, 'head'),
+(20, 1, 4, 'body'),
+(21, 2, 2, 'hands'),
+(24, 1, 1, 'head'),
+(25, 2, 3, 'body'),
+(26, 2, 2, 'legs');
 
 --
 -- Déclencheurs `Armor`
@@ -145,7 +145,7 @@ INSERT INTO `Chapter` (`id`, `content`, `image`, `treasure_id`, `titre`) VALUES
 (7, 'Après votre rencontre, vous atteignez une clairière étrange, entourée de pierres dressées, comme un ancien autel oublié par le temps. Une légère brume rampe au sol, et les ombres des pierres semblent danser sous la lueur de la lune.', NULL, NULL, 'La clairière aux pierres anciennes'),
 (8, 'Essoufflé mais déterminé, vous arrivez près d’un petit ruisseau qui serpente au milieu des arbres. Le chant de l’eau vous apaise quelque peu, mais des murmures étranges semblent émaner de la rive. Vous apercevez des inscriptions anciennes gravées dans une pierre moussue.', NULL, NULL, 'Les murmures du ruisseau'),
 (9, 'La forêt se disperse enfin, et devant vous se dresse une colline escarpée. Au sommet, le château en ruines projette une ombre menaçante sous le clair de lune. Les murs effrités et les tours en partie effondrées ajoutent à la sinistre réputation du lieu. Vous sentez que la véritable aventure commence ici.', NULL, NULL, 'Au pied du château'),
-(10, 'Le monde se dérobe sous vos pieds, et une obscurité profonde vous enveloppe, glaciale et insondable. Vous ne sentez plus le poids de votre équipement, ni la morsure de la douleur. Juste un vide infini, vous aspirant lentement dans les ténèbres. Une lueur douce apparaît au loin, vacillante comme une flamme fragile dans l’obscurité.', NULL, NULL, 'La lumière au bout du néan');
+(10, 'Le monde se dérobe sous vos pieds, et une obscurité profonde vous enveloppe, glaciale et insondable. Vous ne sentez plus le poids de votre équipement, ni la morsure de la douleur. Juste un vide infini, vous aspirant lentement dans les ténèbres. Une lueur douce apparaît au loin, vacillante comme une flamme fragile dans l’obscurité.', NULL, NULL, 'La lumière au bout du néant');
 
 -- --------------------------------------------------------
 
@@ -361,7 +361,8 @@ CREATE TABLE `Hero` (
 --
 
 INSERT INTO `Hero` (`id`, `lastname`, `class_id`, `image`, `biography`, `pv`, `mana`, `strength`, `initiative`, `armor`, `xp`, `current_level`, `poids_max`, `nb_items_max`, `firstname`) VALUES
-(8, 'Caria', 2, NULL, 'Grande mage de la lune', 15, 30, 3, 4, NULL, 0, 1, 100, 20, 'Rennala');
+(8, 'Caria', 2, NULL, 'Grande mage de la lune', 15, 30, 3, 4, NULL, 0, 1, 100, 20, 'Rennala'),
+(10, 'l\'Affranchie', 3, NULL, '', 15, 15, 5, 8, NULL, 0, 1, 100, 20, 'Pat');
 
 --
 -- Déclencheurs `Hero`
@@ -448,7 +449,8 @@ CREATE TABLE `Hero_Armor` (
 --
 
 INSERT INTO `Hero_Armor` (`hero_id`, `helmet_id`, `armor_id`, `greaves_id`) VALUES
-(8, 19, 20, NULL);
+(8, 19, 20, NULL),
+(10, 24, 25, 26);
 
 -- --------------------------------------------------------
 
@@ -479,7 +481,8 @@ CREATE TABLE `Hero_Weapons` (
 --
 
 INSERT INTO `Hero_Weapons` (`hero_id`, `primary_weapon_id`, `secondary_weapon_id`) VALUES
-(8, 22, 35);
+(8, 22, 35),
+(10, 3, 35);
 
 -- --------------------------------------------------------
 
@@ -505,7 +508,29 @@ INSERT INTO `Inventory` (`id`, `hero_id`, `item_id`) VALUES
 (78, 8, 23),
 (79, 8, 35),
 (80, 8, 40),
-(81, 8, 45);
+(81, 8, 45),
+(98, 8, 32),
+(99, 8, 30),
+(100, 8, 31),
+(101, 8, 31),
+(102, 10, 24),
+(103, 10, 25),
+(104, 10, 26),
+(105, 10, 27),
+(106, 10, 28),
+(107, 10, 35),
+(108, 10, 42),
+(109, 10, 33),
+(110, 10, 31),
+(111, 10, 31),
+(112, 10, 30),
+(113, 10, 31),
+(114, 10, 31),
+(115, 10, 30),
+(116, 10, 33),
+(117, 10, 33),
+(118, 10, 31),
+(119, 10, 31);
 
 -- --------------------------------------------------------
 
@@ -627,7 +652,8 @@ INSERT INTO `Links` (`id`, `chapter_id`, `next_chapter_id`, `description`) VALUE
 (31, 7, 9, 'Vous avancez vers le château en ruines, l’ombre du mal vous attend.'),
 (33, 8, 9, 'Vous ignorez les murmures et vous approchez du château, toujours plus près du mystère.'),
 (34, 9, 10, 'Le château en ruines cache un mal ancien prêt à surgir.'),
-(35, 10, 1, 'L’obscurité vous engloutit, vous guidant vers une lumière qui pourrait vous coûter cher.');
+(35, 10, 1, 'L’obscurité vous engloutit, vous guidant vers une lumière qui pourrait vous coûter cher.'),
+(36, 6, 7, NULL);
 
 -- --------------------------------------------------------
 
@@ -637,20 +663,21 @@ INSERT INTO `Links` (`id`, `chapter_id`, `next_chapter_id`, `description`) VALUE
 
 CREATE TABLE `Loot` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
   `item_id` int(11) DEFAULT NULL,
-  `quantity` int(11) NOT NULL
+  `quantity` int(11) NOT NULL,
+  `id_monster` int(11) NOT NULL,
+  `probability` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `Loot`
 --
 
-INSERT INTO `Loot` (`id`, `name`, `item_id`, `quantity`) VALUES
-(1, 'Fourrure de loup', NULL, 1),
-(2, 'Croc de loup', NULL, 2),
-(3, 'Peau de sanglier', NULL, 1),
-(4, 'Défense de sanglier', NULL, 1);
+INSERT INTO `Loot` (`id`, `item_id`, `quantity`, `id_monster`, `probability`) VALUES
+(1, 30, 1, 1, 60),
+(2, 31, 2, 1, 40),
+(3, 33, 1, 2, 75),
+(4, 32, 1, 2, 25);
 
 -- --------------------------------------------------------
 
@@ -719,7 +746,6 @@ CREATE TABLE `Monster` (
   `initiative` int(11) NOT NULL,
   `strength` int(11) NOT NULL,
   `attack` text DEFAULT NULL,
-  `loot_id` int(11) DEFAULT NULL,
   `xp` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -727,9 +753,9 @@ CREATE TABLE `Monster` (
 -- Déchargement des données de la table `Monster`
 --
 
-INSERT INTO `Monster` (`id`, `name`, `pv`, `mana`, `initiative`, `strength`, `attack`, `loot_id`, `xp`) VALUES
-(1, 'Loup Noir', 30, 0, 20, 25, 'Morsure vicieuse', NULL, 50),
-(2, 'Sanglier Enragé', 30, 0, 15, 30, 'Charge brutale', NULL, 70);
+INSERT INTO `Monster` (`id`, `name`, `pv`, `mana`, `initiative`, `strength`, `attack`, `xp`) VALUES
+(1, 'Loup Noir', 15, 0, 6, 10, 'Morsure vicieuse', 50),
+(2, 'Sanglier Enragé', 5, 0, 4, 13, 'Charge brutale', 70);
 
 -- --------------------------------------------------------
 
@@ -844,24 +870,25 @@ CREATE TABLE `Treasure` (
 
 CREATE TABLE `Weapon` (
   `item_id` int(11) NOT NULL,
-  `damage` int(11) NOT NULL,
   `porter` int(11) NOT NULL,
-  `weight` int(11) NOT NULL
+  `weight` int(11) NOT NULL,
+  `damage_bonus` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Bonus to damage (max 6)',
+  `defense_bonus` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Bonus to defense (max 6)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `Weapon`
 --
 
-INSERT INTO `Weapon` (`item_id`, `damage`, `porter`, `weight`) VALUES
-(1, 10, 1, 15),
-(2, 12, 1, 20),
-(3, 6, 1, 5),
-(17, 50, 1, 12),
-(22, 30, 5, 6),
-(27, 25, 1, 3),
-(34, 0, 1, 5),
-(35, 10, 1, 1);
+INSERT INTO `Weapon` (`item_id`, `porter`, `weight`, `damage_bonus`, `defense_bonus`) VALUES
+(1, 1, 15, 4, 1),
+(2, 1, 20, 5, 0),
+(3, 1, 5, 2, 0),
+(17, 1, 12, 6, 2),
+(22, 5, 6, 1, 4),
+(27, 1, 3, 4, 1),
+(34, 1, 5, 0, 5),
+(35, 1, 1, 1, 0);
 
 --
 -- Déclencheurs `Weapon`
@@ -890,3 +917,365 @@ CREATE TRIGGER `check_weapon_uniqueness_before_insert` BEFORE INSERT ON `Weapon`
 END
 $$
 DELIMITER ;
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `Account`
+--
+ALTER TABLE `Account`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_username` (`username`),
+  ADD UNIQUE KEY `uq_email` (`email`);
+
+--
+-- Index pour la table `Armor`
+--
+ALTER TABLE `Armor`
+  ADD PRIMARY KEY (`item_id`);
+
+--
+-- Index pour la table `Categorie`
+--
+ALTER TABLE `Categorie`
+  ADD PRIMARY KEY (`id_categorie`);
+
+--
+-- Index pour la table `Chapter`
+--
+ALTER TABLE `Chapter`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_chapter_treasure` (`treasure_id`);
+
+--
+-- Index pour la table `Chapter_Treasure`
+--
+ALTER TABLE `Chapter_Treasure`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_chapter_treasure_chapter` (`chapter_id`),
+  ADD KEY `fk_chapter_treasure_item` (`item_id`);
+
+--
+-- Index pour la table `Class`
+--
+ALTER TABLE `Class`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `Codex`
+--
+ALTER TABLE `Codex`
+  ADD PRIMARY KEY (`item_id`);
+
+--
+-- Index pour la table `Consumable`
+--
+ALTER TABLE `Consumable`
+  ADD PRIMARY KEY (`item_id`);
+
+--
+-- Index pour la table `Event`
+--
+ALTER TABLE `Event`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `chapter_id` (`chapter_id`),
+  ADD KEY `related_monster_id` (`related_monster_id`),
+  ADD KEY `related_treasure_id` (`related_treasure_id`);
+
+--
+-- Index pour la table `Hero`
+--
+ALTER TABLE `Hero`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_hero_class` (`class_id`);
+
+--
+-- Index pour la table `Hero_Armor`
+--
+ALTER TABLE `Hero_Armor`
+  ADD PRIMARY KEY (`hero_id`),
+  ADD KEY `helmet_id` (`helmet_id`),
+  ADD KEY `armor_id` (`armor_id`),
+  ADD KEY `greaves_id` (`greaves_id`);
+
+--
+-- Index pour la table `Hero_Updates`
+--
+ALTER TABLE `Hero_Updates`
+  ADD PRIMARY KEY (`hero_id`);
+
+--
+-- Index pour la table `Hero_Weapons`
+--
+ALTER TABLE `Hero_Weapons`
+  ADD PRIMARY KEY (`hero_id`),
+  ADD KEY `primary_weapon_id` (`primary_weapon_id`),
+  ADD KEY `secondary_weapon_id` (`secondary_weapon_id`);
+
+--
+-- Index pour la table `Inventory`
+--
+ALTER TABLE `Inventory`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_inventory_hero` (`hero_id`),
+  ADD KEY `fk_inventory_item` (`item_id`);
+
+--
+-- Index pour la table `Items`
+--
+ALTER TABLE `Items`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `Level`
+--
+ALTER TABLE `Level`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_level_class` (`class_id`);
+
+--
+-- Index pour la table `Links`
+--
+ALTER TABLE `Links`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_links_chapter` (`chapter_id`),
+  ADD KEY `fk_links_next_chapter` (`next_chapter_id`);
+
+--
+-- Index pour la table `Loot`
+--
+ALTER TABLE `Loot`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `item_id` (`item_id`);
+
+--
+-- Index pour la table `Miscellaneous`
+--
+ALTER TABLE `Miscellaneous`
+  ADD PRIMARY KEY (`item_id`);
+
+--
+-- Index pour la table `Monster`
+--
+ALTER TABLE `Monster`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `Quest`
+--
+ALTER TABLE `Quest`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_quest_hero` (`hero_id`),
+  ADD KEY `fk_quest_chapter` (`chapter_id`);
+
+--
+-- Index pour la table `Spell`
+--
+ALTER TABLE `Spell`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `codex_id` (`codex_id`);
+
+--
+-- Index pour la table `Treasure`
+--
+ALTER TABLE `Treasure`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_treasure_item` (`item_id`);
+
+--
+-- Index pour la table `Weapon`
+--
+ALTER TABLE `Weapon`
+  ADD PRIMARY KEY (`item_id`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `Account`
+--
+ALTER TABLE `Account`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT pour la table `Categorie`
+--
+ALTER TABLE `Categorie`
+  MODIFY `id_categorie` int(3) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `Chapter`
+--
+ALTER TABLE `Chapter`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT pour la table `Class`
+--
+ALTER TABLE `Class`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT pour la table `Hero`
+--
+ALTER TABLE `Hero`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT pour la table `Inventory`
+--
+ALTER TABLE `Inventory`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=120;
+
+--
+-- AUTO_INCREMENT pour la table `Level`
+--
+ALTER TABLE `Level`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `Links`
+--
+ALTER TABLE `Links`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+
+--
+-- AUTO_INCREMENT pour la table `Quest`
+--
+ALTER TABLE `Quest`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `Treasure`
+--
+ALTER TABLE `Treasure`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `Armor`
+--
+ALTER TABLE `Armor`
+  ADD CONSTRAINT `fk_armor` FOREIGN KEY (`item_id`) REFERENCES `Items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Chapter`
+--
+ALTER TABLE `Chapter`
+  ADD CONSTRAINT `fk_chapter_treasure` FOREIGN KEY (`treasure_id`) REFERENCES `Treasure` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Chapter_Treasure`
+--
+ALTER TABLE `Chapter_Treasure`
+  ADD CONSTRAINT `fk_chapter_treasure_chapter` FOREIGN KEY (`chapter_id`) REFERENCES `Chapter` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_chapter_treasure_item` FOREIGN KEY (`item_id`) REFERENCES `Items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Codex`
+--
+ALTER TABLE `Codex`
+  ADD CONSTRAINT `fk_codex` FOREIGN KEY (`item_id`) REFERENCES `Items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Consumable`
+--
+ALTER TABLE `Consumable`
+  ADD CONSTRAINT `Consumable_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `Items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Event`
+--
+ALTER TABLE `Event`
+  ADD CONSTRAINT `Event_ibfk_1` FOREIGN KEY (`chapter_id`) REFERENCES `Chapter` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `Event_ibfk_2` FOREIGN KEY (`related_monster_id`) REFERENCES `Monster` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `Event_ibfk_3` FOREIGN KEY (`related_treasure_id`) REFERENCES `Treasure` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Hero`
+--
+ALTER TABLE `Hero`
+  ADD CONSTRAINT `Hero_ibfk_1` FOREIGN KEY (`id`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Hero_Armor`
+--
+ALTER TABLE `Hero_Armor`
+  ADD CONSTRAINT `Hero_Armor_ibfk_1` FOREIGN KEY (`hero_id`) REFERENCES `Hero` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `Hero_Armor_ibfk_2` FOREIGN KEY (`helmet_id`) REFERENCES `Items` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `Hero_Armor_ibfk_3` FOREIGN KEY (`armor_id`) REFERENCES `Items` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `Hero_Armor_ibfk_4` FOREIGN KEY (`greaves_id`) REFERENCES `Items` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Hero_Weapons`
+--
+ALTER TABLE `Hero_Weapons`
+  ADD CONSTRAINT `Hero_Weapons_ibfk_1` FOREIGN KEY (`hero_id`) REFERENCES `Hero` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Inventory`
+--
+ALTER TABLE `Inventory`
+  ADD CONSTRAINT `fk_inventory_hero` FOREIGN KEY (`hero_id`) REFERENCES `Hero` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_inventory_item` FOREIGN KEY (`item_id`) REFERENCES `Items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Level`
+--
+ALTER TABLE `Level`
+  ADD CONSTRAINT `fk_level_class` FOREIGN KEY (`class_id`) REFERENCES `Class` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Links`
+--
+ALTER TABLE `Links`
+  ADD CONSTRAINT `fk_links_chapter` FOREIGN KEY (`chapter_id`) REFERENCES `Chapter` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_links_next_chapter` FOREIGN KEY (`next_chapter_id`) REFERENCES `Chapter` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Loot`
+--
+ALTER TABLE `Loot`
+  ADD CONSTRAINT `Loot_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `Items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Miscellaneous`
+--
+ALTER TABLE `Miscellaneous`
+  ADD CONSTRAINT `Miscellaneous_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `Items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Quest`
+--
+ALTER TABLE `Quest`
+  ADD CONSTRAINT `fk_quest_chapter` FOREIGN KEY (`chapter_id`) REFERENCES `Chapter` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_quest_hero` FOREIGN KEY (`hero_id`) REFERENCES `Hero` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Spell`
+--
+ALTER TABLE `Spell`
+  ADD CONSTRAINT `Spell_ibfk_1` FOREIGN KEY (`codex_id`) REFERENCES `Codex` (`item_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Treasure`
+--
+ALTER TABLE `Treasure`
+  ADD CONSTRAINT `fk_treasure_item` FOREIGN KEY (`item_id`) REFERENCES `Items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `Weapon`
+--
+ALTER TABLE `Weapon`
+  ADD CONSTRAINT `Weapon_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `Items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
