@@ -4,7 +4,7 @@ class Inventory extends Model {
         $db = $this->getDatabaseConnection();
 
         $inventoryQuery = '
-            SELECT Items.id, Items.name, Items.description, Items.poids, Items.unite_inv
+            SELECT *
             FROM Inventory
             JOIN Items ON Inventory.item_id = Items.id
             WHERE Inventory.hero_id = :hero_id

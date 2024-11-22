@@ -1,5 +1,15 @@
 <main>
     <div class="story-container">
+        <button id="showInventoryButton" data-inventory='<?= json_encode($_SESSION['user']['inventory'] ?? []) ?>'>Afficher l'inventaire</button>
+
+        <div id="inventoryModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" id="closeModalButton">&times;</span>
+                <h3>Inventaire</h3>
+                <ul id="inventoryList"></ul>
+            </div>
+        </div>
+
         <?php if($chapter['chapter_type'] === 'death'): ?>
             <h2 id="ChapterTitleDeath"><?= htmlspecialchars($chapter['titre'] ?? 'Inconnu') ?></h2>
         <?php else: ?>
@@ -21,7 +31,6 @@
                 <div class="combat-container" id="combatContainer">
                     <h3 id="combatMessage">Un combat commence contre <?= htmlspecialchars($_SESSION['monster']['name']) ?></h3>
                     <button id="startCombatButton" 
-                        
                         data-hero-name="<?= htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname']) ?>"
                         data-hero-pv="<?= htmlspecialchars($_SESSION['user']['hero']['pv']) ?>"
                         data-hero-strength="<?= htmlspecialchars($_SESSION['user']['hero']['strength']) ?>"
@@ -67,8 +76,6 @@
                         <div id="lootList"></div>
                     </div>
                 </div>
-                <script src="../../public/assets/js/lootSystem.js"></script>
-                <script src="../../public/assets/js/combat.js"></script>
             <?php else: ?>
                 <?php foreach ($links as $link): ?>
                     <div class="link">
@@ -85,3 +92,6 @@
         </div>
     </div>
 </main>
+<script src="../../public/assets/js/modal.js"></script>
+<script src="../../public/assets/js/lootSystem.js"></script>
+<script src="../../public/assets/js/combat.js"></script>
