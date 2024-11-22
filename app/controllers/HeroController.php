@@ -42,7 +42,7 @@ class HeroController extends Controller {
 
             if ($heroCreated) {
                 $_SESSION['user']['hero'] = $heroModel->getHeroByUserId($_SESSION['user']['id']);
-                header("Location: /DungeonXplorer/hero/show");
+                header("Location: /DungeonXplorer/");
                 exit;
             } else {
                 $this->view('pages/create', ['error' => 'Erreur lors de la création du personnage.']);
