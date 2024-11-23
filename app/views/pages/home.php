@@ -3,7 +3,6 @@
     <div class="container-items">
          <?php if (isset($_SESSION['user']['hero'])): ?>
             <?php $hero = $_SESSION['user']['hero']; ?> 
-            <!--<p><?= var_dump($hero) ?></p>-->
 
             <h2>Personnage: <?= htmlspecialchars($hero['hero_firstname']) . " " . htmlspecialchars($hero['hero_lastname']) ?></h2>
 

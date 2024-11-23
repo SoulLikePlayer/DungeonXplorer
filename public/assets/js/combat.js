@@ -24,11 +24,12 @@ document.getElementById('startCombatButton').addEventListener('click', function 
 
     const nextChapterWin = this.dataset.nextChapterWin;
     const nextChapterLose = this.dataset.nextChapterLose;
+    const nextChapterRun = this.dataset.nextChapterRun;
 
-    initializeCombat(hero, monster, nextChapterWin, nextChapterLose);
+    initializeCombat(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
 });
 
-function initializeCombat(hero, monster, nextChapterWin, nextChapterLose) {
+function initializeCombat(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun) {
     const heroInitiativeRoll = rollDie() + hero.initiative;
     const monsterInitiativeRoll = rollDie() + monster.initiative;
 
@@ -45,14 +46,14 @@ function initializeCombat(hero, monster, nextChapterWin, nextChapterLose) {
             : 'monster';
 
     if (firstAttacker === 'monster') {
-        performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose);
+        performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
     }
 
     document.getElementById('startCombatButton').style.display = 'none';
     document.getElementById('combatActions').style.display = 'block';
 
     document.getElementById('attackButton').addEventListener('click', function () {
-        performHeroAttack(hero, monster, nextChapterWin, nextChapterLose);
+        performHeroAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
     });
 
     document.getElementById('useItemButton').addEventListener('click', function () {
@@ -60,7 +61,7 @@ function initializeCombat(hero, monster, nextChapterWin, nextChapterLose) {
     });
 
     document.getElementById('runButton').addEventListener('click', function () {
-        displayCombatMessage("Fuir (fonctionnalité à implémenter)");
+        attemptEscape(hero, monster, nextChapterRun);
     });
 }
 
@@ -93,7 +94,7 @@ function getWeaponBonus(hero, weaponChoice) {
           };
 }
 
-function performHeroAttack(hero, monster, nextChapterWin, nextChapterLose) {
+function performHeroAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun) {
     const weaponChoice = document.getElementById('weaponChoice').value;
     const weaponBonus = getWeaponBonus(hero, weaponChoice);
 
@@ -110,11 +111,11 @@ function performHeroAttack(hero, monster, nextChapterWin, nextChapterLose) {
         handleLoot(monster.loot);
         setTimeout(() => window.location.href = `/DungeonXplorer/chapter/view/${nextChapterWin}`, 3000);
     } else {
-        performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose);
+        performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
     }
 }
 
-function performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose) {
+function performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun) {
     const attack = calculateAttack(monster);
     const defense = calculateDefense(hero);
     const damage = Math.max(0, attack - defense);
@@ -126,6 +127,22 @@ function performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose) {
     if (hero.pv <= 0) {
         displayCombatMessage(`${hero.name} a été vaincu !`);
         setTimeout(() => window.location.href = `/DungeonXplorer/chapter/view/${nextChapterLose}`, 1500);
+    }
+}
+
+function attemptEscape(hero, monster, nextChapterRun) {
+    const escapeRoll = rollDie();
+    const monsterReactionRoll = rollDie();
+
+    displayCombatMessage(`${hero.name} tente de fuir avec un jet de ${escapeRoll}`);
+    displayCombatMessage(`${monster.name} réagit avec un jet de ${monsterReactionRoll}`);
+
+    if (escapeRoll > monsterReactionRoll) {
+        displayCombatMessage(`${hero.name} parvient à s'échapper !`);
+        setTimeout(() => window.location.href = `/DungeonXplorer/chapter/view/${nextChapterRun}`, 1500);
+    } else {
+        displayCombatMessage(`${hero.name} échoue à fuir et reste engagé dans le combat.`);
+        performMonsterAttack(hero, monster);
     }
 }
 

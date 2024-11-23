@@ -15,6 +15,25 @@ class Inventory extends Model {
 
         return $inventoryStmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getInventoryConsumable() {
+        $db = $this->getDatabaseConnection();
+
+        $inventoryConsQuery = '
+        SELECT i.name, i.description, c.effect_type, c.heal_amount, c.mana_amount, c.attack_buff, c.defense_buff, c.duration
+        FROM Consumable c JOIN Items i ON c.item_id = i.id
+        WHERE c.item_id IN
+        (SELECT item_id
+        FROM Inventory
+        JOIN Items ON Inventory.item_id = Items.id
+        WHERE Inventory.hero_id = :hero_id)';
+        $inventoryConsStmt = $db->prepare($inventoryConsQuery);
+        $inventoryConsStmt->bindParam(':hero_id', $_SESSION['user']['id']);
+        $inventoryConsStmt->execute();
+
+        return $inventoryConsStmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function addItemToInventory($heroId, $itemId, $quantity) {
         $db = $this->getDatabaseConnection();
         

@@ -11,7 +11,7 @@ class Chapter extends Model {
                     WHEN e.id IS NULL THEN 'normal'
                     ELSE e.event_type
                 END AS chapter_type,
-                e.related_monster_id  -- Modification ici : utilisation de related_monster_id
+                e.related_monster_id 
             FROM Chapter c
             LEFT JOIN Event e ON c.id = e.chapter_id
             WHERE c.id = :id
