@@ -42,6 +42,10 @@ class HeroController extends Controller {
 
             if ($heroCreated) {
                 $_SESSION['user']['hero'] = $heroModel->getHeroByUserId($_SESSION['user']['id']);
+                $chapter = $heroModel->getChapterByHeroId( $_SESSION['user']['hero']['id']);
+                if ($chapter) {
+                    $_SESSION['Chapitre'] = $chapter["chapter"]; 
+                }
                 header("Location: /DungeonXplorer/");
                 exit;
             } else {
@@ -63,9 +67,10 @@ class HeroController extends Controller {
             $level = $data['level'] ?? 0;
     
             $heroModel = new Hero();
-            $updateSuccess = $heroModel->updateHeroStats($heroId, $pv, $mana, $xp, $level);
+            $updateSuccess = $heroModel->updateHeroStats($heroId, $pv, $mana);
     
             if ($updateSuccess) {
+                // Mise à jour des données du héros dans la session
                 $_SESSION['user']['hero']['pv'] = $pv;
                 $_SESSION['user']['hero']['mana'] = $mana;
                 $_SESSION['user']['hero']['xp'] = $xp;
@@ -79,7 +84,6 @@ class HeroController extends Controller {
             echo json_encode(['success' => false, 'message' => 'Héros introuvable dans la session.']);
         }
     }
-    
 
     public function show() {
         $heroModel = new Hero();
@@ -92,3 +96,4 @@ class HeroController extends Controller {
         }
     }
 }
+?>

@@ -26,7 +26,7 @@ class Inventory extends Model {
         (SELECT item_id
         FROM Inventory
         JOIN Items ON Inventory.item_id = Items.id
-        WHERE Inventory.hero_id = :hero_id AND Inventory.isDeleted = FALSE)';
+        WHERE Inventory.hero_id = :hero_id)';
         $inventoryConsStmt = $db->prepare($inventoryConsQuery);
         $inventoryConsStmt->bindParam(':hero_id', $_SESSION['user']['id']);
         $inventoryConsStmt->execute();

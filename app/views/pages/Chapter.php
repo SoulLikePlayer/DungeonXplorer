@@ -42,7 +42,8 @@
                 <h3 id="combatMessage">Un combat commence contre <?= htmlspecialchars($_SESSION['monster']['name']) ?></h3>
                 <button id="startCombatButton" 
                     data-hero-name="<?= htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname']) ?>"
-                    data-hero-pv="<?= htmlspecialchars($_SESSION['user']['hero']['pv']) ?>"
+                    data-hero-pv="<?= htmlspecialchars($_SESSION['user']['hero']['current_pv']) ?>"
+                    data-hero-mana="<?= htmlspecialchars($_SESSION['user']['hero']['current_mana']) ?>"
                     data-hero-strength="<?= htmlspecialchars($_SESSION['user']['hero']['strength']) ?>"
                     data-hero-initiative="<?= htmlspecialchars($_SESSION['user']['hero']['initiative']) ?>"
                     data-hero-is-thief="<?= htmlspecialchars($_SESSION['user']['hero']['class_id'] == 3 ? 'true' : 'false') ?>"
@@ -67,7 +68,7 @@
 
                 <div class="combat-actions" id="combatActions" style="display: none;">
                     <div id="combatInfo">
-                        <p><strong>Héros : </strong><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span> | PV : <span id="heroPv"></span></p>
+                        <p><strong>Héros : </strong><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span> | PV : <span id="heroPv"></span> | Mana : <span id="heroMana"></span></p>
                         <p><strong>Monstre : </strong><span id="monsterName"><?= htmlspecialchars($_SESSION['monster']['name'])?></span> | PV : <span id="monsterPv"></span></p>
                     </div>
                     <div id="combatMessages" class="combat-messages"></div>
