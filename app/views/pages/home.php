@@ -3,6 +3,7 @@
     <div class="container-items">
          <?php if (isset($_SESSION['user']['hero'])): ?>
             <?php $hero = $_SESSION['user']['hero']; ?> 
+            <p><?= var_dump($_SESSION['user']['inventoryCons']) ?></p>
 
             <h2>Personnage: <?= htmlspecialchars($hero['hero_firstname']) . " " . htmlspecialchars($hero['hero_lastname']) ?></h2>
 
@@ -88,4 +89,3 @@
             <?php endif; ?> 
     </div>    
 </main>
-

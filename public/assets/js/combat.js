@@ -22,14 +22,16 @@ document.getElementById('startCombatButton').addEventListener('click', function 
         loot: JSON.parse(this.dataset.monsterLoot || '[]')
     };
 
+    const consumablesData = JSON.parse(document.getElementById('useItemButton').getAttribute('data-inventory'));
+
     const nextChapterWin = this.dataset.nextChapterWin;
     const nextChapterLose = this.dataset.nextChapterLose;
     const nextChapterRun = this.dataset.nextChapterRun;
 
-    initializeCombat(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
+    initializeCombat(hero, monster, consumablesData, nextChapterWin, nextChapterLose, nextChapterRun);
 });
 
-function initializeCombat(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun) {
+function initializeCombat(hero, monster, consumablesData, nextChapterWin, nextChapterLose, nextChapterRun) {
     const heroInitiativeRoll = rollDie() + hero.initiative;
     const monsterInitiativeRoll = rollDie() + monster.initiative;
 
@@ -39,8 +41,8 @@ function initializeCombat(hero, monster, nextChapterWin, nextChapterLose, nextCh
     document.getElementById('monsterPv').textContent = monster.pv;
     document.getElementById('heroPv').textContent = hero.pv;
 
-    let firstAttacker =
-        heroInitiativeRoll > monsterInitiativeRoll ||
+    let firstAttacker = 
+        heroInitiativeRoll > monsterInitiativeRoll || 
         (heroInitiativeRoll === monsterInitiativeRoll && hero.isThief)
             ? 'hero'
             : 'monster';
@@ -55,14 +57,63 @@ function initializeCombat(hero, monster, nextChapterWin, nextChapterLose, nextCh
     document.getElementById('attackButton').addEventListener('click', function () {
         performHeroAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
     });
-
-    document.getElementById('useItemButton').addEventListener('click', function () {
-        displayCombatMessage("Utiliser un objet (fonctionnalité à implémenter)");
-    });
-
     document.getElementById('runButton').addEventListener('click', function () {
         attemptEscape(hero, monster, nextChapterRun);
     });
+    document.getElementById('useItemButton').addEventListener('click', function () {
+        openConsumableModal(consumablesData, hero);
+    });
+}
+
+function openConsumableModal(consumablesData, hero) {
+    const consumableModal = document.getElementById('consumableModal');
+    const consumablesList = document.getElementById('consumablesList');
+
+    consumableModal.style.display = 'flex';
+    consumablesList.innerHTML = '';
+
+    if (consumablesData.length === 0) {
+        consumablesList.innerHTML = '<li>Aucun consommable dans l\'inventaire.</li>';
+    } else {
+        consumablesData.forEach(item => {
+            const listItem = document.createElement('button');
+            listItem.textContent = item.name;
+            listItem.addEventListener('click', function () {
+                useConsumable(item, hero);
+                consumableModal.style.display = 'none';
+            });
+            consumablesList.appendChild(listItem);
+        });
+    }
+
+    document.getElementById('closeConsumableModalButton').addEventListener('click', function () {
+        consumableModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function (event) {
+        if (event.target === consumableModal) {
+            consumableModal.style.display = 'none';
+        }
+    });
+}
+
+function useConsumable(item, hero) {
+    if (item.effect_type === 'heal') {
+        hero.pv = hero.pv + item.heal_amount;
+        document.getElementById('heroPv').textContent = hero.pv;
+    } else if (item.effect_type === 'mana') {
+        hero.mana = Math.min(hero.mana + item.mana_amount, parseInt(document.getElementById('heroMana').getAttribute('data-max-mana')));
+        document.getElementById('heroMana').textContent = hero.mana;
+    } else if (item.effect_type === 'buff') {
+        if (item.attack_buff) {
+            hero.strength += item.attack_buff;
+            setTimeout(() => hero.strength -= item.attack_buff, item.duration * 1000);
+        }
+        if (item.defense_buff) {
+            hero.totalDefenseBonus += item.defense_buff;
+            setTimeout(() => hero.totalDefenseBonus -= item.defense_buff, item.duration * 1000);
+        }
+    }
 }
 
 function rollDie() {

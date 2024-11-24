@@ -52,6 +52,35 @@ class HeroController extends Controller {
         }
     }
 
+    public function updateStats() {
+        $data = json_decode(file_get_contents('php://input'), true);
+    
+        if (isset($_SESSION['user']['hero'])) {
+            $heroId = $_SESSION['user']['hero']['hero_id'];
+            $pv = $data['pv'] ?? 0;
+            $mana = $data['mana'] ?? 0;
+            $xp = $data['xp'] ?? 0;
+            $level = $data['level'] ?? 0;
+    
+            $heroModel = new Hero();
+            $updateSuccess = $heroModel->updateHeroStats($heroId, $pv, $mana, $xp, $level);
+    
+            if ($updateSuccess) {
+                $_SESSION['user']['hero']['pv'] = $pv;
+                $_SESSION['user']['hero']['mana'] = $mana;
+                $_SESSION['user']['hero']['xp'] = $xp;
+                $_SESSION['user']['hero']['current_level'] = $level;
+    
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour.']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Héros introuvable dans la session.']);
+        }
+    }
+    
+
     public function show() {
         $heroModel = new Hero();
         $hero = $heroModel->getHeroByUserId($_SESSION['user']['id']);

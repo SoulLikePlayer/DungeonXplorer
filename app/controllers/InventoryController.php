@@ -1,15 +1,17 @@
 <?php
 class InventoryController extends Controller {
-    public function loadInventory(){
-         $inventoryModel = new Inventory(); 
-         $inventory = $inventoryModel->getInventory($_SESSION['user']['username'], $_SESSION['user']['password'], $_SESSION['user']['email']); 
-         $invetoryCons = $inventoryModel->getInventoryConsumable($_SESSION['user']['username'], $_SESSION['user']['password'], $_SESSION['user']['email']); 
-         if (!empty($inventory)) { 
+    public function loadInventory() {
+        $inventoryModel = new Inventory(); 
+        $inventory = $inventoryModel->getInventory(); 
+        $inventoryCons = $inventoryModel->getInventoryConsumable(); 
+
+        if (!empty($inventory)) { 
             $_SESSION['user']['inventory'] = $inventory;
-            $_SESSION['user']['inventoryCons'] = $invetoryCons;
+            $_SESSION['user']['inventoryCons'] = $inventoryCons;
         }
-         header("Location: /DungeonXplorer"); 
-         exit;
+
+        header("Location: /DungeonXplorer"); 
+        exit;
     }
 
     public function saveLoot() {
@@ -28,7 +30,21 @@ class InventoryController extends Controller {
             echo json_encode(['success' => false, 'message' => 'Données invalides']);
         }
     }
-    
-    
-}
 
+    public function removeItem() {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (isset($data['itemId']) && isset($data['quantity']) && isset($_SESSION['user']['id'])) {
+            $heroId = $_SESSION['user']['id'];
+            $itemId = $data['itemId'];
+            $quantity = $data['quantity'];
+
+            $inventoryModel = new Inventory();
+            $inventoryModel->removeItemFromInventory($heroId, $itemId, $quantity);
+
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Données invalides']);
+        }
+    }
+}

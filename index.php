@@ -59,6 +59,7 @@ session_start();
         /*Route lié au hero*/
         $router->addRoute('hero/store', 'HeroController@store');
         $router->addRoute('hero/create', 'HeroController@create');
+        $router->addRoute('/hero/update', 'HeroController@updateStats');
 
 
         // Traiter la route demandée

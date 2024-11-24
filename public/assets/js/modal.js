@@ -7,15 +7,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function openModal() {
         modal.style.display = 'flex';
-        inventoryList.innerHTML = '';  // Vider la liste avant de la remplir
+        inventoryList.innerHTML = '';
+
         if (inventoryData.length === 0) {
             inventoryList.innerHTML = '<li>Aucun objet dans l\'inventaire.</li>';
         } else {
             inventoryData.forEach(item => {
-                console.log(item);  // Affiche l'objet dans la console pour débogage
                 const listItem = document.createElement('li');
-                listItem.textContent = item.name;  // Affiche le nom de l'objet
-                inventoryList.appendChild(listItem);  // Ajoute le <li> dans la liste
+                listItem.textContent = item.name;
+                inventoryList.appendChild(listItem);
             });
         }
     }
