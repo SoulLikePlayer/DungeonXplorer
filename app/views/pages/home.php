@@ -58,7 +58,14 @@
                     <li><strong>Bonus de défense :</strong> <?= htmlspecialchars($hero['total_defense_bonus']) ?></li>
                 </ul>
 
-            <?php else: ?>
+            <?php elseif ((!isset($_SESSION['user']['hero'])) && (isset($_SESSION['user']))): ?>
+                <p>Aucun héros créé. Veuillez créer un personnage pour commencer votre aventure.</p>
+                <div class="button-container">
+                    <a href="/DungeonXplorer/hero/create" id='hero-button'>
+                        <button> Créer un personnage </button>
+                    </a>
+                </div>
+            <?php else : ?>
                 <p>Aucun héros créé. Veuillez créer un personnage pour commencer votre aventure.</p>
             <?php endif; ?> 
         </div> 
