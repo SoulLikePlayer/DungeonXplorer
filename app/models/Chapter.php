@@ -69,6 +69,15 @@ class Chapter extends Model {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function deleteHeroStory($hero_id){
+        /*DELETE FROM Hero_Story WHERE hero_id=8*/
+
+        $db = $this->getDatabaseConnection();
+        $stmt = $db->prepare('DELETE FROM Hero_Story WHERE hero_id=  :hero_id');
+        $stmt->bindParam(':hero_id', $hero_id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
 }
 ?>
 

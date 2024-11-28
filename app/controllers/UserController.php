@@ -61,6 +61,11 @@ class UserController extends Controller {
             $hero = $userModel->getHeroByUserId($user['id']);
             if($hero){
                 $_SESSION['user']['hero'] = $hero;
+                $heroModel = new Hero();
+                $chapter = $heroModel->getChapterByHeroId( $_SESSION['user']['hero']['hero_id']);
+                if ($chapter) {
+                    $_SESSION['Chapitre'] = $chapter["chapter"]; 
+                }
                 header("Location: /DungeonXplorer/inventory/loadInventory");
                 exit;
             }

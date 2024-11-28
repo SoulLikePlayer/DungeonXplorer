@@ -109,7 +109,7 @@ h2 {
     margin-top: 20px;
 }
 
-button {
+button{
     background-color: var(--button-color);
     color: var(--text-color);
     border: none;

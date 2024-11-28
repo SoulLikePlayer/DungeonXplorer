@@ -42,7 +42,7 @@ class HeroController extends Controller {
 
             if ($heroCreated) {
                 $_SESSION['user']['hero'] = $heroModel->getHeroByUserId($_SESSION['user']['id']);
-                $chapter = $heroModel->getChapterByHeroId( $_SESSION['user']['hero']['id']);
+                $chapter = $heroModel->getChapterByHeroId( $_SESSION['user']['hero']['hero_id']);
                 if ($chapter) {
                     $_SESSION['Chapitre'] = $chapter["chapter"]; 
                 }
@@ -63,18 +63,14 @@ class HeroController extends Controller {
             $heroId = $_SESSION['user']['hero']['hero_id'];
             $pv = $data['pv'] ?? 0;
             $mana = $data['mana'] ?? 0;
-            $xp = $data['xp'] ?? 0;
-            $level = $data['level'] ?? 0;
-    
+
             $heroModel = new Hero();
             $updateSuccess = $heroModel->updateHeroStats($heroId, $pv, $mana);
     
             if ($updateSuccess) {
                 // Mise à jour des données du héros dans la session
-                $_SESSION['user']['hero']['pv'] = $pv;
-                $_SESSION['user']['hero']['mana'] = $mana;
-                $_SESSION['user']['hero']['xp'] = $xp;
-                $_SESSION['user']['hero']['current_level'] = $level;
+                $_SESSION['user']['hero']['current_pv'] = $pv;
+                $_SESSION['user']['hero']['current_mana'] = $mana;
     
                 echo json_encode(['success' => true]);
             } else {

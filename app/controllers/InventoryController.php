@@ -8,6 +8,7 @@ class InventoryController extends Controller {
         if (!empty($inventory)) { 
             $_SESSION['user']['inventory'] = $inventory;
             $_SESSION['user']['inventoryCons'] = $inventoryCons;
+            $inventoryModel->getInventoryCodex();
         }
 
         header("Location: /DungeonXplorer"); 
@@ -31,20 +32,15 @@ class InventoryController extends Controller {
         }
     }
 
-    public function removeItem() {
+    public function updateConsumables() {
         $data = json_decode(file_get_contents('php://input'), true);
+        
+        $heroId = $_SESSION['user']['id'];
+        $inventory = new Inventory();
+        $inventory->updateConsumableQuantities($heroId, $data);
 
-        if (isset($data['itemId']) && isset($data['quantity']) && isset($_SESSION['user']['id'])) {
-            $heroId = $_SESSION['user']['id'];
-            $itemId = $data['itemId'];
-            $quantity = $data['quantity'];
+        $_SESSION['user']['inventoryCons'] = $inventory->getInventoryConsumable();
 
-            $inventoryModel = new Inventory();
-            $inventoryModel->removeItemFromInventory($heroId, $itemId, $quantity);
-
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Données invalides']);
-        }
     }
 }
+

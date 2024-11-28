@@ -49,11 +49,13 @@ session_start();
 
         /*Route lié pour l'histoire*/ 
         $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter'); 
+        $router->addRoute('chapter/reset', 'ChapterController@resetChapter');
 
 
         /* Route lié à l'inventaire */
         $router->addRoute('inventory/loadInventory','InventoryController@loadInventory');
         $router->addRoute('inventory/saveLoot', 'InventoryController@saveLoot');
+        $router->addRoute('inventory/update', "InventoryController@updateConsumables");
 
 
         /*Route lié au hero*/

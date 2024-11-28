@@ -21,6 +21,15 @@
             </div>
         </div>
 
+        <!-- Modal pour utiliser un spell en combat -->
+        <div id="spellModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" id="closeCodexModalButton">&times;</span>
+                <h3>Sort & Codex</h3>
+                <ul id="spellList"></ul>
+            </div>
+        </div>
+
         <?php if($chapter['chapter_type'] !== 'death'): ?>
             <h2 id="ChapterTitle"><?= htmlspecialchars($chapter['titre'] ?? 'Inconnu') ?></h2>
         <?php else: ?>
@@ -43,7 +52,9 @@
                 <button id="startCombatButton" 
                     data-hero-name="<?= htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname']) ?>"
                     data-hero-pv="<?= htmlspecialchars($_SESSION['user']['hero']['current_pv']) ?>"
+                    data-hero-pv-max="<?= htmlspecialchars($_SESSION['user']['hero']['pv_max']) ?>"
                     data-hero-mana="<?= htmlspecialchars($_SESSION['user']['hero']['current_mana']) ?>"
+                    data-hero-mana-max="<?= htmlspecialchars($_SESSION['user']['hero']['mana_max']) ?>"
                     data-hero-strength="<?= htmlspecialchars($_SESSION['user']['hero']['strength']) ?>"
                     data-hero-initiative="<?= htmlspecialchars($_SESSION['user']['hero']['initiative']) ?>"
                     data-hero-is-thief="<?= htmlspecialchars($_SESSION['user']['hero']['class_id'] == 3 ? 'true' : 'false') ?>"
@@ -78,6 +89,7 @@
                             <option value="secondary">Arme secondaire : <?= htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_name']) ?></option>
                         </select>
                         <button id="attackButton">Attaquer</button>
+                        <button id="useSpellButton" data-spells='<?= json_encode($_SESSION['user']['hero']['Codex'] ?? []) ?>'>Lancer un sort</button>
                         <button id="useItemButton" data-inventory='<?= json_encode($_SESSION['user']['inventoryCons'])?>'>Utiliser un consommable</button>
                         <button id="runButton">Fuir</button>
                     </div>
@@ -92,7 +104,11 @@
             <div class="links">
             <?php foreach ($links as $link): ?>
                 <div class="link">
+                <?php if($chapter['chapter_type'] !== 'death'): ?>    
                     <a href="/DungeonXplorer/chapter/view/<?= htmlspecialchars($link['next_chapter_id'] ?? '#') ?>">
+                <?php else: ?>
+                    <a href="/DungeonXplorer/chapter/reset">
+                <?php endif; ?>
                         <button><?= nl2br(htmlspecialchars($link['description'] ?? 'Pas de description')) ?></button>
                     </a>
                 </div>
