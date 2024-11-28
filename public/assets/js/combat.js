@@ -17,7 +17,8 @@ try{
             secondaryWeaponDefenseBonus: parseInt(this.dataset.heroSecondaryWeaponDefenseBonus),
             totalDefenseBonus: parseInt(this.dataset.heroTotalDefenseBonus),
             activeBonuses: [],
-            activeDebuff: []
+            activeDebuff: [],
+            moralReduction : 0
         };
 
         const monster = {
@@ -27,7 +28,8 @@ try{
             initiative: parseInt(this.dataset.monsterInitiative),
             loot: JSON.parse(this.dataset.monsterLoot || '[]'),
             activeBonuses: [],
-            activeDebuff: []
+            activeDebuff: [],
+            moralReduction : 0
         };
 
         const consumablesData = JSON.parse(document.getElementById('useItemButton').getAttribute('data-inventory'));
@@ -120,7 +122,7 @@ try{
         });
     }
 
-    function analyzeEffectFunction(effectFunction, user, cible) {
+    function analyzeEffectFunction(effectFunction, user, cible, nextChapterWin, nextChapterLose, nextChapterRun) {
         const effects = effectFunction.split(';').map(effect => effect.trim());
         effects.forEach(effect => {
             const match = effect.match(/(\w+)\(([^)]+)\)/);
@@ -128,43 +130,67 @@ try{
             const effectName = match[1];
             const params = match[2].split(',').map(param => param.trim());
             switch (effectName) {
-                case 'burst' :
-                    cible.activeDebuff.push({ type : "burst", duration : params[0]})
+                case 'burst':
+                    cible.activeDebuff.push({ type: "burst", duration: params[0] });
+                    displayCombatMessage(`${cible.name} subit le débuff "Burst" pendant ${params[0]} tours.`);
                     break;
                 case 'reduce_attack':
-                    console.log(`Réduit l'attaque de ${params[0]} pour ${params[1]} tours.`);
+                    cible.activeDebuff.push({ type: "reduce_attack", value: parseInt(params[0]), duration: parseInt(params[1]) });
+                    displayCombatMessage(`${cible.name} voit son attaque réduite de ${params[0]} pour ${params[1]} tours.`);
                     break;
                 case 'reduce_perception':
-                    console.log(`Réduit la perception de ${params[0]} pour ${params[1]} tours.`);
+                    cible.activeDebuff.push({ type: "reduce_perception", value: parseInt(params[0]), duration: parseInt(params[1]) });
+                    displayCombatMessage(`${cible.name} voit sa perception réduite de ${params[0]} pour ${params[1]} tours.`);
                     break;
                 case 'reduce_moral':
-                    console.log(`Réduit la force de ${params[0]} pour ${params[1]} tours.`)
-                    break
+                    cible.activeDebuff.push({ type: "reduce_moral", value: parseInt(params[0]), duration: parseInt(params[1]) });
+                    displayCombatMessage(`${cible.name} voit son moral réduit de ${params[0]} pour ${params[1]} tours.`);
+                    break;
                 case 'reduce_resistances':
-                    console.log(`Réduit la resistance de ${params[0]} pour ${params[1]} tours.`)    
-                    break
+                    cible.activeDebuff.push({ type: "reduce_resistances", value: parseInt(params[0]), duration: parseInt(params[1]) });
+                    displayCombatMessage(`${cible.name} voit sa résistance réduite de ${params[0]} pour ${params[1]} tours.`);
+                    break;
                 case 'paralyze':
-                    console.log(`Paralyse l'ennemi pendant ${params[0]} tour(s).`);
+                    cible.activeDebuff.push({ type: "paralyze", duration: parseInt(params[0]) });
+                    displayCombatMessage(`${cible.name} est paralysé pour ${params[0]} tour(s).`);
                     break;
                 case 'gain_mana':
-                    console.log(`L'utilisateur regagne ${params[0]} points de mana pendant ${params[1]} tour(s).`);
+                    user.mana = Math.min(user.mana + parseInt(params[0]), user.manaMax);
+                    document.getElementById('heroMana').textContent = user.mana;
+                    displayCombatMessage(`${user.name} regagne ${params[0]} points de mana.`);
                     break;
                 case 'heal_user':
-                    console.log(`Soigne l'utilisateur de ${params[0]} points pendant ${params[1]} tour(s).`);
+                    user.pv = Math.min(user.pv + parseInt(params[0]), user.pvMax);
+                    document.getElementById('heroPv').textContent = user.pv;
+                    displayCombatMessage(`${user.name} se soigne de ${params[0]} points.`);
                     break;
                 case 'damage':
-                    const dieRoll = rollDie()
-                    damage = dieRoll + parseInt(params[0]);
-                    console.log(dieRoll);
-                    console.log(params[0])
-                    cible.pv -= damage;
-                    displayCombatMessage(`${user.name} attaque avec un sort et inflige ${damage} dégât.`);                    
+                    clearCombatMessages();
+                    const dieRoll = rollDie();
+                    const rawDamage = dieRoll + parseInt(params[0]);
+                    const defense = calculateDefense(cible); 
+                    const finalDamage = Math.max(0, rawDamage - defense); 
+
+                    displayCombatMessage(
+                        `${user.name} utilise un sort ! Lancer de dé : ${dieRoll}, ` +
+                        `dégâts initiaux : ${rawDamage}, défense de ${cible.name} : ${defense}. ` +
+                        `<strong>Dégâts finaux : ${finalDamage}</strong>.`
+                    );
+
+                    cible.pv -= finalDamage; 
+                    document.getElementById('monsterPv').textContent = Math.max(0, cible.pv);
+
+                    if (cible.pv <= 0) {
+                        displayCombatMessage(`${cible.name} a été vaincu par le sort !`);
+                    } else {
+                        performMonsterAttack(user, cible, nextChapterWin, nextChapterLose, nextChapterRun);
+                    }
                     break;
                 default:
                     console.log(`Effet inconnu : ${effectName} avec paramètres ${params.join(', ')}.`);
             }
         });
-    }
+    }    
     
 
     function openConsumableModal(consumablesData, hero) {
@@ -241,7 +267,14 @@ try{
                     character.pv -= 2;
                     debuffMessages.push(`${character.name} a pris <span style="color:red;">-2</span> de vie dû au débuff Burst.`);
                     break;
-            }
+                case "paralyze" :
+                    debuffMessages.push(`${character.name} est paralysée, il ne peut pas attaquer`);
+                    break;
+                case "reduce_moral":
+                    moralReduction += parseInt(debuff.value);
+                    debuffMessages.push(`${character.name} subit une réduction de moral : <span style="color:red;">-${debuff.value}</span>.`);
+                    break;
+                }
             debuff.duration --;
         });
 
@@ -256,20 +289,30 @@ try{
         if (!Array.isArray(character.activeBonuses)) {
             character.activeBonuses = []; 
         }
+    
         const dieRoll = rollDie();
-        const baseAttack = dieRoll + character.strength;
+        let baseAttack = dieRoll + character.strength;
+    
         const bonusAttack = character.activeBonuses
             .filter(bonus => bonus.type === 'attack')
             .reduce((total, bonus) => total + bonus.value, 0);
     
+        const debuffAttack = character.activeDebuff
+            .filter(debuff => debuff.type === 'reduce_attack')
+            .reduce((total, debuff) => total + debuff.value, 0);
+    
+        baseAttack += bonusAttack - debuffAttack;
+    
         displayCombatMessage(
-            `Lancer d'attaque: ${dieRoll} <span style="color: #85c1e9 ;">+${character.strength}</span>` +
+            `Lancer d'attaque: ${dieRoll} <span style="color: #85c1e9;">+${character.strength}</span>` +
             (bonusAttack > 0 ? ` <span style="color:green;">+${bonusAttack}</span>` : '') +
-            ` = Total: <strong>${baseAttack + bonusAttack}</strong>`
+            (debuffAttack > 0 ? ` <span style="color:red;">-${debuffAttack}</span>` : '') +
+            ` = Total: <strong>${baseAttack}</strong>`
         );
     
-        return baseAttack + bonusAttack;
+        return Math.max(0, baseAttack);
     }
+    
     
     
     function updateBonuses(character) {
@@ -281,8 +324,9 @@ try{
         if (!Array.isArray(character.activeBonuses)) {
             character.activeBonuses = []; 
         }
+    
         const dieRoll = rollDie();
-        const baseDefense = character.isThief
+        let baseDefense = character.isThief
             ? dieRoll + Math.floor(character.initiative / 2)
             : dieRoll + Math.floor(character.strength / 2);
     
@@ -290,16 +334,24 @@ try{
             .filter(bonus => bonus.type === 'defense')
             .reduce((total, bonus) => total + bonus.value, 0);
     
+        const debuffDefense = character.activeDebuff
+            .filter(debuff => debuff.type === 'reduce_resistances')
+            .reduce((total, debuff) => total + debuff.value, 0);
+    
+        baseDefense += bonusDefense - debuffDefense;
+    
         displayCombatMessage(
             `Lancer de défense: ${dieRoll} ` +
-            `<span style="color: #85c1e9 ;">+${character.isThief ? Math.floor(character.initiative / 2) : Math.floor(character.strength / 2)}</span>` +
-            (bonusDefense > 0 ? ` + <span style="color:green;">+${bonusDefense}</span>` : '') +
-            ` <span style="color: #85c1e9 ;">+${character.totalDefenseBonus || 0}</span>` +
-            ` = Total: <strong>${baseDefense + bonusDefense + (character.totalDefenseBonus || 0)}</strong>`
+            `<span style="color: #85c1e9;">+${character.isThief ? Math.floor(character.initiative / 2) : Math.floor(character.strength / 2)}</span>` +
+            (bonusDefense > 0 ? ` <span style="color:green;">+${bonusDefense}</span>` : '') +
+            (debuffDefense > 0 ? ` <span style="color:red;">-${debuffDefense}</span>` : '') +
+            ` <span style="color: #85c1e9;">+${character.totalDefenseBonus || 0}</span>` +
+            ` = Total: <strong>${baseDefense + (character.totalDefenseBonus || 0)}</strong>`
         );
     
-        return baseDefense + bonusDefense + (character.totalDefenseBonus || 0);
+        return Math.max(0, baseDefense + (character.totalDefenseBonus || 0));
     }
+    
 
     function getWeaponBonus(hero, weaponChoice) {
         return weaponChoice === 'primary'
@@ -329,6 +381,10 @@ try{
     function performHeroAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData) {
         clearCombatMessages();
         Debuff(hero);
+        if (hero.activeDebuff.some(debuff => debuff.type === "paralyze")) {
+            performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
+            return;
+        }
         const weaponChoice = document.getElementById('weaponChoice').value;
         const weaponBonus = getWeaponBonus(hero, weaponChoice);
 
@@ -376,6 +432,10 @@ try{
 
     function performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun) {
         Debuff(monster);
+
+        if (monster.activeDebuff.some(debuff => debuff.type === "paralyze")) {
+            return;
+        }
         const attack = calculateAttack(monster);
         const defense = calculateDefense(hero);
         const damage = Math.max(0, attack - defense);
