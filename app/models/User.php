@@ -127,5 +127,14 @@ class User extends Model {
             error_log($e->getMessage());
             return false;
         }
-    }    
+    } 
+    
+    public function getAllUser(){
+        $db = $this->getDatabaseConnection();    
+        
+        $query = 'SELECT * FROM Account WHERE is_admin = 0';
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

@@ -7,6 +7,13 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                <?php if (isset($_SESSION['user']) && $_SESSION['user']['is_admin']===1):?>
+                    <!-- Si l'admin est connecté -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/DungeonXplorer/admin/pannel">Pannel Admin</a>
+                    </li>
+                <?php endif?>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/DungeonXplorer">Accueil</a>
                 </li>

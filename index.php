@@ -63,10 +63,14 @@ session_start();
         $router->addRoute('hero/create', 'HeroController@create');
         $router->addRoute('/hero/update', 'HeroController@updateStats');
 
+        /* Route Admin*/
+        $router->addRoute('admin/pannel', 'UserController@pannelAdmin');
+
 
         // Traiter la route demandée
         $router->route(trim($_SERVER['REQUEST_URI'], '/'));
 
+        
         
         require_once 'app/views/layout/footer.php';
     ?>

@@ -142,4 +142,13 @@ class UserController extends Controller {
         header('Location: /DungeonXplorer');
         exit;
     }
+
+    // Affichage du pannel Admin
+    public function pannelAdmin(){
+        $userModel = new User();
+        $allUser = $userModel->getAllUser();
+        $_SESSION['admin']['allUser'] = $allUser;
+        $this->view('pages/Pannel_admin');
+    }
+    
 }
