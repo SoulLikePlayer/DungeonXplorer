@@ -152,13 +152,14 @@ try{
                 case 'heal_user':
                     console.log(`Soigne l'utilisateur de ${params[0]} points pendant ${params[1]} tour(s).`);
                     break;
-                case 'area_damage':
-                    damage = rollDie() + $params[0];
+                case 'damage':
+                    const dieRoll = rollDie()
+                    damage = dieRoll + parseInt(params[0]);
+                    console.log(dieRoll);
+                    console.log(params[0])
                     cible.pv -= damage;
                     displayCombatMessage(`${user.name} attaque avec un sort et inflige ${damage} dégât.`);                    
                     break;
-                case 'deal_damage':
-                    console.log(`Inflige ${params[0]} points de dégâts instantannément`);
                 default:
                     console.log(`Effet inconnu : ${effectName} avec paramètres ${params.join(', ')}.`);
             }
@@ -262,7 +263,7 @@ try{
             .reduce((total, bonus) => total + bonus.value, 0);
     
         displayCombatMessage(
-            `Lancer d'attaque: ${dieRoll} <span style="color:blue;">+${character.strength}</span>` +
+            `Lancer d'attaque: ${dieRoll} <span style="color: #85c1e9 ;">+${character.strength}</span>` +
             (bonusAttack > 0 ? ` <span style="color:green;">+${bonusAttack}</span>` : '') +
             ` = Total: <strong>${baseAttack + bonusAttack}</strong>`
         );
@@ -291,9 +292,9 @@ try{
     
         displayCombatMessage(
             `Lancer de défense: ${dieRoll} ` +
-            `<span style="color:blue;">+${character.isThief ? Math.floor(character.initiative / 2) : Math.floor(character.strength / 2)}</span>` +
+            `<span style="color: #85c1e9 ;">+${character.isThief ? Math.floor(character.initiative / 2) : Math.floor(character.strength / 2)}</span>` +
             (bonusDefense > 0 ? ` + <span style="color:green;">+${bonusDefense}</span>` : '') +
-            ` <span style="color:blue;">+${character.totalDefenseBonus || 0}</span>` +
+            ` <span style="color: #85c1e9 ;">+${character.totalDefenseBonus || 0}</span>` +
             ` = Total: <strong>${baseDefense + bonusDefense + (character.totalDefenseBonus || 0)}</strong>`
         );
     
