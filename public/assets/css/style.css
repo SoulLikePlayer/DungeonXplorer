@@ -146,6 +146,89 @@ a:hover {
 
 /***********FIN***********/
 
+/********PAGE CRÉATION HÉRO/COMPTE******/
+
+#title-creation{
+    text-align : center;
+    color :rgba(255, 215, 0, 0.7);
+}
+
+.form-creation {
+    text-align : center;
+    border: 1px solid #999;
+    border-radius: 3px;
+    display: grid;
+    grid-template-rows: max-content auto 1fr;
+    margin: 0 33% 0 33%;
+    padding: 20px 20px 20px 20px;
+}
+
+.form-creation button{
+    margin-top: 20px;
+}
+
+/* FORMULAIRE */
+
+input[type=text], select, textarea, #username {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+  
+label {
+    padding: 12px 12px 12px 0;
+    display: inline-block;
+}
+  
+input[type=submit] {
+    background-color: #04AA6D;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+}
+  
+input[type=submit]:hover {
+    background-color: #45a049;
+}
+  
+.col-25 {
+    float: left;
+    width: 25%;
+    margin-top: 6px;
+}
+  
+.col-75 {
+    float: left;
+    width: 75%;
+    margin-top: 6px;
+}
+
+.row::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+#bio {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    height: 200px;
+}
+
+/********PAGE CONNECTION******/
+
+#missing-account{
+    text-align: center;
+}
+
 /****CHAPITRE PARTIE*****/
 .chapter-content {
     font-family: var(--font-family-classic);
@@ -327,4 +410,12 @@ button:hover {
 
 .close-button:hover {
     color: var(--hover-color);
+}
+
+.container-detail-admin{
+    display: flex;
+}
+
+.admin-detail{
+    margin-left: 1em;
 }
