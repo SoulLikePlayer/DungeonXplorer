@@ -150,5 +150,25 @@ class UserController extends Controller {
         $_SESSION['admin']['allUser'] = $allUser;
         $this->view('pages/Pannel_admin');
     }
+
+    public function deleteUserAdmin($id){
+        $userModel = new User();
+        $userModel->deleteUser($id);
+        $allUser = $userModel->getAllUser();
+        $_SESSION['admin']['allUser'] = $allUser;
+        header('Location: /DungeonXplorer/admin/pannel');
+        exit;
+    }
+
+    public function details_user_admin($id){
+        $userModel = new User();
+        $userSelected = $userModel->getUserById($id);
+        $userHeros = $userModel->getHeroByUserId($id);
+        $_SESSION['admin']['userSelect'] = $userSelected;
+        if ($userHeros == null){
+            $_SESSION['admin']['userHeros'] = $userHeros;
+        }
+        $this->view('pages/details_user_admin');
+    }
     
 }

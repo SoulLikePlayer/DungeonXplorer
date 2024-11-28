@@ -65,6 +65,8 @@ session_start();
 
         /* Route Admin*/
         $router->addRoute('admin/pannel', 'UserController@pannelAdmin');
+        $router->addRoute('admin/delete/{id}', 'UserController@deleteUserAdmin');
+        $router->addRoute('admin/details/{id}', 'UserController@details_user_admin');
 
 
         // Traiter la route demandée

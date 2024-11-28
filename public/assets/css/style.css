@@ -328,3 +328,13 @@ button:hover {
 .close-button:hover {
     color: var(--hover-color);
 }
+
+.container-detail-admin{
+    display: flex;
+}
+
+.admin-detail{
+    margin-left: 1em;
+}
+
+

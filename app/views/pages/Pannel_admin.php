@@ -12,8 +12,12 @@
     <ul>
         <?php foreach ($_SESSION['admin']['allUser'] as $key => $eachUser):?>
             <p> <?=htmlspecialchars($key+1) ?> <?=htmlspecialchars($eachUser['username']) ?> : <?=htmlspecialchars($eachUser['email']) ?></p> 
-            <button>Supprimer</button>
+            <a href="/DungeonXplorer/admin/delete/<?= htmlspecialchars($eachUser['id'] ?? '#') ?>">
+                <button>Supprimer</button>
+            </a>
+            <a href="/DungeonXplorer/admin/details/<?= htmlspecialchars($eachUser['id'] ?? '#') ?>">
             <button>Details</button>
+            </a>
         <?php endforeach;?>
     </ul>
 </main>
