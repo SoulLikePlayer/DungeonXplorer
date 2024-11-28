@@ -146,6 +146,28 @@ a:hover {
 
 /***********FIN***********/
 
+/********PAGE CRÉATION HÉRO******/
+
+#titre-création-héro{
+    text-align : center;
+    color :rgba(255, 215, 0, 0.7);
+}
+
+.form-creation {
+    text-align : center;
+    border: 1px solid #999;
+    border-radius: 3px;
+    display: grid;
+    grid-template-rows: max-content auto 1fr;
+    margin: 0 33% 0 33%;
+    padding: 20px 20px 20px 20px;
+}
+
+.form-creation button{
+    margin-top: 20px;
+}
+
+
 /****CHAPITRE PARTIE*****/
 .chapter-content {
     font-family: var(--font-family-classic);
