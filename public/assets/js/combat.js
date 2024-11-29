@@ -18,7 +18,7 @@ try{
             totalDefenseBonus: parseInt(this.dataset.heroTotalDefenseBonus),
             activeBonuses: [],
             activeDebuff: [],
-            moralReduction : 0
+            isParalyzed : Boolean(false)
         };
 
         const monster = {
@@ -29,7 +29,7 @@ try{
             loot: JSON.parse(this.dataset.monsterLoot || '[]'),
             activeBonuses: [],
             activeDebuff: [],
-            moralReduction : 0
+            isParalyzed : Boolean(false)
         };
 
         const consumablesData = JSON.parse(document.getElementById('useItemButton').getAttribute('data-inventory'));
@@ -268,10 +268,10 @@ try{
                     debuffMessages.push(`${character.name} a pris <span style="color:red;">-2</span> de vie dû au débuff Burst.`);
                     break;
                 case "paralyze" :
+                    character.isParalyzed = Boolean(true);
                     debuffMessages.push(`${character.name} est paralysée, il ne peut pas attaquer`);
                     break;
                 case "reduce_moral":
-                    moralReduction += parseInt(debuff.value);
                     debuffMessages.push(`${character.name} subit une réduction de moral : <span style="color:red;">-${debuff.value}</span>.`);
                     break;
                 }
@@ -381,7 +381,8 @@ try{
     function performHeroAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData) {
         clearCombatMessages();
         Debuff(hero);
-        if (hero.activeDebuff.some(debuff => debuff.type === "paralyze")) {
+        if (hero.isParalyzed == Boolean(true)) {
+            hero.isParalyzed = Boolean(false);
             performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
             return;
         }
@@ -432,8 +433,10 @@ try{
 
     function performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun) {
         Debuff(monster);
-
-        if (monster.activeDebuff.some(debuff => debuff.type === "paralyze")) {
+        console.log(monster.isParalyzed);
+        if (monster.isParalyzed) {
+            console.log("BOUGE PAS");
+            monster.isParalyzed = false;
             return;
         }
         const attack = calculateAttack(monster);

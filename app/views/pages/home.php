@@ -6,58 +6,63 @@
 
                 <h2>Personnage: <?= htmlspecialchars($hero['hero_firstname']) . " " . htmlspecialchars($hero['hero_lastname']) ?></h2>
 
-                <p><strong>Classe:</strong> <?= htmlspecialchars($hero['class_id']) ?></p>
+                <p><strong>Classe:</strong> <?= htmlspecialchars($hero['class_name']) ?></p>
 
                 <p><strong>Biographie:</strong> <?= htmlspecialchars($hero['biography'] ?? 'Non renseignée') ?></p>
-
-                <h3>Statistiques</h3>
-                <ul>
-                    <li><strong>Points de vie (PV) de base:</strong> <?= htmlspecialchars($hero['pv_max']) ?></li>
-                    <li><strong>Mana de base:</strong> <?= htmlspecialchars($hero['mana_max']) ?></li>
-
-                    <?php if (isset($_SESSION['Chapitre'])): ?>
-                        <!-- Si l'utilisateur a commencé l'histoire, afficher les PV et Mana restants -->
-                        <li><strong>Points de vie (PV) restants:</strong> <?= htmlspecialchars($hero['current_pv']) ?></li>
-                        <li><strong>Mana restant:</strong> <?= htmlspecialchars($hero['current_mana']) ?></li>
-                    <?php endif; ?>
-
-                    <li><strong>Force:</strong> <?= htmlspecialchars($hero['strength']) ?></li>
-                    <li><strong>Initiative:</strong> <?= htmlspecialchars($hero['initiative']) ?></li>
-                    <li><strong>Armure:</strong> <?= $hero['armor_name'] ? htmlspecialchars($hero['armor_name']) : 'Aucune' ?></li>
-                </ul>
-
-                <h3>Équipement</h3>
-                <ul>
-                    <li><strong>Arme principale:</strong> <?= $hero['primary_weapon_name'] ? htmlspecialchars($hero['primary_weapon_name']) : 'Aucune' ?>
+                <div class="hero-card">
+                    <h3>Statistiques</h3>
                     <ul>
-                        <li><strong>Bonus de dégâts:</strong> <?= $hero['primary_weapon_damage_bonus'] ?></li>
-                        <li><strong>Bonus de défense:</strong> <?= $hero['primary_weapon_defense_bonus'] ?></li></li>
+                        <li><strong>Points de vie (PV) de base:</strong> <?= htmlspecialchars($hero['pv_max']) ?></li>
+                        <li><strong>Mana de base:</strong> <?= htmlspecialchars($hero['mana_max']) ?></li>
+
+                        <?php if (isset($_SESSION['Chapitre'])): ?>
+                            <!-- Si l'utilisateur a commencé l'histoire, afficher les PV et Mana restants -->
+                            <li><strong>Points de vie (PV) restants:</strong> <?= htmlspecialchars($hero['current_pv']) ?></li>
+                            <li><strong>Mana restant:</strong> <?= htmlspecialchars($hero['current_mana']) ?></li>
+                        <?php endif; ?>
+
+                        <li><strong>Force:</strong> <?= htmlspecialchars($hero['strength']) ?></li>
+                        <li><strong>Initiative:</strong> <?= htmlspecialchars($hero['initiative']) ?></li>
+                        <li><strong>Armure:</strong> <?= $hero['armor_name'] ? htmlspecialchars($hero['armor_name']) : 'Aucune' ?></li>
                     </ul>
-                    </li>
-                    <li><strong>Arme secondaire:</strong> <?= $hero['secondary_weapon_name'] ? htmlspecialchars($hero['secondary_weapon_name']) : 'Aucune' ?>
-                    <ul>
-                        <li><strong>Bonus de dégâts:</strong> <?= $hero['secondary_weapon_damage_bonus'] ?></li>
-                        <li><strong>Bonus de défense:</strong> <?= $hero['secondary_weapon_defense_bonus'] ?></li></li>
-                    </ul>
-                    </li>
-                </ul>
-
-                <h3>Armure</h3>
-                <ul>
-                    <li><strong>Casque:</strong> <?= $hero['helmet_name'] ? htmlspecialchars($hero['helmet_name']) : 'Aucun' ?></li>
-                    <li><strong>Plastron:</strong> <?= $hero['armor_name'] ? htmlspecialchars($hero['armor_name']) : 'Aucun' ?></li>
-                    <li><strong>Grèves:</strong> <?= $hero['greaves_name'] ? htmlspecialchars($hero['greaves_name']) : 'Aucune' ?></li>
-                </ul>
-
-                <h3>Autres détails</h3>
-                <ul>
-                    <li><strong>Niveau actuel:</strong> <?= htmlspecialchars($hero['current_level']) ?></li>
-                    <li><strong>XP:</strong> <?= htmlspecialchars($hero['xp']) ?></li>
-                    <li><strong>Poids maximal:</strong> <?= htmlspecialchars($hero['poids_max']) ?> kg</li>
-                    <li><strong>Nombre d'objets max:</strong> <?= htmlspecialchars($hero['nb_items_max']) ?></li>
-                    <li><strong>Bonus de défense :</strong> <?= htmlspecialchars($hero['total_defense_bonus']) ?></li>
-                </ul>
-
+                </div>
+                <div class="hero-container">
+                    <div class="hero-card">
+                        <h3>Équipement</h3>
+                        <ul>
+                            <li><strong>Arme principale:</strong> <?= $hero['primary_weapon_name'] ? htmlspecialchars($hero['primary_weapon_name']) : 'Aucune' ?>
+                            <ul>
+                                <li><strong>Bonus de dégâts:</strong> <?= $hero['primary_weapon_damage_bonus'] ?></li>
+                                <li><strong>Bonus de défense:</strong> <?= $hero['primary_weapon_defense_bonus'] ?></li></li>
+                            </ul>
+                            </li>
+                            <li><strong>Arme secondaire:</strong> <?= $hero['secondary_weapon_name'] ? htmlspecialchars($hero['secondary_weapon_name']) : 'Aucune' ?>
+                            <ul>
+                                <li><strong>Bonus de dégâts:</strong> <?= $hero['secondary_weapon_damage_bonus'] ?></li>
+                                <li><strong>Bonus de défense:</strong> <?= $hero['secondary_weapon_defense_bonus'] ?></li></li>
+                            </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="hero-card">
+                        <h3>Armure</h3>
+                        <ul>
+                            <li><strong>Casque:</strong> <?= $hero['helmet_name'] ? htmlspecialchars($hero['helmet_name']) : 'Aucun' ?></li>
+                            <li><strong>Plastron:</strong> <?= $hero['armor_name'] ? htmlspecialchars($hero['armor_name']) : 'Aucun' ?></li>
+                            <li><strong>Grèves:</strong> <?= $hero['greaves_name'] ? htmlspecialchars($hero['greaves_name']) : 'Aucune' ?></li>
+                        </ul>
+                    </div>
+                    <div class="hero-card">
+                        <h3>Autres détails</h3>
+                        <ul>
+                            <li><strong>Niveau actuel:</strong> <?= htmlspecialchars($hero['current_level']) ?></li>
+                            <li><strong>XP:</strong> <?= htmlspecialchars($hero['xp']) ?></li>
+                            <li><strong>Poids maximal:</strong> <?= htmlspecialchars($hero['poids_max']) ?> kg</li>
+                            <li><strong>Nombre d'objets max:</strong> <?= htmlspecialchars($hero['nb_items_max']) ?></li>
+                            <li><strong>Bonus de défense :</strong> <?= htmlspecialchars($hero['total_defense_bonus']) ?></li>
+                        </ul>
+                    </div>
+                </div>    
             <?php elseif ((!isset($_SESSION['user']['hero'])) && (isset($_SESSION['user']))): ?>
                 <p>Aucun héros créé. Veuillez créer un personnage pour commencer votre aventure.</p>
                 <div class="button-container">
@@ -88,15 +93,18 @@
         </div>
         
         <div class="container-items">
+            <h2>Inventaire : </h2>
             <?php if (isset($_SESSION['user']['inventory'])): ?>
-                <h2>Inventaire</h2>
-                <?php foreach($_SESSION['user']['inventory'] as $item):?>
-                    <p><?=htmlspecialchars($item['name']) ?> : </p><ul>
-                        <li>Description : <?=htmlspecialchars($item['description']) ?></li>
-                        <li>Poids : <?=htmlspecialchars($item['poids']) ?></li>
-                        <li>Place dans l'inventaire: <?=htmlspecialchars($item['unite_inv']) ?></li>
-                    </ul>
-                <?php endforeach; ?>    
+                <div class="inventory-grid">
+                    <?php foreach($_SESSION['user']['inventory'] as $item): ?>
+                        <div class="inventory-item">
+                            <h4><?= htmlspecialchars($item['name']) ?></h4>
+                            <p><strong>Description:</strong> <?= htmlspecialchars($item['description']) ?></p>
+                            <p><strong>Poids:</strong> <?= htmlspecialchars($item['poids']) ?> kg</p>
+                            <p><strong>Place occupée:</strong> <?= htmlspecialchars($item['unite_inv']) ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             <?php else: ?>
                 <p>Inventaire vide.</p>
             <?php endif; ?> 

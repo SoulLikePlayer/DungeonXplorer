@@ -59,6 +59,7 @@ class Hero extends Model {
             h.lastname AS hero_lastname,
             h.firstname AS hero_firstname,
             h.class_id,
+            c.name AS class_name,
             h.pv_max,
             h.mana_max,
             h.strength,
@@ -88,6 +89,8 @@ class Hero extends Model {
             hs.mana AS current_mana
         FROM 
             Hero h
+        LEFT JOIN
+            Class c ON c.id = h.class_id
         LEFT JOIN 
             Hero_Weapons hw ON h.id = hw.hero_id
         LEFT JOIN 
@@ -114,7 +117,7 @@ class Hero extends Model {
             Armor greaves_armor ON greaves.id = greaves_armor.item_id
         LEFT JOIN 
             Hero_Story hs ON h.id = hs.hero_id
-        WHERE 
+        WHERE
             h.id = :userId;';
         $stmt = $db->prepare($query);
         $stmt->bindParam(':userId', $userId);

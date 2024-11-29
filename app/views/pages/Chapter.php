@@ -120,6 +120,7 @@
         <a href="/DungeonXplorer">Retour à l'accueil</a> 
     </div>
 </main>
+<script src="../../public/assets/js/typewriting.js"></script>
 <script src="../../public/assets/js/modal.js"></script>
 <script src="../../public/assets/js/lootSystem.js"></script>
 <script src="../../public/assets/js/combat.js"></script>
