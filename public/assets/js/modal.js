@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const showInventoryButton = document.getElementById('showInventoryButton');
     const closeModalButton = document.getElementById('closeModalButton');
     const inventoryList = document.getElementById('inventoryList');
+    console.log(showInventoryButton.getAttribute('data-inventory'));
     const inventoryData = JSON.parse(showInventoryButton.getAttribute('data-inventory'));
 
     function openModal() {

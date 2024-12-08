@@ -1,0 +1,35 @@
+.npc-container {
+    background-color: #121212; 
+    color: #f0f0f0; 
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+    text-align: center;
+    margin: 25px 0;
+    border: 2px solid #c4975e;
+}
+
+.npc-container h3 {
+    font-family: var(--font-family-title);
+    font-size: 1.8em;
+    margin-bottom: 15px;
+    color: var(--accent-color);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.ChoiceButton{
+    background: transparent;
+    border: transparent;
+    color : #c4975e;
+    font-family: var(--font-family-title);
+    font-size: 1.5em;
+}
+
+.ChoiceButton::before{
+    content: "->";
+    color : #c4975e;
+}
+
+.ChoiceButton, .ConsButton{
+    display: block !important;
+}

@@ -11,7 +11,8 @@ class Chapter extends Model {
                     WHEN e.id IS NULL THEN 'normal'
                     ELSE e.event_type
                 END AS chapter_type,
-                e.related_monster_id 
+                e.related_monster_id,
+                e.related_npc_id
             FROM Chapter c
             LEFT JOIN Event e ON c.id = e.chapter_id
             WHERE c.id = :id
@@ -31,6 +32,11 @@ class Chapter extends Model {
                 $_SESSION['monster'] = $monster;
                 $_SESSION['monster']['loot'] = $monsterModel->getLootById($chapter['related_monster_id']);
             }
+        }
+
+        if (($chapter['chapter_type'] === 'npc_interaction' || $chapter['chapter_type'] === 'merchent') && isset($chapter['related_npc_id'])) {
+            $npcModel = new NPC();
+            $npcModel->getNPCById($chapter['related_npc_id']);
         }
     
         return $chapter;
@@ -71,13 +77,13 @@ class Chapter extends Model {
     }
 
     public function deleteHeroStory($hero_id){
-        /*DELETE FROM Hero_Story WHERE hero_id=8*/
 
         $db = $this->getDatabaseConnection();
         $stmt = $db->prepare('DELETE FROM Hero_Story WHERE hero_id=  :hero_id');
         $stmt->bindParam(':hero_id', $hero_id, PDO::PARAM_INT);
         $stmt->execute();
     }
+    
 }
 ?>
 

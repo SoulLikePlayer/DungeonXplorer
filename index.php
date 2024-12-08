@@ -11,8 +11,12 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Pirata One' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-    <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/style.css">
-    <link rel="icon" href="public/assets/image/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/StyleGeneraux.css">
+    <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/Combat.css">
+    <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/NPC.css">
+    <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/exploration.css">
+    <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/merchant.css">
+    <link rel="icon" href="../../../../DungeonXplorer/public/assets/image/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <?php
@@ -30,6 +34,7 @@ session_start();
         require 'app/controllers/ChapterController.php';
         require 'app/controllers/InventoryController.php';
         require 'app/controllers/HeroController.php';
+        require 'app/controllers/AboutController.php';
 
         $router = new Router('DungeonXplorer');
 
@@ -61,12 +66,15 @@ session_start();
         /*Route lié au hero*/
         $router->addRoute('hero/store', 'HeroController@store');
         $router->addRoute('hero/create', 'HeroController@create');
-        $router->addRoute('/hero/update', 'HeroController@updateStats');
+        $router->addRoute('hero/update', 'HeroController@updateStats');
 
         /* Route Admin*/
         $router->addRoute('admin/pannel', 'UserController@pannelAdmin');
         $router->addRoute('admin/delete/{id}', 'UserController@deleteUserAdmin');
         $router->addRoute('admin/details/{id}', 'UserController@details_user_admin');
+        
+        /*Route */
+        $router->addRoute('about', 'AboutController@index');
 
 
         // Traiter la route demandée

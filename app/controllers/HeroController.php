@@ -5,23 +5,32 @@ class HeroController extends Controller {
     public function create() {
         $classModel = new ClassModel();
         $classes = $classModel->getAllClasses();
-        $this->view('pages/create', ['classes' => $classes]);
+
+        $raceModel = new RaceModel();
+        $race = $raceModel->getAllRace();
+        $this->view('pages/create', ['classes' => $classes, 'races' => $race]);
     }
 
     public function store() {
         $lastname = $_POST['lastname'] ?? '';
         $firstname = $_POST['firstname'] ?? '';
         $className = $_POST['class'] ?? '';
+        $raceName = $_POST['race'] ?? '';
         $biography = $_POST['bio'] ?? '';
 
-        if (empty($lastname) || empty($firstname) || empty($className)) {
-            $this->view('pages/create', ['error' => 'Nom, prénom et classe sont obligatoires.']);
+        if (empty($lastname) || empty($firstname) || empty($className) || empty($raceName)) {
+            $this->view('pages/create', ['error' => 'Nom, prénom, race et classe sont obligatoires.']);
             return;
         }
 
         $heroModel = new Hero();
         $classModel = new ClassModel();
         $classData = $classModel->getClassStats($className);
+
+        $raceModel = new RaceModel();
+        $raceData = $raceModel->getRaceName($raceName);
+        var_dump($raceData);
+        var_dump($classData);
 
         if ($heroModel->heroExists()) {
             $this->view('pages/create', ['error' => 'Un héros existe déjà pour cet utilisateur.']);
@@ -33,6 +42,7 @@ class HeroController extends Controller {
                 $lastname,
                 $firstname,
                 $classData['id'],
+            $raceData['id'],
                 $biography,
                 $classData['base_pv'],
                 $classData['base_mana'],
@@ -42,6 +52,11 @@ class HeroController extends Controller {
 
             if ($heroCreated) {
                 $_SESSION['user']['hero'] = $heroModel->getHeroByUserId($_SESSION['user']['id']);
+                $levelModel = new levelModel();
+                $level = $levelModel -> getNextLevelById($_SESSION['user']['hero']['hero_id'], $_SESSION['user']['hero']['class_id']);
+                if ($level){
+                    $_SESSION['user']['hero']['nextLevel'] = $level;
+                }
                 $chapter = $heroModel->getChapterByHeroId( $_SESSION['user']['hero']['hero_id']);
                 if ($chapter) {
                     $_SESSION['Chapitre'] = $chapter["chapter"]; 
@@ -63,23 +78,65 @@ class HeroController extends Controller {
             $heroId = $_SESSION['user']['hero']['hero_id'];
             $pv = $data['pv'] ?? 0;
             $mana = $data['mana'] ?? 0;
-
+            $xp = $data['xp'] ?? 0;
+    
             $heroModel = new Hero();
-            $updateSuccess = $heroModel->updateHeroStats($heroId, $pv, $mana);
+            $levelModel = new levelModel();
+            
+            $currentLevel = $_SESSION['user']['hero']['current_level'];
+            $classId = $_SESSION['user']['hero']['class_id'];
+            $currentXp = $_SESSION['user']['hero']['xp'] + $xpGained;
     
-            if ($updateSuccess) {
-                // Mise à jour des données du héros dans la session
-                $_SESSION['user']['hero']['current_pv'] = $pv;
-                $_SESSION['user']['hero']['current_mana'] = $mana;
+            $level = $levelModel->getNextLevelById($heroId, $classId);
+            $remainingXp = $currentXp;
     
-                echo json_encode(['success' => true]);
+            if ($level && $xp >= $level['required_xp']) {
+                $newLevel = $currentLevel + 1;
+                $pvMax = $_SESSION['user']['hero']['pv_max'] + $level['pv_bonus'];
+                $manaMax = $_SESSION['user']['hero']['mana_max'] + $level['mana_bonus'];
+                $strength = $_SESSION['user']['hero']['strength'] + $level['strength_bonus'];
+                $initiative = $_SESSION['user']['hero']['initiative'] + $level['initiative_bonus'];
+                $remainingXp -= $nextLevel['required_xp'];
+    
+                $updateSuccess = $heroModel->updateHeroStatsAndLevel(
+                    $heroId, 
+                    $pvMax, 
+                    $manaMax, 
+                    $strength, 
+                    $initiative, 
+                    $remainingXp, 
+                    $newLevel
+                );
+    
+                if ($updateSuccess) {
+                    $_SESSION['user']['hero']['current_level'] = $newLevel;
+                    $_SESSION['user']['hero']['pv_max'] = $pvMax;
+                    $_SESSION['user']['hero']['mana_max'] = $manaMax;
+                    $_SESSION['user']['hero']['strength'] = $strength;
+                    $_SESSION['user']['hero']['initiative'] = $initiative;
+                    $_SESSION['user']['hero']['xp'] = $xp - $level['required_xp'];
+    
+                    echo json_encode(['success' => true]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour du niveau.']);
+                }
             } else {
-                echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour.']);
+                $updateSuccess = $heroModel->updateHeroStats($heroId, $pv, $mana, $xp);
+    
+                if ($updateSuccess) {
+                    $_SESSION['user']['hero']['current_pv'] = $pv;
+                    $_SESSION['user']['hero']['current_mana'] = $mana;
+    
+                    echo json_encode(['success' => true]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour des stats.']);
+                }
             }
         } else {
             echo json_encode(['success' => false, 'message' => 'Héros introuvable dans la session.']);
         }
     }
+    
 
     public function show() {
         $heroModel = new Hero();

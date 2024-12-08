@@ -1,13 +1,4 @@
 <h1>Informations détaillées</h1>
-
-<?php if (isset($error)): ?>
-    <div class="error"><?= htmlspecialchars($error) ?></div>
-<?php endif; ?>
-
-<?php if (isset($success)): ?>
-    <div class="success"><?= htmlspecialchars($success) ?></div>
-<?php endif; ?>
-
 <main>
     <div class="admin-detail">
     <h2> Informations Utilisateur </h2>
@@ -29,7 +20,6 @@
                         <li><strong>Mana de base:</strong> <?= htmlspecialchars($hero['mana_max']) ?></li>
 
                         <?php if (isset($_SESSION['Chapitre'])): ?>
-                            <!-- Si l'utilisateur a commencé l'histoire, afficher les PV et Mana restants -->
                             <li><strong>Points de vie (PV) restants:</strong> <?= htmlspecialchars($hero['current_pv']) ?></li>
                             <li><strong>Mana restant:</strong> <?= htmlspecialchars($hero['current_mana']) ?></li>
                         <?php endif; ?>

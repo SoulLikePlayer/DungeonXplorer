@@ -7,6 +7,7 @@
                 <h2>Personnage: <?= htmlspecialchars($hero['hero_firstname']) . " " . htmlspecialchars($hero['hero_lastname']) ?></h2>
 
                 <p><strong>Classe:</strong> <?= htmlspecialchars($hero['class_name']) ?></p>
+                <p><strong>Race:</strong> <?= htmlspecialchars($hero['race_name']) ?></p>
 
                 <p><strong>Biographie:</strong> <?= htmlspecialchars($hero['biography'] ?? 'Non renseignée') ?></p>
                 <div class="hero-card">
@@ -23,7 +24,6 @@
 
                         <li><strong>Force:</strong> <?= htmlspecialchars($hero['strength']) ?></li>
                         <li><strong>Initiative:</strong> <?= htmlspecialchars($hero['initiative']) ?></li>
-                        <li><strong>Armure:</strong> <?= $hero['armor_name'] ? htmlspecialchars($hero['armor_name']) : 'Aucune' ?></li>
                     </ul>
                 </div>
                 <div class="hero-container">
@@ -50,6 +50,7 @@
                             <li><strong>Casque:</strong> <?= $hero['helmet_name'] ? htmlspecialchars($hero['helmet_name']) : 'Aucun' ?></li>
                             <li><strong>Plastron:</strong> <?= $hero['armor_name'] ? htmlspecialchars($hero['armor_name']) : 'Aucun' ?></li>
                             <li><strong>Grèves:</strong> <?= $hero['greaves_name'] ? htmlspecialchars($hero['greaves_name']) : 'Aucune' ?></li>
+                            <li><strong>Gants:</strong> <?= $hero['gloves_name'] ? htmlspecialchars($hero['gloves_name']) : 'Aucune' ?></li>
                         </ul>
                     </div>
                     <div class="hero-card">

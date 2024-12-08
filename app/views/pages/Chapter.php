@@ -51,6 +51,7 @@
                 <h3 id="combatMessage">Un combat commence contre <?= htmlspecialchars($_SESSION['monster']['name']) ?></h3>
                 <button id="startCombatButton" 
                     data-hero-name="<?= htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname']) ?>"
+                    data-hero-level="<?= htmlspecialchars($_SESSION['user']['hero']['current_level'])?>"
                     data-hero-pv="<?= htmlspecialchars($_SESSION['user']['hero']['current_pv']) ?>"
                     data-hero-pv-max="<?= htmlspecialchars($_SESSION['user']['hero']['pv_max']) ?>"
                     data-hero-mana="<?= htmlspecialchars($_SESSION['user']['hero']['current_mana']) ?>"
@@ -69,8 +70,9 @@
                     data-monster-pv="<?= htmlspecialchars($_SESSION['monster']['pv']) ?>"
                     data-monster-strength="<?= htmlspecialchars($_SESSION['monster']['strength']) ?>"
                     data-monster-initiative="<?= htmlspecialchars($_SESSION['monster']['initiative']) ?>"
-                    data-next-chapter-win="<?= htmlspecialchars($links[0]['next_chapter_id']) ?>"
-                    data-next-chapter-lose="<?= htmlspecialchars($links[1]['next_chapter_id']) ?>"
+                    data-monster-xp="<?= htmlspecialchars($_SESSION['monster']['xp']) ?>"
+                    data-next-chapter-win="<?= htmlspecialchars($links[0]['next_chapter_id']) ?? '#' ?>"
+                    data-next-chapter-lose="<?= htmlspecialchars($links[1]['next_chapter_id']) ?? '#' ?>"
                     data-next-chapter-run="<?= htmlspecialchars($links[2]['next_chapter_id']) ?>"
                     data-monster-loot='<?= json_encode($_SESSION['monster']['loot']) ?>'
                 >
@@ -79,8 +81,8 @@
 
                 <div class="combat-actions" id="combatActions" style="display: none;">
                     <div id="combatInfo">
-                        <p><strong>Héros : </strong><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span> | PV : <span id="heroPv"></span> | Mana : <span id="heroMana"></span></p>
-                        <p><strong>Monstre : </strong><span id="monsterName"><?= htmlspecialchars($_SESSION['monster']['name'])?></span> | PV : <span id="monsterPv"></span></p>
+                        <p><strong>Héros : </strong><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span> | PV : <span id="heroPv"></span> / <span id="heroPvMax"></span> | Mana : <span id="heroMana"></span> / <span id="heroManaMax"></span></p>
+                        <p><strong>Monstre : </strong><span id="monsterName"><?= htmlspecialchars($_SESSION['monster']['name'])?></span> | PV : <span id="monsterPv"></span> / <span id="monsterPvMax"></span></p>
                     </div>
                     <div id="combatMessages" class="combat-messages"></div>
                     <div class="combat-buttons">
@@ -99,20 +101,95 @@
                     <h3>Loot obtenu :</h3>
                     <div id="lootList"></div>
                 </div>
+                <div id="xpContainer" style="display: none; margin-top: 20px;">
+                    <h3>XP obtenue : </h3>
+                    <div id="xpTexte"></div>
+                </div>
+            </div> 
+           
+        <?php elseif($chapter['chapter_type'] === 'npc_interaction' || $chapter['chapter_type'] === 'merchent'): ?>
+            <div class="npc-container" id="npcContainer"
+                data-dialogues='<?= json_encode($_SESSION['npc']['dialogues'] ?? []) ?>'
+                data-first-sentence="<?= htmlspecialchars($_SESSION['npc']['INTRO_SENTENCE']) ?>"
+                data-next-chapter-id="<?= htmlspecialchars($links[0]['next_chapter_id'] ?? '#') ?>"
+                data-chapter-id="<?= htmlspecialchars($chapter['id']) ?>"
+                data-next-chapter-description="<?= htmlspecialchars($links[0]['description'] ?? '') ?>">
+                <h3><?= htmlspecialchars($_SESSION['npc']['name']) ?></h3>
+                <h2 class="npc-dialogue"></h2>
+                <?php if ($chapter['chapter_type'] === 'merchent'): ?>
+                    <div class="merchent-container" id="merchantContainer">
+                        <p>Pièce du marchand : <?=htmlspecialchars($_SESSION['npc']['merchent']['gold'])?></p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nom de l'objet</th>
+                                    <th>Quantité disponible</th>
+                                    <th>Prix (par unité)</th>
+                                    <th>Quantité à acheter</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($_SESSION['npc']['merchent']['stock'] as $item): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($item['name']) ?></td>
+                                        <td><?= htmlspecialchars($item['stock']) ?></td>
+                                        <td><?= htmlspecialchars($item['price']) ?> pièces d'or</td>
+                                        <td>
+                                            <?php if ($item['stock'] > 0): ?>
+                                                <input 
+                                                    type="number" 
+                                                    class="quantity-input" 
+                                                    data-price="<?= htmlspecialchars($item['price']) ?>" 
+                                                    data-item-id="<?=htmlspecialchars($item['id'])?>"
+                                                    name="quantity_<?= htmlspecialchars($item['name']) ?>" 
+                                                    min="0" 
+                                                    max="<?= htmlspecialchars($item['stock']) ?>" 
+                                                    value="0">
+                                            <?php else: ?>
+                                                <span>Rupture de stock</span>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                        <div class="total-purchase">
+                            <p>Total : <span id="totalPrice">0</span> pièces d'or</p>
+                            <button id="buyButton">Acheter</button>
+                            <button id="finishButton">Terminer les achats</button>
+                        </div>
+                     </div>
+                    <div class="sell-container" id="sellContainer">
+                <?php endif ?>
+                <div class="npc-choices"></div>
             </div>
+        <?php elseif ($chapter['chapter_type'] === 'exploration'): ?>
+            <div class="exploration-links">
+                <h3>Explorer</h3>
+                <p><?= nl2br(htmlspecialchars($chapter['description'] ?? 'Aucune description d\'exploration disponible.')) ?></p>
+                    <div class="links">
+                    <?php foreach ($links as $link): ?>
+                        <div class="link">
+                            <a href="/DungeonXplorer/chapter/view/<?= htmlspecialchars($link['next_chapter_id'] ?? '#') ?>">
+                                <button><?= nl2br(htmlspecialchars($link['description'] ?? 'Pas de description')) ?></button>
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>            
         <?php else: ?>
             <div class="links">
-            <?php foreach ($links as $link): ?>
-                <div class="link">
-                <?php if($chapter['chapter_type'] !== 'death'): ?>    
-                    <a href="/DungeonXplorer/chapter/view/<?= htmlspecialchars($link['next_chapter_id'] ?? '#') ?>">
-                <?php else: ?>
-                    <a href="/DungeonXplorer/chapter/reset">
-                <?php endif; ?>
-                        <button><?= nl2br(htmlspecialchars($link['description'] ?? 'Pas de description')) ?></button>
-                    </a>
-                </div>
-            <?php endforeach; ?>
+                <?php foreach ($links as $link): ?>
+                    <div class="link">
+                        <?php if($chapter['chapter_type'] !== 'death'): ?>    
+                            <a href="/DungeonXplorer/chapter/view/<?= htmlspecialchars($link['next_chapter_id'] ?? '#') ?>">
+                        <?php else: ?>
+                            <a href="/DungeonXplorer/chapter/reset">
+                        <?php endif; ?>
+                                <button><?= nl2br(htmlspecialchars($link['description'] ?? 'Pas de description')) ?></button>
+                            </a>
+                    </div>
+                <?php endforeach; ?>
             </div>
         <?php endif; ?>
 
@@ -120,7 +197,9 @@
         <a href="/DungeonXplorer">Retour à l'accueil</a> 
     </div>
 </main>
-<script src="../../public/assets/js/typewriting.js"></script>
+<script src="../../public/assets/js/typewritingSystem.js"><script>
 <script src="../../public/assets/js/modal.js"></script>
 <script src="../../public/assets/js/lootSystem.js"></script>
-<script src="../../public/assets/js/combat.js"></script>
+<script src="../../public/assets/js/combatSystem.js"></script>
+<script src="../../public/assets/js/Merchant.js"></script>
+<script src="../../public/assets/js/dialogueSystem.js"></script>

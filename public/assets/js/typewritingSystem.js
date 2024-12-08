@@ -3,16 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const chapterText = chapterContent.innerHTML;
     let i = 0;
 
-    // Cache le contenu initial pour l'effet de typewriting
     chapterContent.innerHTML = '';
     
     function typeWriter() {
         if (i < chapterText.length) {
             chapterContent.innerHTML += chapterText.charAt(i);
             i++;
-            setTimeout(typeWriter, 50); // Vitesse de l'écriture
+            setTimeout(typeWriter, 25); 
         } else {
-            // Une fois l'écriture terminée, afficher les éléments suivants
             showNextSection();
         }
     }
@@ -20,14 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function showNextSection() {
         const combatContainer = document.getElementById('combatContainer');
         const linksContainer = document.querySelector('.links');
+        const npcContainer = document.getElementById('npcContainer')
 
         if (combatContainer) {
             combatContainer.style.display = 'block';
         } else if (linksContainer) {
             linksContainer.style.display = 'flex';
+        }  else if (npcContainer) {
+            npcContainer.style.display = 'block';
         }
     }
 
-    // Démarrer l'effet de typewriting
     typeWriter();
 });
