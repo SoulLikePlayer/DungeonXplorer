@@ -30,6 +30,22 @@
             </div>
         </div>
 
+        <!-- Modal de négociation -->
+        <div id="negotiationModal" class="modal">
+            <div class="modal-content">
+            <span class="close-button" id="closeCodexModalButton">&times;</span>
+            <h2>Négocier avec le marchand</h2>
+                <div id="diceRollResult">
+                    <p><strong>Marchand :</strong> <span id="merchantRoll">0</span></p>
+                    <p><strong>Vous :</strong> <span id="playerRoll">0</span></p>
+                </div>
+                <button id="rollDiceButton">Lancer le dé</button>
+                <p id="attemptMessage">Tentatives réussies : <span id="successCount">0</span>/3</p>
+                <p id="negotiationMessage"></p>
+                <p><strong>Réduction obtenue : </strong><span id="discount"></span></p>
+            </div>
+        </div>
+
         <?php if($chapter['chapter_type'] !== 'death'): ?>
             <h2 id="ChapterTitle"><?= htmlspecialchars($chapter['titre'] ?? 'Inconnu') ?></h2>
         <?php else: ?>
@@ -106,7 +122,8 @@
                     <div id="xpTexte"></div>
                 </div>
             </div> 
-           
+            <script src="../../public/assets/js/lootSystem.js"></script>
+            <script src="../../public/assets/js/combatSystem.js"></script>
         <?php elseif($chapter['chapter_type'] === 'npc_interaction' || $chapter['chapter_type'] === 'merchent'): ?>
             <div class="npc-container" id="npcContainer"
                 data-dialogues='<?= json_encode($_SESSION['npc']['dialogues'] ?? []) ?>'
@@ -153,16 +170,23 @@
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+                        <button id="negotiateButton">Négocier</button>
+                        <div id="negotiationResult" style="display: none;">
+                            <p id="negotiationMessage"></p>
+                            <p><strong>Réduction obtenue : </strong><span id="discount"></span></p>
+                        </div>
+
                         <div class="total-purchase">
                             <p>Total : <span id="totalPrice">0</span> pièces d'or</p>
                             <button id="buyButton">Acheter</button>
-                            <button id="finishButton">Terminer les achats</button>
                         </div>
                      </div>
                     <div class="sell-container" id="sellContainer">
                 <?php endif ?>
                 <div class="npc-choices"></div>
             </div>
+            <script src="../../public/assets/js/Merchant.js"></script>
+            <script src="../../public/assets/js/dialogueSystem.js"></script>
         <?php elseif ($chapter['chapter_type'] === 'exploration'): ?>
             <div class="exploration-links">
                 <h3>Explorer</h3>
@@ -198,8 +222,5 @@
     </div>
 </main>
 <script src="../../public/assets/js/typewritingSystem.js"><script>
-<script src="../../public/assets/js/modal.js"></script>
-<script src="../../public/assets/js/lootSystem.js"></script>
-<script src="../../public/assets/js/combatSystem.js"></script>
-<script src="../../public/assets/js/Merchant.js"></script>
-<script src="../../public/assets/js/dialogueSystem.js"></script>
+<script src="../../public/assets/js/modalSystem.js"></script>
+

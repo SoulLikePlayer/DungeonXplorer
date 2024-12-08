@@ -1,15 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     const buyButton = document.getElementById('buyButton');
-    const finishButton = document.getElementById('finishButton');
     const quantityInputs = document.querySelectorAll('.quantity-input');
     const totalPriceElement = document.getElementById('totalPrice');
     const purchaseList = [];
     let merchantStock = {}; 
+    let discountPercentage = 0; // Nouvelle variable pour la réduction
 
     quantityInputs.forEach(input => {
         const itemId = input.getAttribute('data-item-id');
         const stock = parseInt(input.getAttribute('max'), 10);
-
         merchantStock[itemId] = stock;
     });
 
@@ -29,25 +28,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Calculer le total à chaque modification
+    // Calculer le total avec la réduction
     const calculateTotal = () => {
         let total = 0;
 
         quantityInputs.forEach(input => {
             const price = parseInt(input.getAttribute('data-price'), 10) || 0;
             const quantity = parseInt(input.value, 10) || 0;
-
             total += price * quantity;
         });
 
-        totalPriceElement.textContent = total;
+        const discountedTotal = total * (1 - discountPercentage); 
+        totalPriceElement.textContent = discountedTotal.toFixed(2); 
     };
 
     quantityInputs.forEach(input => {
         input.addEventListener('input', calculateTotal);
     });
 
-    // Gestion du clic sur "Acheter"
     buyButton.addEventListener('click', () => {
         let purchaseMade = false;
 
@@ -56,14 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (quantity > 0) {
                 const itemId = input.getAttribute('data-item-id');
-                const itemName = input.name.replace('quantity_', ''); // Extrait le nom
+                const itemName = input.name.replace('quantity_', ''); 
                 const price = parseInt(input.getAttribute('data-price'), 10);
 
-                // Vérifier le stock disponible
                 if (merchantStock[itemId] >= quantity) {
-                    merchantStock[itemId] -= quantity; // Réduire le stock
+                    merchantStock[itemId] -= quantity;
 
-                    // Ajouter à la liste des achats
                     purchaseList.push({
                         id: itemId,
                         name: itemName,
@@ -85,21 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
             updateStockDisplay(); // Mettre à jour l'affichage des stocks
             calculateTotal(); // Recalculer le total
             alert("Achat effectué !");
-        } else {
-            alert("Aucun achat effectué !");
-        }
-    });
-
-    // Gestion du clic sur "Terminer les achats"
-    finishButton.addEventListener('click', () => {
-        if (purchaseList.length > 0) {
+            
+            // Ajouter les articles à l'inventaire
             purchaseList.forEach(item => {
                 const data = {
                     itemId: item.id,
                     quantity: item.quantity
                 };
 
-                // Envoyer les articles au serveur
+                // Envoyer les articles au serveur pour mise à jour de l'inventaire
                 fetch('/DungeonXplorer/inventory/saveLoot', {
                     method: 'POST',
                     headers: {
@@ -122,7 +112,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
             alert("Achats terminés et ajoutés à l'inventaire.");
         } else {
-            alert("Aucun article à ajouter.");
+            alert("Aucun achat effectué !");
         }
     });
+
+    // Gestion de la négociation : modifier le prix en fonction de la réduction
+    const negotiateButton = document.getElementById('negotiateButton');
+    const negotiationModal = document.getElementById('negotiationModal');
+    const rollDiceButton = document.getElementById('rollDiceButton');
+    const merchantRollElement = document.getElementById('merchantRoll');
+    const playerRollElement = document.getElementById('playerRoll');
+    const successCountElement = document.getElementById('successCount');
+    const negotiationMessageElement = document.getElementById('negotiationMessage');
+    const discountElement = document.getElementById('discount');
+    let successCount = 0;
+
+    negotiateButton.addEventListener('click', () => {
+        count = 0;
+        discountPercentage = 0;
+        successCount = 0;
+        successCountElement.textContent = successCount;
+        negotiationMessageElement.textContent = '';
+        discountElement.textContent = 'Aucune réduction';
+        negotiationModal.style.display = 'flex';
+    });
+
+    const rollDie = () => {
+        return Math.floor(Math.random() * 6) + 1;
+    };
+
+    rollDiceButton.addEventListener('click', () => {
+        const merchantRoll = rollDie();
+        const playerRoll = rollDie();
+        merchantRollElement.textContent = merchantRoll;
+        playerRollElement.textContent = playerRoll;
+
+        if (playerRoll > merchantRoll) {
+            successCount++;
+            successCountElement.textContent = successCount;
+
+            if (successCount === 1) {
+                discountPercentage = 0.25;
+            } else if (successCount === 2) {
+                discountPercentage = 0.50;
+            } else if (successCount === 3) {
+                discountPercentage = 0.75;
+            }
+
+            negotiationMessageElement.textContent = `Vous avez gagné cette tentative !`;
+        } else {
+            negotiationMessageElement.textContent = `Vous avez perdu cette tentative.`;
+        }
+
+        count++;
+
+        discountElement.textContent = `${discountPercentage * 100}% de réduction`;
+        calculateTotal();
+
+        if (count >= 3) {
+            setTimeout(() => {
+                negotiationModal.style.display = 'none';
+                alert(`Vous avez joué toutes les tentatives ! Réduction de ${discountPercentage * 100}% appliquée.`);
+                negotiationModal.style.display = 'none';
+                negotiateButton.style.display = 'none';
+            }, 1000);
+        }
+    });
+
 });
