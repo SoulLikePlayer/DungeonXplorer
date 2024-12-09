@@ -42,7 +42,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
-.combat-buttons button:hover {
+.combat-buttons button:hover:not(.npc-dialogue) {
     background-color: var(--hover-color); /* Jaune doré qui ressort sur fond sombre */
     transform: translateY(-5px); /* Animation de survol plus marquée */
     box-shadow: 0 6px 18px rgba(255, 215, 0, 0.9); /* Effet lumineux sur le survol */

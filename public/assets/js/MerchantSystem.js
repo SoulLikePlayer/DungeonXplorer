@@ -1,10 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const npcContainer = document.getElementById('npcContainer');
     const buyButton = document.getElementById('buyButton');
     const quantityInputs = document.querySelectorAll('.quantity-input');
     const totalPriceElement = document.getElementById('totalPrice');
+    const merchantContainer = document.getElementById('merchantContainer')
     const purchaseList = [];
     let merchantStock = {}; 
-    let discountPercentage = 0; // Nouvelle variable pour la réduction
+    let discountPercentage = 0; 
+    const npcChoicesContainer = document.querySelector('.npc-choices');
 
     quantityInputs.forEach(input => {
         const itemId = input.getAttribute('data-item-id');
@@ -78,18 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (purchaseMade) {
-            updateStockDisplay(); // Mettre à jour l'affichage des stocks
-            calculateTotal(); // Recalculer le total
             alert("Achat effectué !");
             
-            // Ajouter les articles à l'inventaire
             purchaseList.forEach(item => {
                 const data = {
                     itemId: item.id,
                     quantity: item.quantity
                 };
 
-                // Envoyer les articles au serveur pour mise à jour de l'inventaire
+
                 fetch('/DungeonXplorer/inventory/saveLoot', {
                     method: 'POST',
                     headers: {
@@ -109,14 +109,46 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Erreur de communication avec le serveur:', error);
                 });
             });
+            console.log(parseInt(totalPriceElement.textContent))
+            const gold = {
+                goldSpent : parseInt(totalPriceElement.textContent)
+            }
 
-            alert("Achats terminés et ajoutés à l'inventaire.");
+            fetch('/DungeonXplorer/hero/updateGold', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(gold)
+            })
+            .then(response => response.json())
+            .then(gold => {
+                if (gold.success) {
+                    console.log(`quantité d'or mise a jour`);
+                } else {
+                    console.error(`Erreur de mise a jour de la quantité d'or`);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur de communication avec le serveur:', error);
+            });
+
+            updateStockDisplay(); 
+            calculateTotal();
+
         } else {
             alert("Aucun achat effectué !");
         }
+        merchantContainer.style.display = "none";
+        const continueButton = document.createElement('button');
+        continueButton.textContent = "Continuer l'aventure";
+        continueButton.id = "continueButton";
+        continueButton.addEventListener('click', function () {
+            window.location.href = `/DungeonXplorer/chapter/view/${npcContainer.dataset.nextChapterId}`;
+        });
+        npcChoicesContainer.appendChild(continueButton);
     });
 
-    // Gestion de la négociation : modifier le prix en fonction de la réduction
     const negotiateButton = document.getElementById('negotiateButton');
     const negotiationModal = document.getElementById('negotiationModal');
     const rollDiceButton = document.getElementById('rollDiceButton');

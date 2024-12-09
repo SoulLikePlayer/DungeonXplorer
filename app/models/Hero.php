@@ -194,6 +194,16 @@ class Hero extends Model {
     
         return $result1 && $result2 && $result3;
     }
+
+    public function updateHeroGold($heroId, $gold) {
+        $db = $this->getDatabaseConnection();
+        $query = 'UPDATE Hero SET gold = :gold WHERE id = :heroId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':gold', $gold, PDO::PARAM_INT);
+        $stmt->bindParam(':heroId', $heroId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+    
     
 
     public function getChapterByHeroId($heroId) {

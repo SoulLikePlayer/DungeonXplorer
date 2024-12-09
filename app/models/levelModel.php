@@ -24,7 +24,12 @@ class LevelModel extends Model{
         $stmtLevel -> bindParam(':id', $id);
         $stmtLevel -> execute();
 
-        return $stmtLevel->fetch(PDO::FETCH_ASSOC);
+        $level = $stmtLevel->fetch(PDO::FETCH_ASSOC);
+        if (!$level) {
+            error_log('No level found for class_id: ' . $classId . ' and hero_id: ' . $id);
+        }
+
+        return $level;
     }
 
 

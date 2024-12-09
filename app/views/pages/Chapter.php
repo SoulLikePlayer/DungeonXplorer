@@ -8,9 +8,21 @@
             <div class="modal-content">
                 <span class="close-button" id="closeModalButton">&times;</span>
                 <h3>Inventaire</h3>
-                <ul id="inventoryList"></ul>
+                <div class="inventory-container">
+                    <ul id="inventoryList" class="inventory-list"></ul>
+                    <div id="itemDetails" class="item-details">
+                        <h4>Détails de l'objet</h4>
+                        <p><strong>Nom :</strong> <span id="itemName">-</span></p>
+                        <p><strong>Type :</strong> <span id="itemType">-</span></p>
+                        <p><strong>Description :</strong> <span id="itemDescription">-</span></p>
+                        <p><strong>Poids :</strong> <span id="itemWeight">-</span></p>
+                        <p><strong>Valeur en or :</strong> <span id="itemGoldValue">-</span></p>
+                        <p><strong>Quantité :</strong> <span id="itemQuantity">-</span></p>
+                    </div>
+                </div>
             </div>
         </div>
+
 
         <!-- Modale pour utiliser un consommable en combat -->
         <div id="consumableModal" class="modal">
@@ -181,11 +193,11 @@
                             <button id="buyButton">Acheter</button>
                         </div>
                      </div>
-                    <div class="sell-container" id="sellContainer">
+                    <div class="sell-container" id="sellContainer"></div>
+                    <script src="../../public/assets/js/MerchantSystem.js"></script>
                 <?php endif ?>
                 <div class="npc-choices"></div>
             </div>
-            <script src="../../public/assets/js/Merchant.js"></script>
             <script src="../../public/assets/js/dialogueSystem.js"></script>
         <?php elseif ($chapter['chapter_type'] === 'exploration'): ?>
             <div class="exploration-links">
@@ -221,6 +233,6 @@
         <a href="/DungeonXplorer">Retour à l'accueil</a> 
     </div>
 </main>
-<script src="../../public/assets/js/typewritingSystem.js"><script>
+<script src="../../public/assets/js/typewritingSystem.js"></script>
 <script src="../../public/assets/js/modalSystem.js"></script>
 

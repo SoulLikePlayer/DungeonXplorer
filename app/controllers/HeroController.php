@@ -136,6 +136,39 @@ class HeroController extends Controller {
             echo json_encode(['success' => false, 'message' => 'Héros introuvable dans la session.']);
         }
     }
+    public function updateGold() {
+        $data = json_decode(file_get_contents('php://input'), true);
+    
+        if (isset($_SESSION['user']['hero'])) {
+            $heroId = $_SESSION['user']['hero']['hero_id'];
+            $goldSpent = $data['goldSpent'] ?? 0;
+    
+            if ($goldSpent < 0) {
+                echo json_encode(['success' => false, 'message' => 'Montant invalide.']);
+                return;
+            }
+    
+            $heroModel = new Hero();
+            $currentGold = $_SESSION['user']['hero']['gold'];
+            $newGold = $currentGold - $goldSpent;
+    
+            if ($newGold < 0) {
+                echo json_encode(['success' => false, 'message' => 'Or insuffisant.']);
+                return;
+            }
+    
+            $updateSuccess = $heroModel->updateHeroGold($heroId, $newGold);
+    
+            if ($updateSuccess) {
+                $_SESSION['user']['hero']['gold'] = $newGold;
+                echo json_encode(['success' => true, 'newGold' => $newGold]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour de l\'or.']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Héros introuvable dans la session.']);
+        }
+    }
     
 
     public function show() {

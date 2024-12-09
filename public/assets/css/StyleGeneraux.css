@@ -123,7 +123,7 @@ button{
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
 }
 
-button:hover {
+button:hover:not(.npc-dialogue) {
     background-color: var(--hover-color);
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(255, 215, 0, 0.7);
@@ -285,11 +285,6 @@ input[type=submit]:hover {
     color: var(--warning-error);
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
 }
-
-button:hover {
-    background-color: var(--accent-color);
-}
-
 .modal {
     display: none; 
     position: fixed; 
@@ -377,6 +372,27 @@ button:hover {
     text-align: center;
     color: var(--text-color);
     transition: transform 0.2s ease;
+}
+
+.inventory-container {
+    display: flex;
+    gap: 20px;
+}
+
+.inventory-list {
+    flex: 1;
+    list-style-type: none;
+    padding: 0;
+}
+
+.item-details {
+    flex: 1;
+    border-left: 1px solid #ccc;
+    padding-left: 20px;
+}
+
+#itemDescription{
+    font-style: italic;
 }
 
 .inventory-item:hover {
