@@ -760,9 +760,20 @@ try{
 
                     levelModal.style.display="flex";
 
-                    document.getElementById("level").textContent=modalContent.
+                    const modalContent = data.modalContent;
 
-                    document.getElementById("continueButton").href = `/DungeonXplorer/chapter/view/${nextChapterWin}`
+                    document.getElementById("level").textContent=modalContent.newLevel
+
+                    document.getElementById("newPVBonus").textContent=modalContent.pvBonus
+                    document.getElementById("newManaBonus").textContent=modalContent.manaBonus
+                    document.getElementById("newStrenghtBonus").textContent=modalContent.strengthBonus
+                    document.getElementById("newInitiativeBonus").textContent=modalContent.initiativeBonus
+
+
+                    document.getElementById("continueButtonNewLevel").addEventListener('click',  function() {
+                        levelModal.style.display = "none";
+                        window.location.href = `/DungeonXplorer/chapter/view/${nextChapterWin}`;
+                    });
                 }
             } else {
                 console.error('Erreur:', data.message);

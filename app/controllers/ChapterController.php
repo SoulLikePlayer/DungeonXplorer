@@ -33,7 +33,7 @@ class ChapterController extends Controller {
         $chapterModel->deleteHeroStory($_SESSION['user']['hero']['hero_id']);
         unset($_SESSION['Chapitre']);
 
-        header('Location: /DungeonXplorer');
+        header('Location: /DungeonXplorer/hero/reset');
         exit;
     }
 }

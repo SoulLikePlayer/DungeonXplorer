@@ -83,7 +83,6 @@ class User extends Model {
     public function deleteUser($id) {
         $db = $this->getDatabaseConnection();
     
-        // Désactivation des contraintes de clés étrangères pour éviter les erreurs lors de la suppression
         $db->exec("SET foreign_key_checks = 0");
     
         try {

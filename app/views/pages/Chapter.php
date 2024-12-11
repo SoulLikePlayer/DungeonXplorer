@@ -37,9 +37,9 @@
                 <li>PV maximum : <strong>+<span id="newPVBonus"></<span></strong></li>
                 <li>Mana maximum : <strong>+<span id="newManaBonus"></<span></strong></li>
                 <li>Force : <strong>+<span id="newStrenghtBonus"></<span></strong></li>
-                <li>Initiative : <strong>+<span id="newSpeedBonus"></<span></strong></li>
+                <li>Initiative : <strong>+<span id="newInitiativeBonus"></<span></strong></li>
                 </ul>
-                <button id="continueButton" href="">Continuer l'aventure</button>
+                <button id="continueButtonNewLevel">Continuer l'aventure</button>
             </div>
         </div>
 

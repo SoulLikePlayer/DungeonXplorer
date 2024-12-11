@@ -68,6 +68,7 @@ session_start();
         $router->addRoute('hero/create', 'HeroController@create');
         $router->addRoute('hero/update', 'HeroController@updateStats');
         $router->addRoute('hero/updateGold', 'heroController@updateGold');
+        $router->addRoute('hero/reset', 'HeroController@reset');
 
         /* Route Admin*/
         $router->addRoute('admin/pannel', 'UserController@pannelAdmin');

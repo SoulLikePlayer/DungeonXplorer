@@ -21,6 +21,14 @@ class Hero extends Model {
         return $stmt->execute();
     }
 
+    public function deleteHero($id){
+        $db = $this->getDatabaseConnection();
+        $query = 'DELETE FROM Hero WHERE id = :heroId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':heroId', $id);
+        return $stmt->execute();
+    }
+
     public function createHeroStory($heroId, $pvMax, $manaMax) {
         $db = $this->getDatabaseConnection();
         $query = 'INSERT INTO Hero_Story (hero_id, pv, mana, chapter) VALUES (:hero_id, :pv_max, :mana_max, :chapter)';

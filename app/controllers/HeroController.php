@@ -42,7 +42,7 @@ class HeroController extends Controller {
                 $lastname,
                 $firstname,
                 $classData['id'],
-            $raceData['id'],
+                $raceData['id'],
                 $biography,
                 $classData['base_pv'],
                 $classData['base_mana'],
@@ -188,6 +188,49 @@ class HeroController extends Controller {
             }
         } else {
             echo json_encode(['success' => false, 'message' => 'Héros introuvable dans la session.']);
+        }
+    }
+
+    public function reset(){
+        $firstname = $_SESSION['user']['hero']['hero_firstname'];
+        $lastname = $_SESSION['user']['hero']['hero_lastname'];
+        $className = $_SESSION['user']['hero']['class_name'];
+        $raceName = $_SESSION['user']['hero']['race_name'];
+
+        $heroModel = new Hero();
+
+        $heroModel->deleteHero($_SESSION['user']['hero']['hero_id']);
+
+        $classModel = new ClassModel();
+        $classData = $classModel->getClassStats($className);
+
+        $raceModel = new RaceModel();
+        $raceData = $raceModel->getRaceName($raceName);
+
+        $heroCreated = $heroModel->createHero(
+            $lastname,
+            $firstname,
+            $classData['id'],
+            $raceData['id'],
+            $biography,
+            $classData['base_pv'],
+            $classData['base_mana'],
+            $classData['strength'],
+            $classData['initiative']
+        );
+
+        if ($heroCreated) {
+            $_SESSION['user']['hero'] = $heroModel->getHeroByUserId($_SESSION['user']['id']);
+            $levelModel = new levelModel();
+            $level = $levelModel -> getNextLevelById($_SESSION['user']['hero']['hero_id'], $_SESSION['user']['hero']['class_id']);
+            if ($level){
+                $_SESSION['user']['hero']['nextLevel'] = $level;
+            }
+            $chapter = $heroModel->getChapterByHeroId( $_SESSION['user']['hero']['hero_id']);
+            if ($chapter) {
+                $_SESSION['Chapitre'] = $chapter["chapter"]; 
+            }
+            header("Location: /DungeonXplorer/");
         }
     }
     
