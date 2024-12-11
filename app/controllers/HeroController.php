@@ -69,23 +69,25 @@ class HeroController extends Controller {
         } else {
             $this->view('pages/create', ['error' => 'Classe non valide.']);
         }
-    }
+    }    
 
     public function updateStats() {
+        ob_clean();
+        header('Content-Type: application/json');
         $data = json_decode(file_get_contents('php://input'), true);
     
         if (isset($_SESSION['user']['hero'])) {
             $heroId = $_SESSION['user']['hero']['hero_id'];
             $pv = $data['pv'] ?? 0;
             $mana = $data['mana'] ?? 0;
-            $xp = $data['xp'] ?? 0;
+            $xp = intval($data['xp']) ?? 0;
     
             $heroModel = new Hero();
             $levelModel = new levelModel();
-            
+    
             $currentLevel = $_SESSION['user']['hero']['current_level'];
             $classId = $_SESSION['user']['hero']['class_id'];
-            $currentXp = $_SESSION['user']['hero']['xp'] + $xpGained;
+            $currentXp = $_SESSION['user']['hero']['xp'] + $xp;
     
             $level = $levelModel->getNextLevelById($heroId, $classId);
             $remainingXp = $currentXp;
@@ -96,7 +98,7 @@ class HeroController extends Controller {
                 $manaMax = $_SESSION['user']['hero']['mana_max'] + $level['mana_bonus'];
                 $strength = $_SESSION['user']['hero']['strength'] + $level['strength_bonus'];
                 $initiative = $_SESSION['user']['hero']['initiative'] + $level['initiative_bonus'];
-                $remainingXp -= $nextLevel['required_xp'];
+                $remainingXp -= $level['required_xp'];
     
                 $updateSuccess = $heroModel->updateHeroStatsAndLevel(
                     $heroId, 
@@ -114,11 +116,22 @@ class HeroController extends Controller {
                     $_SESSION['user']['hero']['mana_max'] = $manaMax;
                     $_SESSION['user']['hero']['strength'] = $strength;
                     $_SESSION['user']['hero']['initiative'] = $initiative;
-                    $_SESSION['user']['hero']['xp'] = $xp - $level['required_xp'];
+                    $_SESSION['user']['hero']['xp'] = $remainingXp;
     
-                    echo json_encode(['success' => true]);
+                    echo json_encode([
+                        'success' => true,
+                        'modalContent' => [
+                            'newLevel' => $newLevel,
+                            'pvBonus' => $level['pv_bonus'],
+                            'manaBonus' => $level['mana_bonus'],
+                            'strengthBonus' => $level['strength_bonus'],
+                            'initiativeBonus' => $level['initiative_bonus']
+                        ]
+                    ]);
+                    exit; 
                 } else {
                     echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour du niveau.']);
+                    exit;
                 }
             } else {
                 $updateSuccess = $heroModel->updateHeroStats($heroId, $pv, $mana, $xp);
@@ -128,14 +141,22 @@ class HeroController extends Controller {
                     $_SESSION['user']['hero']['current_mana'] = $mana;
     
                     echo json_encode(['success' => true]);
+                    exit;
                 } else {
                     echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour des stats.']);
+                    exit;
                 }
             }
         } else {
             echo json_encode(['success' => false, 'message' => 'Héros introuvable dans la session.']);
+            exit;
         }
     }
+    
+
+
+    
+
     public function updateGold() {
         $data = json_decode(file_get_contents('php://input'), true);
     

@@ -7,19 +7,39 @@
         <div id="inventoryModal" class="modal">
             <div class="modal-content">
                 <span class="close-button" id="closeModalButton">&times;</span>
-                <h3>Inventaire</h3>
                 <div class="inventory-container">
                     <ul id="inventoryList" class="inventory-list"></ul>
                     <div id="itemDetails" class="item-details">
-                        <h4>Détails de l'objet</h4>
-                        <p><strong>Nom :</strong> <span id="itemName">-</span></p>
-                        <p><strong>Type :</strong> <span id="itemType">-</span></p>
+                        <div class="item-header">
+                            <img id="itemImage" src="">
+                            <div class="text-container">
+                                <p><strong>Nom :</strong> <span id="itemName">-</span></p>
+                                <p><strong>Type :</strong> <span id="itemType">-</span></p>
+                            </div>
+                        </div>
                         <p><strong>Description :</strong> <span id="itemDescription">-</span></p>
                         <p><strong>Poids :</strong> <span id="itemWeight">-</span></p>
                         <p><strong>Valeur en or :</strong> <span id="itemGoldValue">-</span></p>
                         <p><strong>Quantité :</strong> <span id="itemQuantity">-</span></p>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!--Modal de passage a niveaux-->
+
+        <div id="levelUpModal" class="modal">
+            <div class="modal-content">
+                <h3>Félicitations, vous avez atteint un nouveau niveau !</h3>
+                <p>Vous êtes maintenant au niveau <strong><span id="level"></span></strong>.</p>
+                <p>Voici vos nouveaux bonus :</p>
+                <ul>
+                <li>PV maximum : <strong>+<span id="newPVBonus"></<span></strong></li>
+                <li>Mana maximum : <strong>+<span id="newManaBonus"></<span></strong></li>
+                <li>Force : <strong>+<span id="newStrenghtBonus"></<span></strong></li>
+                <li>Initiative : <strong>+<span id="newSpeedBonus"></<span></strong></li>
+                </ul>
+                <button id="continueButton" href="">Continuer l'aventure</button>
             </div>
         </div>
 
@@ -109,8 +129,8 @@
 
                 <div class="combat-actions" id="combatActions" style="display: none;">
                     <div id="combatInfo">
-                        <p><strong>Héros : </strong><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span> | PV : <span id="heroPv"></span> / <span id="heroPvMax"></span> | Mana : <span id="heroMana"></span> / <span id="heroManaMax"></span></p>
-                        <p><strong>Monstre : </strong><span id="monsterName"><?= htmlspecialchars($_SESSION['monster']['name'])?></span> | PV : <span id="monsterPv"></span> / <span id="monsterPvMax"></span></p>
+                        <p><strong>Héros : </strong><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span> | <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" /> : <span id="heroPv"></span> / <span id="heroPvMax"></span> | Mana : <span id="heroMana"></span> / <span id="heroManaMax"></span></p>
+                        <p><strong>Monstre : </strong><span id="monsterName"><?= htmlspecialchars($_SESSION['monster']['name'])?></span> | <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" />  : <span id="monsterPv"></span> / <span id="monsterPvMax"></span></p>
                     </div>
                     <div id="combatMessages" class="combat-messages"></div>
                     <div class="combat-buttons">
@@ -118,10 +138,12 @@
                             <option value="primary">Arme principale : <?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_name']) ?></option>
                             <option value="secondary">Arme secondaire : <?= htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_name']) ?></option>
                         </select>
-                        <button id="attackButton">Attaquer</button>
-                        <button id="useSpellButton" data-spells='<?= json_encode($_SESSION['user']['hero']['Codex'] ?? []) ?>'>Lancer un sort</button>
-                        <button id="useItemButton" data-inventory='<?= json_encode($_SESSION['user']['inventoryCons'])?>'>Utiliser un consommable</button>
-                        <button id="runButton">Fuir</button>
+                        <div id="ActionButton">
+                            <button id="attackButton"><img src="../../public/assets/PixelArt/Arme.png" width="42" height="42" /></button>
+                            <button id="useSpellButton" data-spells='<?= json_encode($_SESSION['user']['hero']['Codex'] ?? []) ?>'>Lancer un sort</button>
+                            <button id="useItemButton" data-inventory='<?= json_encode($_SESSION['user']['inventoryCons'])?>'><img src="../../public/assets/PixelArt/Consomable.png" width="42" height="42" /></button>
+                            <button id="runButton"><img src="../../public/assets/PixelArt/Fuite.png" width="42" height="42" /></button>
+                        </div>
                     </div>
                 </div>
 
@@ -135,7 +157,7 @@
                 </div>
             </div> 
             <script src="../../public/assets/js/lootSystem.js"></script>
-            <script src="../../public/assets/js/combatSystem.js"></script>
+            <script src="../../public/assets/js/combat.js"></script>
         <?php elseif($chapter['chapter_type'] === 'npc_interaction' || $chapter['chapter_type'] === 'merchent'): ?>
             <div class="npc-container" id="npcContainer"
                 data-dialogues='<?= json_encode($_SESSION['npc']['dialogues'] ?? []) ?>'
@@ -234,5 +256,5 @@
     </div>
 </main>
 <script src="../../public/assets/js/typewritingSystem.js"></script>
-<script src="../../public/assets/js/modalSystem.js"></script>
+<script src="../../public/assets/js/modal.js"></script>
 

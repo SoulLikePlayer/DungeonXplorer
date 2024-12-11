@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const itemWeight = document.getElementById('itemWeight');
     const itemGoldValue = document.getElementById('itemGoldValue');
     const itemQuantity = document.getElementById('itemQuantity');
+    const itemImage = document.getElementById('itemImage');
 
     function openModal() {
         modal.style.display = 'flex';
@@ -39,6 +40,13 @@ document.addEventListener('DOMContentLoaded', function () {
         itemWeight.textContent = item.poids;
         itemGoldValue.textContent = item.gold_value;
         itemQuantity.textContent = item.quantity;
+
+        if (item.imageName) {
+            itemImage.src = `../../public/assets/PixelArt/${item.imageName}`;
+            itemImage.style.display = 'block';
+        } else {
+            itemImage.style.display = 'none'; 
+        }
     }
 
     function closeModal() {

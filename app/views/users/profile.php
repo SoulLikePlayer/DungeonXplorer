@@ -11,7 +11,7 @@
 <p>Nom d'utilisateur : <?= htmlspecialchars($_SESSION['user']['username']) ?></p>
 <p>Email : <?= htmlspecialchars($_SESSION['user']['email']) ?></p>
 
-<a href="/DungeonXplorer/user/edit/<?= $_SESSION['user']['id'] ?>">
+<a href="/DungeonXplorer/user/edit">
     <button>Modifier le profil</button>
 </a>
 

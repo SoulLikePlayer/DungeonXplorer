@@ -187,7 +187,6 @@ try{
                         displayCombatMessage(`${user.name} se soigne de ${params[0]} points.`);
                         break;
                     case 'heal_user_per_turn':
-                        console.log("test");
                         user.activeBonuses.push({ type: "heal_user_turn", value: parseInt(params[0]), duration : parseInt(params[1])})
                         displayCombatMessage(`${user.name} se soigne de ${params[0]} points pendant ${params[1]}.`);
                         break;
@@ -586,6 +585,9 @@ try{
             displayCombatMessage(`${monster.name} a était tuée`);
             endFight(hero, monster, nextChapterWin, consumablesData);
 
+            document.getElementById('ActionButton').style.display = 'none';
+
+
             const continueButton = document.createElement('button');
             continueButton.textContent = "Continuer l'aventure";
             continueButton.id = "continueButton";
@@ -697,6 +699,7 @@ try{
                 mana: hero.mana,
                 xp : hero.xp
             }
+
             fetch('/DungeonXplorer/hero/update', {
                 method: 'POST',
                 headers: {
@@ -736,8 +739,10 @@ try{
         const data = {
             pv: hero.pv,
             mana: hero.mana,
-            xp: hero.xp
+            xp: parseInt(hero.xp, 10),
         };
+        console.log( JSON.stringify(data));
+
     
         fetch('/DungeonXplorer/hero/update', {
             method: 'POST',
@@ -748,15 +753,25 @@ try{
         })
         .then(response => response.json())  
         .then(data => {
+            console.log('Réponse JSON parsée :', data);
             if (data.success) {
-                console.log(`Héros mis à jour avec succès.`);
+                if (data.modalContent) {
+                    const levelModal = document.getElementById('levelUpModal');
+
+                    levelModal.style.display="flex";
+
+                    document.getElementById("level").textContent=modalContent.
+
+                    document.getElementById("continueButton").href = `/DungeonXplorer/chapter/view/${nextChapterWin}`
+                }
             } else {
-                console.error(`Erreur lors de la mise à jour du héros.`);
+                console.error('Erreur:', data.message);
             }
         })
         .catch(error => {
             console.error('Erreur de communication avec le serveur:', error);
         });
+        
     
         saveConsumablesState(consumablesData);
 

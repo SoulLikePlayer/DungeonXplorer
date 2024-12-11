@@ -97,15 +97,9 @@ class UserController extends Controller {
     }
 
     // Afficher le formulaire pour éditer les informations de l'utilisateur
-    public function edit($id) {
+    public function edit() {
         $userModel = new User();
-        $user = $userModel->getUserById($id);
-        
-        // Si l'utilisateur est introuvable ou si ce n'est pas l'utilisateur connecté
-        if (!$user || $user['id'] !== $_SESSION['user']['id']) {
-            header('Location: /DungeonXplorer');
-            exit;
-        }
+        $user = $userModel->getUserById( $_SESSION['user']['id']);
 
         $this->view('users/edit', ['user' => $user]);
     }

@@ -16,6 +16,8 @@ class InventoryController extends Controller {
     }
 
     public function saveLoot() {
+        ob_clean();
+        header('Content-Type: application/json');
         $data = json_decode(file_get_contents('php://input'), true);
     
         if (isset($data['itemId']) && isset($data['quantity']) && isset($_SESSION['user']['id'])) {
@@ -33,6 +35,7 @@ class InventoryController extends Controller {
     }
 
     public function updateConsumables() {
+        ob_clean();
         $data = json_decode(file_get_contents('php://input'), true);
         
         $heroId = $_SESSION['user']['id'];

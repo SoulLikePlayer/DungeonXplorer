@@ -11,12 +11,12 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Pirata One' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-    <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/StyleGeneraux.css">
+    <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/Style.css">
     <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/Combat.css">
     <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/NPC.css">
     <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/exploration.css">
     <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/merchant.css">
-    <link rel="icon" href="../../../../DungeonXplorer/public/assets/image/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../../../../DungeonXplorer/public/assets/image/Logo.png" type="image/x-icon">
 </head>
 <body>
     <?php
@@ -48,7 +48,7 @@ session_start();
         $router->addRoute('user/handleLogin', 'UserController@handleLogin');
         $router->addRoute('user/logout', 'UserController@logout');
         $router->addRoute('user/profile', 'UserController@profile');
-        $router->addRoute('user/edit/{id}', 'UserController@edit');         // Route pour éditer un utilisateur
+        $router->addRoute('user/edit', 'UserController@edit');         // Route pour éditer un utilisateur
         $router->addRoute('user/update/{id}', 'UserController@update');     // Route pour mettre à jour un utilisateur
         $router->addRoute('user/delete', 'UserController@delete');     // Route pour supprimer un utilisateur
 
