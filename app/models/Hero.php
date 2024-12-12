@@ -67,6 +67,7 @@ class Hero extends Model {
             h.id AS hero_id,
             h.lastname AS hero_lastname,
             h.firstname AS hero_firstname,
+            h.biography,
             h.class_id,
             c.name AS class_name,
             h.race_id,

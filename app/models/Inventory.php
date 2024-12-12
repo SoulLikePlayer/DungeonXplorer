@@ -54,7 +54,7 @@ class Inventory extends Model {
 
         $_SESSION['user']['hero']['Codex'] = [];
         foreach($resultCodex as $codex){
-            $spellQuery = "SELECT s.id, s.codex_id, s.name, s.mana_cost, s.level_required, s.effect_function
+            $spellQuery = "SELECT s.id, s.codex_id, s.name, s.effect, s.mana_cost, s.level_required, s.effect_function
             FROM Spell s JOIN Codex c ON s.codex_id = c.item_id JOIN Items i ON c.item_id = i.id
             WHERE i.name = :codex_name;";
 

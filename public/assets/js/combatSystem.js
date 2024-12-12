@@ -23,6 +23,7 @@ try{
             xp : 0,
             isParalyzed : Boolean(false),
             isBind : Boolean(false),
+            isImmobelize: Boolean(false),
             valIncrease: []
         };
 
@@ -95,35 +96,35 @@ try{
         });
     }
 
-    function openSpellModal(codexData, hero, monster, consumablesData){
+    function openSpellModal(codexData, hero, monster, consumablesData) {
         const spellModal = document.getElementById('spellModal');
         const spellList = document.getElementById('spellList');
-
-        spellModal.style.display='flex';
+    
+        spellModal.style.display = 'flex';
         spellList.innerHTML = '';
-
+    
         const codexItems = Object.values(codexData);
-
+    
         if (codexItems.length === 0) {
-            spellList.innerHTML ="<li>Aucun codex dans l\'inventaire.</li>";
-        }else{
+            spellList.innerHTML = "<li>Aucun codex dans l'inventaire.</li>";
+        } else {
             codexItems.forEach(item => {
-                itemArray = Object.values(item)
-                const listItem = document.createElement('li')
+                const itemArray = Object.values(item);
+                const listItem = document.createElement('li');
                 listItem.textContent = `${item.name} :`;
                 spellList.appendChild(listItem);
+    
                 itemArray[3].forEach(spell => {
-                    if (spell.level_required <= hero.level){
+                    if (spell.level_required <= hero.level) {
                         const spellItem = document.createElement('button');
                         spellItem.className = "SpellButton";
                         spellItem.textContent = `${spell.name}`;
                         spellItem.addEventListener('click', function () {
-                            analyzeEffectFunction(spell.effect_function, spell.mana_cost,hero, monster, consumablesData);
-                            spellModal.style.display = 'none';
+                            showSpellDetails(spell, hero, monster, consumablesData, codexData);
                         });
-                        spellList.append(spellItem);
+                        spellList.appendChild(spellItem);
                     }
-                })
+                });
             });
         }
 
@@ -137,9 +138,38 @@ try{
             }
         });
     }
+    
+    function showSpellDetails(spell, hero, monster, consumablesData, codexData) {
+        const spellModal = document.getElementById('spellModal');
+    
+        const spellList = document.getElementById('spellList');
+        spellList.innerHTML = `
+            <div class="spell-details">
+                <h4>${spell.name}</h4>
+                <p><strong>Description :</strong> ${spell.effect}</p>
+                <p><strong>Coût en Mana :</strong> ${spell.mana_cost}</p>
+                <p><strong>Niveau Requis :</strong> ${spell.level_required}</p>
+                <div class="spell-actions">
+                    <button id="useSpellButton" class="SpellButton">Utiliser</button>
+                    <button id="cancelSpellButton" class="CancelButton">Annuler</button>
+                </div>
+            </div>
+        `;
+    
+        document.getElementById('useSpellButton').addEventListener('click', function () {
+            analyzeEffectFunction(spell.effect_function, spell.mana_cost, hero, monster, consumablesData);
+            spellModal.style.display = 'none';
+        });
+    
+        document.getElementById('cancelSpellButton').addEventListener('click', function () {
+            openSpellModal(codexData, hero, monster, consumablesData); 
+        });
+    }
+    
 
     function analyzeEffectFunction(effectFunction, effectCost, user, cible, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData) {
         if ((user.mana - effectCost) >= 0){
+            console.log("2eme : "+effectFunction)
             user.mana -= effectCost
             document.getElementById("heroMana").textContent = user.mana
             const effects = effectFunction.split(';').map(effect => effect.trim());
@@ -147,11 +177,12 @@ try{
                 const match = effect.match(/(\w+)\(([^)]+)\)/);
                 if (!match) return;
                 const effectName = match[1];
-                const params = match[2].split(',').map(param => param.trim());
+                console.log("3eme : "+effectName);
+                const params = match[2].split(',').map(param => parseInt(param.trim()));
                 switch (effectName) {
                     case 'burst':
                         cible.activeDebuff.push({ type: "burst", duration: parseInt(params[0]) });
-                        displayCombatMessage(`${cible.name} subit le débuff "Burst" pendant ${params[0]} tours.`);
+                        displayCombatMessage(`${cible.name} subit un effet de brûlure pendant ${params[0]} tours.`);
                         break;
                     case 'reduce_attack':
                         cible.activeDebuff.push({ type: "attack", value: params[0], duration: params[1]});
@@ -160,13 +191,15 @@ try{
                     case 'reduce_perception':
                         cible.activeDebuff.push({ type: "perception", value : params[0], duration: params[1]});
                         displayCombatMessage(`${cible.name} voit sont initiative réduit de ${params[0]} pour ${params[1]} tours.`);
-                        console.log(`Réduire la perception de ${cible.name} de ${params[0]} pour ${params[1]} tours.`);
                         break;
-                    case 'reduce_moral':
-                        console.log(`Réduire le moral de ${cible.name} de ${params[0]} pour ${params[1]} tours.`);
+                    case 'reduce_morale':
+                        cible.activeDebuff.push({ type: "attack", value: params[0], duration: params[1]});
+                        cible.activeDebuff.push({ type: "perception", value : params[0], duration: params[1]});
+                        displayCombatMessage(`${cible.name} est démoraliser pour ${params[1]}`);
                         break;
-                    case 'reduce_resistances':
-                        console.log(`Réduire la résistance de ${cible.name} de ${params[0]} pour ${params[1]} tours.`);
+                    case 'reduce_resistance':
+                        cible.activeDebuff.push({ type: "resistance", value : params[0], duration: params[1]});
+                        displayCombatMessage(`${cible.name} voit sa résistance réduite de ${params[0]} pendant ${params[1]}`);
                         break;
                     case 'paralyze':
                         cible.activeDebuff.push({ type: "paralyze", duration: parseInt(params[0]) });
@@ -243,7 +276,7 @@ try{
                         displayCombatMessage(`La prochaine attaque magique de ${user.name} fera le double de ses dégâts.`);
                         break;
                     case 'flame_protection':
-                        cible.activeDebuff.push({ type: "flame_protection", duration: parseInt(params[0]) });
+                        cible.activeDebuff.push({ type: "burst", duration: parseInt(params[0]) });
                         displayCombatMessage(`${user.name} se protège avec un voile de feu.`);
                         break;
                     case 'increase_speed':
@@ -266,31 +299,42 @@ try{
                         cible.activeDebuff.push({ type: "blind", duration: parseInt(params[0]) });
                         displayCombatMessage(`${cible.name} est aveuglé pendant ${params[0]} tours.`);
                         break;
-                    case 'damage':
-                        const dieRoll = rollDie();
-                        const rawDamage = dieRoll + parseInt(params[0]);
-                        const defense = calculateDefense(cible);
-                        const finalDamage = Math.max(0, rawDamage - defense);
-        
-                        displayCombatMessage(
-                            `${user.name} utilise un sort ! Lancer de dé : ${dieRoll}, ` +
-                            `dégâts initiaux : ${rawDamage}, défense de ${cible.name} : ${defense}. ` +
-                            `<strong>Dégâts finaux : ${finalDamage}</strong>.`
-                        );
-        
-                        cible.pv -= finalDamage;
-                        document.getElementById('monsterPv').textContent = Math.max(0, cible.pv);
-        
-                        if (cible.pv <= 0) {
-                            displayCombatMessage(`${cible.name} a été vaincu par le sort !`);
-                            endFight(user, cible, nextChapterWin, consumablesData);
-                        } else {
-                            performMonsterAttack(user, cible, nextChapterWin, nextChapterLose, nextChapterRun);
-                        }
-                        break;
+                        case 'damage':
+                            const dieRoll = rollDie();
+                            const rawDamage = dieRoll + parseInt(params[0]);
+                            const defense = calculateDefense(cible);
+                        
+                            let finalDamage = Math.max(0, rawDamage - defense);
+                            const soulRecoveryIndex = user.activeBonuses.findIndex(bonus => bonus.type === "magick_attack" && bonus.multiply === 2);
+                            if (soulRecoveryIndex !== -1) {
+                                finalDamage *= user.activeBonuses[soulRecoveryIndex].multiply;
+                                displayCombatMessage(`<strong>Effet Soul Recovery activé : Dégâts multipliés par ${user.activeBonuses[soulRecoveryIndex].multiply} !</strong>`);
+                                user.activeBonuses[soulRecoveryIndex].duration -= 1;
+                                if (user.activeBonuses[soulRecoveryIndex].duration <= 0) {
+                                    user.activeBonuses.splice(soulRecoveryIndex, 1);
+                                }
+                            }
+                        
+                            displayCombatMessage(
+                                `${user.name} utilise un sort ! Lancer de dé : ${dieRoll}, ` +
+                                `<br \>dégâts initiaux : ${rawDamage}, défense de ${cible.name} : ${defense}.<br \> ` +
+                                `<br \><strong>Dégâts finaux : ${finalDamage}</strong>.`
+                            );
+                        
+                            cible.pv -= finalDamage;
+                            document.getElementById('monsterPv').textContent = Math.max(0, cible.pv);
+                        
+                            if (cible.pv <= 0) {
+                                displayCombatMessage(`${cible.name} a été vaincu par le sort !`);
+                                endFight(user, cible, nextChapterWin, consumablesData);
+                            } else {
+                                performMonsterAttack(user, cible, nextChapterWin, nextChapterLose, nextChapterRun);
+                            }
+                            break;                        
                     default:
                         console.log(`Effet inconnu : ${effectName} avec paramètres ${params.join(', ')}.`);
                 }
+                console.log(user.activeBonuses, cible.activeDebuff);
             });
         } else {
             displayCombatMessage(`${user.name} ne dispose pas assez de mana pour lancer le sort !`);
@@ -409,6 +453,10 @@ try{
                         debuffMessages.push(`${character.name} est lié et ne peut pas agir.`);
                     }
                     break;
+                case 'immobilize':
+                    character.isImmobelize = Boolean(true);
+                    debuffMessages.push(`${character.name} est immobiliser, il ne peut pas attaquer`);
+                    break;
                 case "reduce_moral":
                     debuffMessages.push(`${character.name} subit une réduction de moral : <span style="color:red;">-${debuff.value}</span>.`);
                     break;
@@ -477,7 +525,7 @@ try{
             .reduce((total, bonus) => total + bonus.value, 0);
     
         const debuffDefense = character.activeDebuff
-            .filter(debuff => debuff.type === 'reduce_resistances')
+            .filter(debuff => debuff.type === 'resistance')
             .reduce((total, debuff) => total + debuff.value, 0);
     
         baseDefense += bonusDefense - debuffDefense;
@@ -568,6 +616,12 @@ try{
             performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
             return;
         }
+
+        if(hero.isImmobelize == Boolean(true)){
+            hero.isImmobelize = Boolean(false);
+            performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
+            return;
+        }
         const weaponChoice = document.getElementById('weaponChoice').value;
         const weaponBonus = getWeaponBonus(hero, weaponChoice);
 
@@ -578,6 +632,11 @@ try{
 
         displayCombatMessage(`${hero.name} attaque avec ${weaponBonus.weaponName} (<span style="color:green;">+${weaponBonus.damageBonus}</span>)  et inflige ${damage} dégâts.`);
         monster.pv -= damage;
+        if(monster.isImmobelize == true && damage > 0){
+            monster.isImmobelize = Boolean(false)
+            monster.activeDebuff.filter(name => debuff.name !== 'debuff => debuff.duration > 0');
+            displayCombatMessage(`${monster.name} n'est plus immobilisé !`);
+        }
         document.getElementById('monsterPv').textContent = Math.max(0, monster.pv);
 
 
@@ -626,6 +685,11 @@ try{
 
         if (monster.isBind) {
             monster.isBind = false;
+            return;
+        }
+
+        if(monster.isImmobelize){
+            monster.isImmobelize = false;
             return;
         }
 

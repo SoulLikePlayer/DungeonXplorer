@@ -1,4 +1,4 @@
-<main>
+<main data-chapter-type="<?= htmlspecialchars($chapter['chapter_type']) ?>">
     <div class="story-container">
         <!-- Bouton pour afficher l'inventaire général -->
         <button id="showInventoryButton" data-inventory='<?= json_encode($_SESSION['user']['inventory'] ?? []) ?>'>Afficher l'inventaire</button>
@@ -57,7 +57,6 @@
         <div id="spellModal" class="modal">
             <div class="modal-content">
                 <span class="close-button" id="closeCodexModalButton">&times;</span>
-                <h3>Sort & Codex</h3>
                 <ul id="spellList"></ul>
             </div>
         </div>
@@ -65,7 +64,7 @@
         <!-- Modal de négociation -->
         <div id="negotiationModal" class="modal">
             <div class="modal-content">
-            <span class="close-button" id="closeCodexModalButton">&times;</span>
+            <span class="close-button">&times;</span>
             <h2>Négocier avec le marchand</h2>
                 <div id="diceRollResult">
                     <p><strong>Marchand :</strong> <span id="merchantRoll">0</span></p>
@@ -87,12 +86,6 @@
         <div class="chapter-content">
             <p><?= nl2br(htmlspecialchars($chapter['content'] ?? 'Aucun contenu disponible')) ?></p> 
         </div>
-
-        <?php if ($chapter['image']): ?>
-            <div class="chapter-image">
-                <img src="<?= htmlspecialchars($chapter['image']) ?>" alt="Image du chapitre" class="img-fluid">
-            </div>
-        <?php endif; ?>
 
         <?php if ($chapter['chapter_type'] === 'combat'): ?>
             <div class="combat-container" id="combatContainer">
@@ -157,14 +150,15 @@
                 </div>
             </div> 
             <script src="../../public/assets/js/lootSystem.js"></script>
-            <script src="../../public/assets/js/combat.js"></script>
+            <script src="../../public/assets/js/combatSystem.js"></script>
         <?php elseif($chapter['chapter_type'] === 'npc_interaction' || $chapter['chapter_type'] === 'merchent'): ?>
             <div class="npc-container" id="npcContainer"
                 data-dialogues='<?= json_encode($_SESSION['npc']['dialogues'] ?? []) ?>'
                 data-first-sentence="<?= htmlspecialchars($_SESSION['npc']['INTRO_SENTENCE']) ?>"
                 data-next-chapter-id="<?= htmlspecialchars($links[0]['next_chapter_id'] ?? '#') ?>"
                 data-chapter-id="<?= htmlspecialchars($chapter['id']) ?>"
-                data-next-chapter-description="<?= htmlspecialchars($links[0]['description'] ?? '') ?>">
+                data-next-chapter-description="<?= htmlspecialchars($links[0]['description'] ?? '') ?>"
+                data-ost="<?=$_SESSION['npc']['OST'] === null ?  null : htmlspecialchars($_SESSION['npc']['OST']) ?>">
                 <h3><?= htmlspecialchars($_SESSION['npc']['name']) ?></h3>
                 <h2 class="npc-dialogue"></h2>
                 <?php if ($chapter['chapter_type'] === 'merchent'): ?>
@@ -257,4 +251,4 @@
 </main>
 <script src="../../public/assets/js/typewritingSystem.js"></script>
 <script src="../../public/assets/js/modal.js"></script>
-
+<script src="../../public/assets/js/songSystem.js"></script>
