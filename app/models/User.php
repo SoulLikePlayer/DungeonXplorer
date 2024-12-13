@@ -21,6 +21,8 @@ class User extends Model {
         return $stmt->execute();
     }
 
+    
+
     // Vérifier si l'utilisateur existe déjà par son nom d'utilisateur ou email
     public function userExists($username, $email) {
         $db = $this->getDatabaseConnection();

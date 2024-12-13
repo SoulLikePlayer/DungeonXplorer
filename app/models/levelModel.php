@@ -3,7 +3,7 @@ class LevelModel extends Model{
     public function getAllLevel(){
         $db = $this->getDatabaseConnection();
 
-        $levelQuery='SELECT * FROM Level';
+        $levelQuery='SELECT * FROM Level CROSS JOIN LevelBonus';
 
         $stmtLevel = $db->prepare($levelQuery);
         $stmtLevel->execute();
@@ -14,9 +14,9 @@ class LevelModel extends Model{
     public function getNextLevelById($id, $classId) {
         $db = $this->getDatabaseConnection();
 
-        $levelQuery = 'SELECT l.*
-                        FROM Level l JOIN Hero h ON h.class_id = l.class_id
-                        WHERE l.class_id = :classId
+        $levelQuery = 'SELECT l.*, lb.*
+                        FROM Level l CROSS JOIN LevelBonus lb JOIN Hero h ON h.class_id = lb.class_id
+                        WHERE lb.class_id = :classId
                         AND h.id = :id
                         AND l.level = h.current_level+1';
         $stmtLevel = $db->prepare($levelQuery);
@@ -36,7 +36,7 @@ class LevelModel extends Model{
     public function getListLevelByClassId($classId){
         $db = $this->getDatabaseConnection();
 
-        $levelClassQuery = 'SELECT * FROM Level WHERE class_id =:classId';
+        $levelClassQuery = 'SELECT * FROM Level CROSS JOIN LevelBonus WHERE class_id =:classId';
 
         $stmtLevel = $db->prepare($levelClassQuery);
         $stmtLevel -> bindParam(':classId', $classId);

@@ -146,6 +146,27 @@ class Hero extends Model {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function startSession($playerId) {
+        $db = $this->getDatabaseConnection();
+        
+        $query = 'INSERT INTO PlayerSessions (player_id, session_start) VALUES (:player_id, NOW())';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':player_id', $playerId, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        return $db->lastInsertId();
+    }
+    
+    public function endSession($sessionId) {
+        $db = $this->getDatabaseConnection();
+    
+        $query = 'UPDATE PlayerSessions SET session_end = NOW() WHERE id = :session_id';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':session_id', $sessionId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+    
+
     public function updateHeroStats($heroId, $pv, $mana, $xp) {
         $db = $this->getDatabaseConnection();
         $query = 'UPDATE Hero_Story 

@@ -66,6 +66,10 @@ class UserController extends Controller {
                 if ($chapter) {
                     $_SESSION['Chapitre'] = $chapter["chapter"]; 
                 }
+
+                $sessionId = $heroModel->startSession($_SESSION['user']['hero']['hero_id']);
+                $_SESSION["session_id"] = $sessionId;
+
                 header("Location: /DungeonXplorer/inventory/loadInventory");
                 exit;
             }
@@ -81,6 +85,10 @@ class UserController extends Controller {
     // Déconnexion
     public function logout() {
         unset($_SESSION['user']);
+        if(isset($_SESSION['session_id'])){
+            $heroModel = new Hero();
+            $heroModel->endSession($_SESSION['session_id']);
+        }
         session_destroy();
         header('Location: /DungeonXplorer');
     }

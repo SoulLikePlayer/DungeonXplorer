@@ -61,6 +61,7 @@ class HeroController extends Controller {
                 if ($chapter) {
                     $_SESSION['Chapitre'] = $chapter["chapter"]; 
                 }
+                
                 header("Location: /DungeonXplorer/");
                 exit;
             } else {
@@ -92,7 +93,7 @@ class HeroController extends Controller {
             $level = $levelModel->getNextLevelById($heroId, $classId);
             $remainingXp = $currentXp;
     
-            if ($level && $xp >= $level['required_xp']) {
+            if ($level && $remainingXp >= $level['required_xp']) {
                 $newLevel = $currentLevel + 1;
                 $pvMax = $_SESSION['user']['hero']['pv_max'] + $level['pv_bonus'];
                 $manaMax = $_SESSION['user']['hero']['mana_max'] + $level['mana_bonus'];
@@ -116,7 +117,7 @@ class HeroController extends Controller {
                     $_SESSION['user']['hero']['mana_max'] = $manaMax;
                     $_SESSION['user']['hero']['strength'] = $strength;
                     $_SESSION['user']['hero']['initiative'] = $initiative;
-                    $_SESSION['user']['hero']['xp'] = $remainingXp;
+                    $_SESSION['user']['hero']['xp'] = 0;
     
                     echo json_encode([
                         'success' => true,

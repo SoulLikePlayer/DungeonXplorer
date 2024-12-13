@@ -36,7 +36,7 @@ session_start();
         require 'app/controllers/HeroController.php';
         require 'app/controllers/AboutController.php';
 
-        $router = new Router('DungeonXplorer');
+        $router = Router::getInstance('DungeonXplorer');
 
         /*Route de la page principal*/
         $router->addRoute('', 'HomeController@index');
@@ -53,7 +53,7 @@ session_start();
         $router->addRoute('user/delete', 'UserController@delete');     // Route pour supprimer un utilisateur
 
         /*Route lié pour l'histoire*/ 
-        $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter'); 
+        $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter', true); 
         $router->addRoute('chapter/reset', 'ChapterController@resetChapter');
 
 

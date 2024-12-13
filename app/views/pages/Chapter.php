@@ -122,10 +122,21 @@
 
                 <div class="combat-actions" id="combatActions" style="display: none;">
                     <div id="combatInfo">
-                        <p><strong>Héros : </strong><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span> | <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" /> : <span id="heroPv"></span> / <span id="heroPvMax"></span> | Mana : <span id="heroMana"></span> / <span id="heroManaMax"></span></p>
-                        <p><strong>Monstre : </strong><span id="monsterName"><?= htmlspecialchars($_SESSION['monster']['name'])?></span> | <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" />  : <span id="monsterPv"></span> / <span id="monsterPvMax"></span></p>
                     </div>
-                    <div id="combatMessages" class="combat-messages"></div>
+                    <div id="combatInfoContainer">
+                        <div id="heroDies-container">
+                            <p><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span><br />
+                            <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" /> : <span id="heroPv"></span> / <span id="heroPvMax"></span><br />
+                            Mana : <span id="heroMana"></span> / <span id="heroManaMax"></span><br />
+                            Résultat <span id="heroDice"></p>
+                        </div>
+                        <div id="combatMessages" class="combat-messages"></div>
+                        <div id="monsterDies-container">
+                            <p><span id="monsterName"><?= htmlspecialchars($_SESSION['monster']['name'])?></span><br />
+                            <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" />  : <span id="monsterPv"></span> / <span id="monsterPvMax"></span><br />
+                            Résultat <span id="monsterDice"></p>
+                        </div>
+                    </div>    
                     <div class="combat-buttons">
                         <select id="weaponChoice">
                             <option value="primary">Arme principale : <?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_name']) ?></option>

@@ -54,11 +54,16 @@ try{
     });
 
     function initializeCombat(hero, monster, consumablesData, nextChapterWin, nextChapterLose, nextChapterRun, codexData) {
-        const heroInitiativeRoll = rollDie() + hero.initiative;
-        const monsterInitiativeRoll = rollDie() + monster.initiative;
+        const initialHeroRoll = rollDie() 
+        const heroInitiativeRoll = initialHeroRoll+ hero.initiative;
 
-        displayCombatMessage(`${hero.name} lance un dé pour l'initiative : ${heroInitiativeRoll}`);
-        displayCombatMessage(`${monster.name} lance un dé pour l'initiative : ${monsterInitiativeRoll}`);
+        const initialMonsterRoll = rollDie()
+        const monsterInitiativeRoll = initialMonsterRoll + monster.initiative;
+
+        const res = afficherNombreAleatoire(initialHeroRoll, initialMonsterRoll, 3000);
+
+        document.getElementById('startCombatButton').style.display = 'none';
+        document.getElementById('combatActions').style.display = 'block';
 
         document.getElementById('monsterPv').textContent = monster.pv;
         document.getElementById('monsterPvMax').textContent = monster.pvMax;
@@ -67,33 +72,46 @@ try{
         document.getElementById('heroMana').textContent = hero.mana;
         document.getElementById('heroManaMax').textContent = hero.manaMax;
 
+        setTimeout(() => {   
+    
+            let firstAttacker = 
+                heroInitiativeRoll > monsterInitiativeRoll || 
+                (heroInitiativeRoll === monsterInitiativeRoll && hero.isThief)
+                    ? 'hero'
+                    : 'monster';
+            displayCombatMessage(
+                `Lancer de d'iniative de ${hero.name}: ${initialHeroRoll} ` +
+                `<span style="color: #85c1e9;">+${hero.initiative}</span>` +
+                ` = Total: <strong>${heroInitiativeRoll}</strong>`
+            );
+    
+            displayCombatMessage(
+                `Lancer de d'iniative de ${monster.name}: ${initialMonsterRoll} ` +
+                `<span style="color: #85c1e9;">+${monster.initiative}</span>` +
+                ` = Total: <strong>${monsterInitiativeRoll}</strong>`
+            );
+            if (firstAttacker === 'monster') {
+                displayCombatMessage(`${monster.name} commence a attaquer !`);
+                performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
+            }else{
+                displayCombatMessage(`${hero.name} commence a attaquer !`);
+            }
 
-        let firstAttacker = 
-            heroInitiativeRoll > monsterInitiativeRoll || 
-            (heroInitiativeRoll === monsterInitiativeRoll && hero.isThief)
-                ? 'hero'
-                : 'monster';
-
-        if (firstAttacker === 'monster') {
-            performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
-        }
-
-        document.getElementById('startCombatButton').style.display = 'none';
-        document.getElementById('combatActions').style.display = 'block';
-
-        document.getElementById('useSpellButton').addEventListener('click', function(){
-            openSpellModal(codexData, hero, monster, consumablesData);
-        })
-
-        document.getElementById('attackButton').addEventListener('click', function () {
-            performHeroAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData);
-        });
-        document.getElementById('runButton').addEventListener('click', function () {
-            attemptEscape(hero, monster, nextChapterRun, nextChapterWin, consumablesData);
-        });
-        document.getElementById('useItemButton').addEventListener('click', function () {
-            openConsumableModal(consumablesData, hero);
-        });
+    
+            document.getElementById('useSpellButton').addEventListener('click', function(){
+                openSpellModal(codexData, hero, monster, consumablesData);
+            })
+    
+            document.getElementById('attackButton').addEventListener('click', function () {
+                performHeroAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData);
+            });
+            document.getElementById('runButton').addEventListener('click', function () {
+                attemptEscape(hero, monster, nextChapterRun, nextChapterWin, consumablesData);
+            });
+            document.getElementById('useItemButton').addEventListener('click', function () {
+                openConsumableModal(consumablesData, hero);
+            });
+        }, 3000);
     }
 
     function openSpellModal(codexData, hero, monster, consumablesData) {
@@ -301,8 +319,9 @@ try{
                         break;
                         case 'damage':
                             const dieRoll = rollDie();
+                            const defenseRoll = rollDie();
                             const rawDamage = dieRoll + parseInt(params[0]);
-                            const defense = calculateDefense(cible);
+                            const defense = calculateDefense(cible, defenseRoll);
                         
                             let finalDamage = Math.max(0, rawDamage - defense);
                             const soulRecoveryIndex = user.activeBonuses.findIndex(bonus => bonus.type === "magick_attack" && bonus.multiply === 2);
@@ -403,6 +422,24 @@ try{
         return Math.floor(Math.random() * 6) + 1;
     }
 
+    function afficherNombreAleatoire(heroResult, monsterResult, duree) {
+        function genererNombreAleatoire() {
+            return Math.floor(Math.random() * 6) + 1;
+        }
+    
+        const interval = setInterval(() => {
+            document.getElementById('heroDice').textContent = genererNombreAleatoire();
+            document.getElementById('monsterDice').textContent = genererNombreAleatoire();
+        }, 100);
+    
+        setTimeout(() => {
+            clearInterval(interval);
+            document.getElementById('heroDice').textContent =heroResult
+            document.getElementById('monsterDice').textContent = monsterResult;
+        }, duree);
+        return true;
+    }
+    
     
     function Debuff(character, hero, monster, nextChapterWin, consumablesData) {
         if (!Array.isArray(character.activeDebuff)) {
@@ -475,12 +512,11 @@ try{
         }
     }    
 
-    function calculateAttack(character) {
+    function calculateAttack(character, dieRoll) {
         if (!Array.isArray(character.activeBonuses)) {
             character.activeBonuses = []; 
         }
     
-        const dieRoll = rollDie();
         let baseAttack = dieRoll + character.strength;
     
         const bonusAttack = character.activeBonuses
@@ -510,12 +546,11 @@ try{
         character.activeBonuses = character.activeBonuses.filter(bonus => bonus.remainingTurns > 0);
     }
 
-    function calculateDefense(character) {
+    function calculateDefense(character, dieRoll) {
         if (!Array.isArray(character.activeBonuses)) {
             character.activeBonuses = []; 
         }
     
-        const dieRoll = rollDie();
         let baseDefense = character.isThief
             ? dieRoll + Math.floor(character.initiative / 2)
             : dieRoll + Math.floor(character.strength / 2);
@@ -625,55 +660,61 @@ try{
         const weaponChoice = document.getElementById('weaponChoice').value;
         const weaponBonus = getWeaponBonus(hero, weaponChoice);
 
-        const attack = calculateAttack(hero) + weaponBonus.damageBonus
-        
-        const defense = calculateDefense(monster);
-        const damage = Math.max(0, attack - defense);
+        const attackRoll = rollDie();
+        const defenseRoll = rollDie();
 
-        displayCombatMessage(`${hero.name} attaque avec ${weaponBonus.weaponName} (<span style="color:green;">+${weaponBonus.damageBonus}</span>)  et inflige ${damage} dégâts.`);
-        monster.pv -= damage;
-        if(monster.isImmobelize == true && damage > 0){
-            monster.isImmobelize = Boolean(false)
-            monster.activeDebuff.filter(name => debuff.name !== 'debuff => debuff.duration > 0');
-            displayCombatMessage(`${monster.name} n'est plus immobilisé !`);
-        }
-        document.getElementById('monsterPv').textContent = Math.max(0, monster.pv);
-
-
-        if (monster.pv <= 0) {
-            displayCombatMessage(`${monster.name} a était tuée`);
-            endFight(hero, monster, nextChapterWin, consumablesData);
-
-            document.getElementById('ActionButton').style.display = 'none';
-
-
-            const continueButton = document.createElement('button');
-            continueButton.textContent = "Continuer l'aventure";
-            continueButton.id = "continueButton";
-            continueButton.addEventListener('click', function () {
-                window.location.href = `/DungeonXplorer/chapter/view/${nextChapterWin}`;
-            });
-            document.getElementById('combatActions').appendChild(continueButton);
-        } else {
+        afficherNombreAleatoire(attackRoll, defenseRoll, 2000);
+        setTimeout(() => {
+            const attack = calculateAttack(hero, attackRoll) + weaponBonus.damageBonus
             
-            const bonusesHealPerTurn = hero.activeBonuses.find(bonus => bonus.type === 'heal_user_turn');
-            if (bonusesHealPerTurn){
-                hero.pv = Math.min(hero.pv + bonusesHealPerTurn.value, hero.pvMax);
-                bonusesHealPerTurn.duration--;
-                hero.activeBonuses.filter(bonus => bonus.duration > 0);
-                displayCombatMessage(`${hero.name} se soigne de ${bonusesHealPerTurn.value}`);
-            }
+            const defense = calculateDefense(monster, defenseRoll);
+            const damage = Math.max(0, attack - defense);
 
-            const debufDrainedHeal = monster.activeDebuff.find(debuff => debuff.type === 'drain_health');
-            if (debufDrainedHeal){
-                monster.pv = Math.max(monster.pv - debufDrainedHeal.damagePerTurn, 1);
-                debufDrainedHeal.duration --
-                monster.activeDebuff.filter(debuff => debuff.duration > 0);
-                displayCombatMessage(`${monster.name} perd ${debufDrainedHeal.damagePerTurn}`)
+            displayCombatMessage(`${hero.name} attaque avec ${weaponBonus.weaponName} (<span style="color:green;">+${weaponBonus.damageBonus}</span>)  et inflige ${damage} dégâts.`);
+            monster.pv -= damage;
+            if(monster.isImmobelize == true && damage > 0){
+                monster.isImmobelize = Boolean(false)
+                monster.activeDebuff.filter(name => debuff.name !== 'debuff => debuff.duration > 0');
+                displayCombatMessage(`${monster.name} n'est plus immobilisé !`);
             }
-            updateBonuses(hero);
-            performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
-        }
+            document.getElementById('monsterPv').textContent = Math.max(0, monster.pv);
+
+
+            if (monster.pv <= 0) {
+                displayCombatMessage(`${monster.name} a était tuée`);
+                endFight(hero, monster, nextChapterWin, consumablesData);
+
+                document.getElementById('ActionButton').style.display = 'none';
+
+
+                const continueButton = document.createElement('button');
+                continueButton.textContent = "Continuer l'aventure";
+                continueButton.id = "continueButton";
+                continueButton.addEventListener('click', function () {
+                    window.location.href = `/DungeonXplorer/chapter/view/${nextChapterWin}`;
+                });
+                document.getElementById('combatActions').appendChild(continueButton);
+            } else {
+                
+                const bonusesHealPerTurn = hero.activeBonuses.find(bonus => bonus.type === 'heal_user_turn');
+                if (bonusesHealPerTurn){
+                    hero.pv = Math.min(hero.pv + bonusesHealPerTurn.value, hero.pvMax);
+                    bonusesHealPerTurn.duration--;
+                    hero.activeBonuses.filter(bonus => bonus.duration > 0);
+                    displayCombatMessage(`${hero.name} se soigne de ${bonusesHealPerTurn.value}`);
+                }
+
+                const debufDrainedHeal = monster.activeDebuff.find(debuff => debuff.type === 'drain_health');
+                if (debufDrainedHeal){
+                    monster.pv = Math.max(monster.pv - debufDrainedHeal.damagePerTurn, 1);
+                    debufDrainedHeal.duration --
+                    monster.activeDebuff.filter(debuff => debuff.duration > 0);
+                    displayCombatMessage(`${monster.name} perd ${debufDrainedHeal.damagePerTurn}`)
+                }
+                updateBonuses(hero);
+                performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
+            }
+        }, 2000)
     }
 
     function performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun) {
@@ -696,34 +737,40 @@ try{
         if (monster.pv <= 0){
             return;
         }
-        const attack = calculateAttack(monster);
-        const defense = calculateDefense(hero);
-        const damage = Math.max(0, attack - defense);
+        const attackRoll = rollDie();
+        const defenseRoll = rollDie();
 
-        displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts.`);
-        hero.pv -= damage;
-        document.getElementById('heroPv').textContent = Math.max(0, hero.pv);
+        afficherNombreAleatoire(attackRoll, defenseRoll, 2000);
+        setTimeout(() => {
+            const attack = calculateAttack(monster, attackRoll);
+            const defense = calculateDefense(hero, defenseRoll);
+            const damage = Math.max(0, attack - defense);
 
-        
-        const bonusesHealPerTurn = hero.activeBonuses.find(bonus => bonus.type === 'heal_user_turn');
-        if (bonusesHealPerTurn){
-            hero.pv = Math.min(hero.pv + bonusesHealPerTurn.value, hero.pvMax);
-            bonusesHealPerTurn.duration--;
-            hero.activeBonuses.filter(bonus => bonus.duration > 0);
-            displayCombatMessage(`${hero.name} se soigne de ${bonusesHealPerTurn.value}`);
-        }
+            displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts.`);
+            hero.pv -= damage;
+            document.getElementById('heroPv').textContent = Math.max(0, hero.pv);
 
-        const debufDrainedHeal = monster.activeDebuff.find(debuff => debuff.type === 'drain_health');
-        if (debufDrainedHeal){
-            monster.pv = Math.max(monster.pv - debufDrainedHeal.damagePerTurn, 1);
-            debufDrainedHeal.duration --
-            monster.activeDebuff.filter(debuff => debuff.duration > 0);
-        }
+            
+            const bonusesHealPerTurn = hero.activeBonuses.find(bonus => bonus.type === 'heal_user_turn');
+            if (bonusesHealPerTurn){
+                hero.pv = Math.min(hero.pv + bonusesHealPerTurn.value, hero.pvMax);
+                bonusesHealPerTurn.duration--;
+                hero.activeBonuses.filter(bonus => bonus.duration > 0);
+                displayCombatMessage(`${hero.name} se soigne de ${bonusesHealPerTurn.value}`);
+            }
 
-        if (hero.pv <= 0) {
-            displayCombatMessage(`${hero.name} a été vaincu !`);
-            setTimeout(() => window.location.href = `/DungeonXplorer/chapter/view/${nextChapterLose}`, 1500);
-        }
+            const debufDrainedHeal = monster.activeDebuff.find(debuff => debuff.type === 'drain_health');
+            if (debufDrainedHeal){
+                monster.pv = Math.max(monster.pv - debufDrainedHeal.damagePerTurn, 1);
+                debufDrainedHeal.duration --
+                monster.activeDebuff.filter(debuff => debuff.duration > 0);
+            }
+
+            if (hero.pv <= 0) {
+                displayCombatMessage(`${hero.name} a été vaincu !`);
+                setTimeout(() => window.location.href = `/DungeonXplorer/chapter/view/${nextChapterLose}`, 1500);
+            }
+        }, 2000)
     }
 
     function attemptEscape(hero, monster, nextChapterRun, NextChapterWin, consumablesData) {
@@ -747,7 +794,6 @@ try{
             monsterReactionRoll  = rollDie() + monster.initiative;
             const debuff = monster.activeDebuff.find(debuff => debuff.type === 'perception');
             if (debuff){
-                console.log("monstre réduit")
                 monsterReactionRoll = Math.min(monsterReactionRoll - debuff.values, 0);
             }
         }
@@ -836,7 +882,6 @@ try{
 
                     document.getElementById("continueButtonNewLevel").addEventListener('click',  function() {
                         levelModal.style.display = "none";
-                        window.location.href = `/DungeonXplorer/chapter/view/${nextChapterWin}`;
                     });
                 }
             } else {
