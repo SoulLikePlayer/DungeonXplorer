@@ -166,9 +166,12 @@ class UserController extends Controller {
         $userModel = new User();
         $userSelected = $userModel->getUserById($id);
         $userHeros = $userModel->getHeroByUserId($id);
+        $details = $userModel->getUserDetails($id);
+
         $_SESSION['admin']['userSelect'] = $userSelected;
         $_SESSION['admin']['userHeros'] = $userHeros ?? [];
-
+        $_SESSION['admin']['userStat'] = $details;
+        
         $this->view('pages/details_user_admin');
     }
     

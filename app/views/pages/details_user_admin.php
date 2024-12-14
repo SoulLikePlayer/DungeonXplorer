@@ -2,9 +2,10 @@
 <main class="container-admin">
     <div class="container-detail-admin">
         <h2> Informations Utilisateur </h2>
-            <p> <?=htmlspecialchars($_SESSION['admin']['userSelect']['username']) ?> : <?=htmlspecialchars($_SESSION['admin']['userSelect']['email']) ?></p> 
-        <h2> Informations Héros </h2>
+        <p> <?=htmlspecialchars($_SESSION['admin']['userSelect']['username']) ?> : <?=htmlspecialchars($_SESSION['admin']['userSelect']['email']) ?></p> 
+    </div>
     <div class ="container-detail-admin">
+        <h2> Informations Héros </h2>
         <?php if (isset($_SESSION['admin']['userHeros'])) :?>
             <?php $hero = $_SESSION['admin']['userHeros']; ?> 
                 <h2>Personnage: <?= htmlspecialchars($hero['hero_firstname']) . " " . htmlspecialchars($hero['hero_lastname']) ?></h2>
@@ -70,8 +71,76 @@
             <?php else : ?>
                 <p>Aucun héros créé. Veuillez créer un personnage pour commencer votre aventure.</p>
             <?php endif; ?> 
-        </div> 
-        
-    </div>
+            </div>
+            </div>
     </div> 
+    <div class="container-detail-admin">
+        <h2> Statistiques de l'utilisateur </h2>
+
+        <?php if (isset($_SESSION['admin']['userStat'])): ?>
+            <?php $stats = $_SESSION['admin']['userStat']; ?>
+
+            <div class="stats-card">
+                <h3>Statistiques générales</h3>
+                <ul>
+                    <li><strong>Total de morts :</strong> <?= htmlspecialchars($stats['stats']['total_deaths'] ?? 'Non disponible') ?></li>
+                    <li><strong>Chapitre maximal atteint :</strong> <?= htmlspecialchars($stats['stats']['max_chapter'] ?? 'Non disponible') ?></li>
+                    <li><strong>Temps total passé en jeu :</strong> <?= isset($stats['sessions']['total']) ? gmdate("H:i:s", $stats['sessions']['total']) : 'Non disponible' ?></li>
+                </ul>
+            </div>
+
+            <div class="stats-card">
+                <h3>Historique des morts</h3>
+                <?php if (!empty($stats['deaths'])): ?>
+                    <ul>
+                        <?php foreach ($stats['deaths'] as $death): ?>
+                            <li>
+                                <strong>Chapitre :</strong> <?= htmlspecialchars($death['chapter_id']) ?> - 
+                                <strong>Morts :</strong> <?= htmlspecialchars($death['death_count']) ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p>Aucun historique de morts.</p>
+                <?php endif; ?>
+            </div>
+
+            <div class="stats-card">
+                <h3>Historique des kills</h3>
+                <?php if (!empty($stats['kills'])): ?>
+                    <ul>
+                        <?php foreach ($stats['kills'] as $kill): ?>
+                            <li>
+                                <strong>Monstre :</strong> <?= htmlspecialchars($kill['monster_id']) ?> - 
+                                <strong>Nombre de kills :</strong> <?= htmlspecialchars($kill['kill_count']) ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p>Aucun historique de kills.</p>
+                <?php endif; ?>
+            </div>
+
+            <div class="stats-card">
+                <h3>Sessions de jeu</h3>
+                <?php if (!empty($stats['sessions'])): ?>
+                    <ul>
+                        <?php foreach ($stats['sessions'] as $key => $session): ?>
+                            <?php if ($key === 'total') continue; // Ignorer le total ?>
+                            <li>
+                                <strong>Début :</strong> <?= htmlspecialchars($session['session_start']) ?> - 
+                                <strong>Fin :</strong> <?= htmlspecialchars($session['session_end']) ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p>Aucune session enregistrée.</p>
+                <?php endif; ?>
+            </div>
+
+        <?php else: ?>
+            <p>Aucune statistique disponible pour cet utilisateur.</p>
+        <?php endif; ?>
+    </div>
+
 </main>

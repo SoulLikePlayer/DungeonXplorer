@@ -138,4 +138,44 @@ class User extends Model {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getUserDetails($userId) {
+        $db = $this->getDatabaseConnection();
+        
+        $details = [];
+    
+        $query = 'SELECT total_deaths, max_chapter FROM PlayerStats WHERE player_id = :userId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':userId', $userId);
+        $stmt->execute();
+        $details['stats'] = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        $query = 'SELECT chapter_id, death_count FROM PlayerDeaths WHERE player_id = :userId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':userId', $userId);
+        $stmt->execute();
+        $details['deaths'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        $query = 'SELECT monster_id, kill_count FROM PlayerKills WHERE player_id = :userId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':userId', $userId);
+        $stmt->execute();
+        $details['kills'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        $query = 'SELECT session_start, session_end FROM PlayerSessions WHERE player_id = :userId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':userId', $userId);
+        $stmt->execute();
+        $details['sessions'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $query = 'SELECT SUM(TIMESTAMPDIFF(SECOND, session_start, session_end)) AS total_time_spent 
+                    FROM PlayerSessions WHERE player_id = :userId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':userId', $userId);
+        $stmt->execute();
+        $details['sessions']['total'] = $stmt->fetch(PDO::FETCH_ASSOC)['total_time_spent'];    
+    
+        return $details;
+    }
+    
 }
