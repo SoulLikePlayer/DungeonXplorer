@@ -31,6 +31,7 @@ class Chapter extends Model {
             if ($monster) {
                 $_SESSION['monster'] = $monster;
                 $_SESSION['monster']['loot'] = $monsterModel->getLootById($chapter['related_monster_id']);
+                $_SESSION['monster']['attack'] = $monsterModel->getAttacksByMonsterId($chapter['related_monster_id']);
             }
         }
 

@@ -3,7 +3,6 @@
         <!-- Bouton pour afficher l'inventaire général -->
         <button id="showInventoryButton" data-inventory='<?= json_encode($_SESSION['user']['inventory'] ?? []) ?>'>Afficher l'inventaire</button>
         
-        <!-- Modale pour l'inventaire général -->
         <div id="inventoryModal" class="modal">
             <div class="modal-content">
                 <span class="close-button" id="closeModalButton">&times;</span>
@@ -11,7 +10,7 @@
                     <ul id="inventoryList" class="inventory-list"></ul>
                     <div id="itemDetails" class="item-details">
                         <div class="item-header">
-                            <img id="itemImage" src="">
+                            <img id="itemImage" src="" alt="Image">
                             <div class="text-container">
                                 <p><strong>Nom :</strong> <span id="itemName">-</span></p>
                                 <p><strong>Type :</strong> <span id="itemType">-</span></p>
@@ -21,10 +20,13 @@
                         <p><strong>Poids :</strong> <span id="itemWeight">-</span></p>
                         <p><strong>Valeur en or :</strong> <span id="itemGoldValue">-</span></p>
                         <p><strong>Quantité :</strong> <span id="itemQuantity">-</span></p>
+
+                        <div id="itemActionButtons"></div>
                     </div>
                 </div>
             </div>
         </div>
+
 
         <!--Modal de passage a niveaux-->
 
@@ -92,6 +94,7 @@
                 <h3 id="combatMessage">Un combat commence contre <?= htmlspecialchars($_SESSION['monster']['name']) ?></h3>
                 <button id="startCombatButton" 
                     data-hero-name="<?= htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname']) ?>"
+                    data-hero-talent="<?=htmlspecialchars($_SESSION['user']['hero']['talent_name'] ?? "Aucun talent") ?>"
                     data-hero-level="<?= htmlspecialchars($_SESSION['user']['hero']['current_level'])?>"
                     data-hero-pv="<?= htmlspecialchars($_SESSION['user']['hero']['current_pv']) ?>"
                     data-hero-pv-max="<?= htmlspecialchars($_SESSION['user']['hero']['pv_max']) ?>"
@@ -109,6 +112,7 @@
                     data-hero-total-defense-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['total_defense_bonus']) ?>"
                     data-monster-name="<?= htmlspecialchars($_SESSION['monster']['name']) ?>"
                     data-monster-pv="<?= htmlspecialchars($_SESSION['monster']['pv']) ?>"
+                    data-monster-mana="<?= htmlspecialchars($_SESSION['monster']['mana']) ?>"
                     data-monster-strength="<?= htmlspecialchars($_SESSION['monster']['strength']) ?>"
                     data-monster-initiative="<?= htmlspecialchars($_SESSION['monster']['initiative']) ?>"
                     data-monster-xp="<?= htmlspecialchars($_SESSION['monster']['xp']) ?>"
@@ -116,6 +120,7 @@
                     data-next-chapter-lose="<?= htmlspecialchars($links[1]['next_chapter_id']) ?? '#' ?>"
                     data-next-chapter-run="<?= htmlspecialchars($links[2]['next_chapter_id']) ?>"
                     data-monster-loot='<?= json_encode($_SESSION['monster']['loot']) ?>'
+                    data-monster-attack='<?= json_encode($_SESSION['monster']['attack']) ?>'
                 >
                     Commencer le combat
                 </button>
@@ -134,6 +139,7 @@
                         <div id="monsterDies-container">
                             <p><span id="monsterName"><?= htmlspecialchars($_SESSION['monster']['name'])?></span><br />
                             <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" />  : <span id="monsterPv"></span> / <span id="monsterPvMax"></span><br />
+                            Mana : <span id="monsterMana"></span> / <span id="monsterManaMax"></span><br />
                             Résultat <span id="monsterDice"></p>
                         </div>
                     </div>    
@@ -144,7 +150,7 @@
                         </select>
                         <div id="ActionButton">
                             <button id="attackButton"><img src="../../public/assets/PixelArt/Arme.png" width="42" height="42" /></button>
-                            <button id="useSpellButton" data-spells='<?= json_encode($_SESSION['user']['hero']['Codex'] ?? []) ?>'>Lancer un sort</button>
+                            <button id="useSpellButton" data-spells='<?= json_encode($_SESSION['user']['inventoryCodex'] ?? []) ?>'>Lancer un sort</button>
                             <button id="useItemButton" data-inventory='<?= json_encode($_SESSION['user']['inventoryCons'])?>'><img src="../../public/assets/PixelArt/Consomable.png" width="42" height="42" /></button>
                             <button id="runButton"><img src="../../public/assets/PixelArt/Fuite.png" width="42" height="42" /></button>
                         </div>
@@ -173,6 +179,73 @@
                 <h3><?= htmlspecialchars($_SESSION['npc']['name']) ?></h3>
                 <h2 class="npc-dialogue"></h2>
                 <?php if ($chapter['chapter_type'] === 'merchent'): ?>
+                    <div id="npcActionButtons">
+                        <?php if(isset($_SESSION['npc']['merchent']['refus_vente_achat'])): ?>
+                            <?php if($_SESSION['npc']['merchent']['refus_vente_achat'] === false): ?>
+                                <button id="buyButtonTab">Acheter</button>
+                                <button id="sellButtonTab">Vendre</button>
+                            <?php endif?>
+                                <button id="continueAdventureButton">Continuer l'aventure</button>
+                        <?php else: ?>
+                            <button id="buyButtonTab">Acheter</button>
+                            <button id="sellButtonTab">Vendre</button>
+                            <button id="continueAdventureButton">Continuer l'aventure</button>
+                        <?php endif; ?>
+                    </div>
+                    <div class="sell-container" id="sellContainer">
+                        <h3>Vendre des objets</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nom de l'objet</th>
+                                    <th>Quantité disponible</th>
+                                    <th>Prix unitaire (par objet)</th>
+                                    <th>Quantité à vendre</th>
+                                    <th>Prix unitaire</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($_SESSION['user']['inventory'] as $item): ?>
+                                    <?php 
+                                        $itemName = htmlspecialchars($item['name']);
+                                        $itemStock = $item['quantity']; // Quantité dans l'inventaire
+                                        $itemPrice = $item['gold_value']; // Prix unitaire
+                                    ?>
+                                    <tr>
+                                        <td><?= $itemName ?></td>
+                                        <td><?= $itemStock ?></td>
+                                        <td><?= $itemPrice ?> pièces d'or</td>
+                                        <td>
+                                            <input 
+                                                type="number" 
+                                                class="quantity-input-sell" 
+                                                data-item-id="<?= htmlspecialchars($item['item_id']) ?>" 
+                                                name="quantity_<?= $itemName ?>" 
+                                                min="0" 
+                                                max="<?= $itemStock ?>" 
+                                                value="0"
+                                            >
+                                        </td>
+                                        <td>
+                                            <input 
+                                                type="number" 
+                                                class="price-input" 
+                                                data-item-id="<?= htmlspecialchars($item['item_id']) ?>" 
+                                                name="price_<?= $itemName ?>" 
+                                                min="0" 
+                                                value="<?= $itemPrice ?>" 
+                                                step="1" 
+                                            >
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                        <div class="total-sale">
+                            <p>Total de la vente : <span id="totalSalePrice">0</span> pièces d'or</p>
+                            <button id="sellButton">Vendre</button>
+                        </div>
+                    </div>
                     <div class="merchent-container" id="merchantContainer">
                         <p>Pièce du marchand : <?=htmlspecialchars($_SESSION['npc']['merchent']['gold'])?></p>
                         <table>
@@ -186,16 +259,32 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($_SESSION['npc']['merchent']['stock'] as $item): ?>
+                                    <?php 
+                                        $priceInitial = htmlspecialchars($item['price']); 
+                                        $multiplicator = $_SESSION['npc']['merchent']['multiplicateur'] ?? 1;
+                                        $priceFinal = round($priceInitial * $multiplicator, 2); 
+                                    ?>
                                     <tr>
                                         <td><?= htmlspecialchars($item['name']) ?></td>
                                         <td><?= htmlspecialchars($item['stock']) ?></td>
-                                        <td><?= htmlspecialchars($item['price']) ?> pièces d'or</td>
+                                        <td>
+                                            <?php if ($multiplicator != 1): ?>
+                                                <span style="text-decoration: line-through; color: red;">
+                                                    <?= $priceInitial ?> pièces d'or
+                                                </span>
+                                                <span style="font-weight: bold; color: green;">
+                                                    <?= $priceFinal ?> pièces d'or
+                                                </span>
+                                            <?php else: ?>
+                                                <?= $priceInitial ?> pièces d'or
+                                            <?php endif; ?>
+                                        </td>
                                         <td>
                                             <?php if ($item['stock'] > 0): ?>
                                                 <input 
                                                     type="number" 
                                                     class="quantity-input" 
-                                                    data-price="<?= htmlspecialchars($item['price']) ?>" 
+                                                    data-price="<?= $priceFinal ?>" 
                                                     data-item-id="<?=htmlspecialchars($item['id'])?>"
                                                     name="quantity_<?= htmlspecialchars($item['name']) ?>" 
                                                     min="0" 
@@ -208,6 +297,7 @@
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
+
                         </table>
                         <button id="negotiateButton">Négocier</button>
                         <div id="negotiationResult" style="display: none;">
@@ -220,7 +310,6 @@
                             <button id="buyButton">Acheter</button>
                         </div>
                      </div>
-                    <div class="sell-container" id="sellContainer"></div>
                     <script src="../../public/assets/js/MerchantSystem.js"></script>
                 <?php endif ?>
                 <div class="npc-choices"></div>

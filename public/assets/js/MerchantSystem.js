@@ -2,18 +2,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const npcContainer = document.getElementById('npcContainer');
     const buyButton = document.getElementById('buyButton');
     const quantityInputs = document.querySelectorAll('.quantity-input');
+    const quantityInputsSell = document.querySelectorAll('.quantity-input-sell');
     const totalPriceElement = document.getElementById('totalPrice');
     const merchantContainer = document.getElementById('merchantContainer')
     const purchaseList = [];
     let merchantStock = {}; 
     let discountPercentage = 0; 
+    const buyButtonTab = document.getElementById('buyButtonTab');
+    const sellButtonTab =  document.getElementById('sellButtonTab');
     const npcChoicesContainer = document.querySelector('.npc-choices');
 
-    quantityInputs.forEach(input => {
-        const itemId = input.getAttribute('data-item-id');
-        const stock = parseInt(input.getAttribute('max'), 10);
-        merchantStock[itemId] = stock;
+    const sellContainer = document.getElementById('sellContainer');
+    const npcActionButtons = document.getElementById('npcActionButtons');
+    const continueAdventureButton = document.getElementById('continueAdventureButton');
+
+    const totalSalePriceElement = document.getElementById('totalSalePrice');
+    const sellButton = document.getElementById('sellButton');
+    const priceInputs = document.querySelectorAll('.price-input');
+    const totalPrices = document.querySelectorAll('.total-price');
+    let inventoryItems = [];
+
+
+    sellContainer.style.display = 'none';
+    merchantContainer.style.display = 'none';
+    continueAdventureButton.addEventListener('click', () => {
+        window.location.href = `/DungeonXplorer/chapter/view/${npcContainer.dataset.nextChapterId}`;
     });
+
+    try{
+        buyButtonTab.addEventListener('click', () => {
+            npcActionButtons.style.display = 'none';
+            merchantContainer.style.display = 'block';
+        });
+
+        quantityInputs.forEach(input => {
+            const itemId = input.getAttribute('data-item-id');
+            const stock = parseInt(input.getAttribute('max'), 10);
+            merchantStock[itemId] = stock;
+        });
+
+        sellButtonTab.addEventListener('click', () => {
+            npcActionButtons.style.display = 'none';
+            sellContainer.style.display = 'block';
+        });
+    }catch{}
+
+    const returnToButtons = () => {
+        npcActionButtons.style.display = 'block';
+        sellContainer.style.display = 'none';
+        merchantContainer.style.display = 'none';
+    };
 
     const updateStockDisplay = () => {
         quantityInputs.forEach(input => {
@@ -47,6 +85,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     quantityInputs.forEach(input => {
         input.addEventListener('input', calculateTotal);
+    });
+
+    const updateTotalSalePrice = () => {
+        let total = 0;
+        quantityInputsSell.forEach((input, index) => {
+            const quantity = parseInt(input.value, 10) || 0;
+            const price = parseInt(priceInputs[index].value, 10);
+            total += quantity * price;
+        });
+        totalSalePriceElement.textContent = total;
+    };
+
+    priceInputs.forEach(input => {
+        input.addEventListener('input', updateTotalSalePrice);
+    });
+
+    quantityInputsSell.forEach(input => {
+        input.addEventListener('input', updateTotalSalePrice);
     });
 
     buyButton.addEventListener('click', () => {
@@ -111,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             console.log(parseInt(totalPriceElement.textContent))
             const gold = {
-                goldSpent : parseInt(totalPriceElement.textContent)
+                goldSpent : 0-parseInt(totalPriceElement.textContent)
             }
 
             fetch('/DungeonXplorer/hero/updateGold', {
@@ -139,14 +195,85 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             alert("Aucun achat effectué !");
         }
-        merchantContainer.style.display = "none";
-        const continueButton = document.createElement('button');
-        continueButton.textContent = "Continuer l'aventure";
-        continueButton.id = "continueButton";
-        continueButton.addEventListener('click', function () {
-            window.location.href = `/DungeonXplorer/chapter/view/${npcContainer.dataset.nextChapterId}`;
+        returnToButtons();
+    });
+
+    sellButton.addEventListener('click', () => {
+        let saleMade = false;
+        quantityInputsSell.forEach((input, index) => {
+            const quantity = parseInt(input.value, 10) || 0;
+            if (quantity > 0) {
+                const itemId = input.getAttribute('data-item-id');
+                const itemName = input.name.replace('quantity_', '');
+                const price = parseInt(priceInputs[index].value, 10);
+
+                inventoryItems.push({
+                    id: itemId,
+                    name: itemName,
+                    quantity: quantity,
+                    price: price
+                });
+
+                saleMade = true;
+            }
+            input.value = 0;
         });
-        npcChoicesContainer.appendChild(continueButton);
+
+        if (saleMade) {
+            alert("Vente effectuée !");
+            inventoryItems.forEach(item => {
+                const data = {
+                    itemId: item.id,
+                    quantity: item.quantity
+                };
+                fetch('/DungeonXplorer/inventory/sellLoot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log(`Article ${item.name} vendu`);
+                    } else {
+                        console.error(`Erreur pour l'article ${item.name}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur de communication avec le serveur:', error);
+                });
+            });
+
+            const gold = {
+                goldSpent : parseInt(totalSalePriceElement.textContent)
+            }
+
+            fetch('/DungeonXplorer/hero/updateGold', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(gold)
+            })
+            .then(response => response.json())
+            .then(gold => {
+                if (gold.success) {
+                    console.log(`quantité d'or mise a jour`);
+                } else {
+                    console.error(`Erreur de mise a jour de la quantité d'or`);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur de communication avec le serveur:', error);
+            });
+            updateTotalSalePrice();
+        } else {
+            alert("Aucune vente effectuée !");
+        }
+        npcActionButtons.style.display = 'block';
+        sellContainer.style.display = 'none';
     });
 
     const negotiateButton = document.getElementById('negotiateButton');

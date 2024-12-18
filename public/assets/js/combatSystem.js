@@ -2,6 +2,7 @@ try{
     document.getElementById('startCombatButton').addEventListener('click', function () {
         const hero = {
             type: "hero",
+            talent : this.dataset.heroTalent,
             name: this.dataset.heroName,
             level: this.dataset.heroLevel,
             pv: parseInt(this.dataset.heroPv),
@@ -32,9 +33,12 @@ try{
             name: this.dataset.monsterName,
             pv: parseInt(this.dataset.monsterPv),
             pvMax: parseInt(this.dataset.monsterPv),
+            mana: parseInt(this.dataset.monsterMana),
+            manaMax: parseInt(this.dataset.monsterMana),
             strength: parseInt(this.dataset.monsterStrength),
             initiative: parseInt(this.dataset.monsterInitiative),
             loot: JSON.parse(this.dataset.monsterLoot || '[]'),
+            attack: JSON.parse(this.dataset.monsterAttack || '[]'),
             xp: this.dataset.monsterXp,
             activeBonuses: [],
             activeDebuff: [],
@@ -42,6 +46,7 @@ try{
             isBind : Boolean(false),
             valIncrease: []
         };
+
 
         const consumablesData = JSON.parse(document.getElementById('useItemButton').getAttribute('data-inventory'));
         const codexData = JSON.parse(document.getElementById('useSpellButton').getAttribute('data-spells'));
@@ -67,6 +72,9 @@ try{
 
         document.getElementById('monsterPv').textContent = monster.pv;
         document.getElementById('monsterPvMax').textContent = monster.pvMax;
+        document.getElementById('monsterMana').textContent = monster.mana;
+        document.getElementById('monsterManaMax').textContent = monster.manaMax;
+
         document.getElementById('heroPv').textContent = hero.pv;
         document.getElementById('heroPvMax').textContent = hero.pvMax;
         document.getElementById('heroMana').textContent = hero.mana;
@@ -106,7 +114,7 @@ try{
                 performHeroAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData);
             });
             document.getElementById('runButton').addEventListener('click', function () {
-                attemptEscape(hero, monster, nextChapterRun, nextChapterWin, consumablesData);
+                attemptEscape(hero, monster, nextChapterRun, nextChapterLose, nextChapterWin, consumablesData);
             });
             document.getElementById('useItemButton').addEventListener('click', function () {
                 openConsumableModal(consumablesData, hero);
@@ -114,7 +122,7 @@ try{
         }, 3000);
     }
 
-    function openSpellModal(codexData, hero, monster, consumablesData) {
+    function openSpellModal(codexData, hero, monster, consumablesData, nextChapterWin, nextChapterLose, nextChapterRun) {
         const spellModal = document.getElementById('spellModal');
         const spellList = document.getElementById('spellList');
     
@@ -138,7 +146,7 @@ try{
                         spellItem.className = "SpellButton";
                         spellItem.textContent = `${spell.name}`;
                         spellItem.addEventListener('click', function () {
-                            showSpellDetails(spell, hero, monster, consumablesData, codexData);
+                            showSpellDetails(spell, hero, monster, consumablesData, codexData, nextChapterWin, nextChapterLose, nextChapterRun);
                         });
                         spellList.appendChild(spellItem);
                     }
@@ -157,7 +165,8 @@ try{
         });
     }
     
-    function showSpellDetails(spell, hero, monster, consumablesData, codexData) {
+    function showSpellDetails(spell, hero, monster, consumablesData, codexData, nextChapterWin, nextChapterLose, nextChapterRun) {
+        console.log(spell);
         const spellModal = document.getElementById('spellModal');
     
         const spellList = document.getElementById('spellList');
@@ -175,7 +184,9 @@ try{
         `;
     
         document.getElementById('useSpellButton').addEventListener('click', function () {
-            analyzeEffectFunction(spell.effect_function, spell.mana_cost, hero, monster, consumablesData);
+            clearCombatMessages();
+            console.log(spell.family);
+            CastSpell(spell.effect_function, spell.mana_cost, hero, monster, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData, spell.family);
             spellModal.style.display = 'none';
         });
     
@@ -183,44 +194,61 @@ try{
             openSpellModal(codexData, hero, monster, consumablesData); 
         });
     }
+
+    function CastSpell(effectFunction, effectCost, user, cible, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData, family = null){
+        if ((user.mana - effectCost) >= 0){
+            user.mana -= effectCost
+            if(user.type == "hero"){
+                document.getElementById("heroMana").textContent = user.mana
+            }else{
+                document.getElementById("monsterMana").textContent = user.mana
+            }
+            analyzeEffectFunction(effectFunction, user, cible, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData, family)
+        } else {
+            displayCombatMessage(`${user.name} ne dispose pas assez de mana pour lancer le sort !`);
+        }   
+    }
     
 
-    function analyzeEffectFunction(effectFunction, effectCost, user, cible, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData) {
-        if ((user.mana - effectCost) >= 0){
-            console.log("2eme : "+effectFunction)
-            user.mana -= effectCost
-            document.getElementById("heroMana").textContent = user.mana
+    function analyzeEffectFunction(effectFunction, user, cible, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData, family = null) {
             const effects = effectFunction.split(';').map(effect => effect.trim());
             effects.forEach(effect => {
                 const match = effect.match(/(\w+)\(([^)]+)\)/);
                 if (!match) return;
                 const effectName = match[1];
-                console.log("3eme : "+effectName);
                 const params = match[2].split(',').map(param => parseInt(param.trim()));
                 switch (effectName) {
                     case 'burst':
-                        cible.activeDebuff.push({ type: "burst", duration: parseInt(params[0]) });
-                        displayCombatMessage(`${cible.name} subit un effet de brûlure pendant ${params[0]} tours.`);
+                        console.log(family, user.talent);
+                        if (family == "Inferna" && user.talent == "Flamme Profanée"){
+                            cible.activeDebuff.push({ type: "profane_burst", remainingTurns: parseInt(params[0]) });
+                            displayCombatMessage(`${cible.name} subit un effet de brûlure pendant ${params[0]} tours.`);
+                            user.activeDebuff.push({ type: "burst", remainingTurns: parseInt(params[0]) });
+                            displayCombatMessage(`${user.name} subit un effet de brûlure pendant ${params[0]} tours du à son talent.`);
+                        } else {
+                            cible.activeDebuff.push({ type: "burst", remainingTurns: parseInt(params[0]) });
+                            displayCombatMessage(`${cible.name} subit un effet de brûlure pendant ${params[0]} tours.`);
+                        }
                         break;
                     case 'reduce_attack':
-                        cible.activeDebuff.push({ type: "attack", value: params[0], duration: params[1]});
+                        cible.activeDebuff.push({ type: "attack", value: params[0], remainingTurns: params[1]});
                         displayCombatMessage(`${cible.name} voit sont attaque réduit de ${params[0]} pour ${params[1]} tours.`);
                         break;
                     case 'reduce_perception':
-                        cible.activeDebuff.push({ type: "perception", value : params[0], duration: params[1]});
+                        cible.activeDebuff.push({ type: "perception", value : params[0], remainingTurns: params[1]});
                         displayCombatMessage(`${cible.name} voit sont initiative réduit de ${params[0]} pour ${params[1]} tours.`);
                         break;
                     case 'reduce_morale':
-                        cible.activeDebuff.push({ type: "attack", value: params[0], duration: params[1]});
-                        cible.activeDebuff.push({ type: "perception", value : params[0], duration: params[1]});
+                        cible.activeDebuff.push({ type: "attack", value: params[0], remainingTurns: params[1]});
+                        cible.activeDebuff.push({ type: "perception", value : params[0], remainingTurns: params[1]});
                         displayCombatMessage(`${cible.name} est démoraliser pour ${params[1]}`);
                         break;
                     case 'reduce_resistance':
-                        cible.activeDebuff.push({ type: "resistance", value : params[0], duration: params[1]});
+                        cible.activeDebuff.push({ type: "resistance", value : params[0], remainingTurns: params[1]});
                         displayCombatMessage(`${cible.name} voit sa résistance réduite de ${params[0]} pendant ${params[1]}`);
                         break;
                     case 'paralyze':
-                        cible.activeDebuff.push({ type: "paralyze", duration: parseInt(params[0]) });
+                        cible.activeDebuff.push({ type: "paralyze", remainingTurns: parseInt(params[0]) });
                         displayCombatMessage(`${cible.name} est paralysé pour ${params[0]} tour(s).`);
                         break;
                     case 'gain_mana':
@@ -238,15 +266,23 @@ try{
                         displayCombatMessage(`${user.name} se soigne de ${params[0]} points.`);
                         break;
                     case 'heal_user_per_turn':
-                        user.activeBonuses.push({ type: "heal_user_turn", value: parseInt(params[0]), duration : parseInt(params[1])})
+                        user.activeBonuses.push({ type: "heal_user_turn", value: parseInt(params[0]), remainingTurns : parseInt(params[1])})
                         displayCombatMessage(`${user.name} se soigne de ${params[0]} points pendant ${params[1]}.`);
                         break;
                     case 'poison_effect':
-                        cible.activeDebuff.push({ type: "poison", damagePerTurn: parseInt(params[0]), duration: parseInt(params[1]) });
                         displayCombatMessage(`${cible.name} est empoisonné et subira ${params[0]} dégâts par tour pendant ${params[1]} tours.`);
+                        if (cible.type == "hero" && cible.talent == "Puissance du Poison"){
+                            cible.activeDebuff.push({ type: "poison", damagePerTurn: parseInt(params[0])*2, remainingTurns: parseInt(params[1])*2 });
+                            displayCombatMessage(`Le poison reçu a doublé en puissance et durée.`)
+                        }else if (user.type == "hero" && user.talent == "Puissance du Poison"){
+                            cible.activeDebuff.push({ type: "poison", damagePerTurn: parseInt(params[0])*2, remainingTurns: parseInt(params[1]) });
+                            displayCombatMessage(`Votre poison reçu a doublé en puissance.`)
+                        }else{
+                            cible.activeDebuff.push({ type: "poison", damagePerTurn: parseInt(params[0]), remainingTurns: parseInt(params[1]) });
+                        }
                         break;
                     case 'mana_shield':
-                        user.activeBonus.push({ type: "mana_shield", value: parseInt(params[0]), duration: parseInt(params[1]) });
+                        user.activeBonuses.push({ type: "mana_shield", value: parseInt(params[0]), remainingTurns: parseInt(params[1]) });
                         displayCombatMessage(`${user.name} active un bouclier de mana qui absorbera ${params[0]} dégâts pendant ${params[1]} tours.`);
                         break;
                     case 'restore_mana':
@@ -257,15 +293,15 @@ try{
                         displayCombatMessage(`${user.name} restaure ${params[0]} points de mana.`);
                         break;
                     case 'slow_target':
-                        cible.activeDebuff.push({ type: "slow", value: parseInt(params[0]), duration: parseInt(params[1]) });
+                        cible.activeDebuff.push({ type: "slow", value: parseInt(params[0]), remainingTurns: parseInt(params[1]) });
                         displayCombatMessage(`${cible.name} voit sa vitesse réduite de ${params[0]} pour ${params[1]} tours.`);
                         break;
                     case 'shield_target':
-                        user.activeBonuses.push({ type: "shield", value: parseInt(params[0]), duration: parseInt(params[1]) });
+                        user.activeBonuses.push({ type: "shield", value: parseInt(params[0]), remainingTurns: parseInt(params[1]) });
                         displayCombatMessage(`${user.name} est protégé par un bouclier qui absorbe ${params[0]} dégâts pendant ${params[1]} tours.`);
                         break;
                     case 'drain_health':
-                        cible.activeDebuff.push({ type: "drain_health", damagePerTurn: parseInt(params[0]), duration: parseInt(params[1]) });
+                        cible.activeDebuff.push({ type: "drain_health", damagePerTurn: parseInt(params[0]), remainingTurns: parseInt(params[1]) });
                         displayCombatMessage(`${cible.name} se fait drainer ${params[0]} de vie pendant ${params[1]} tours.`);
                         break;
                     case 'sacrifice_health':
@@ -282,54 +318,48 @@ try{
                         displayCombatMessage(`${user.name} reçoit un buff de dégât pendant ${params[1]} tours.`);
                         break;
                     case 'bind_target':
-                        cible.activeDebuff.push({ type: 'bind', duration: parseInt(params[0]) });
+                        cible.activeDebuff.push({ type: 'bind', remainingTurns: parseInt(params[0]) });
                         displayCombatMessage(`${cible.name} est enchaîné pendant ${params[0]} tours mais peut se libérer !`);
                         break;
                     case 'immobilize':
-                        cible.activeDebuff.push({ type: "immobilize", duration: parseInt(params[0]) });
+                        cible.activeDebuff.push({ type: "immobilize", remainingTurns: parseInt(params[0]) });
                         displayCombatMessage(`${cible.name} est immobilisé pendant ${params[0]} tours.`);
                         break;
                     case 'soul_recovery':
-                        user.activeBonuses.push({ type: "magick_attack", multiply: 2, duration: 1 });
+                        user.activeBonuses.push({ type: "magick_attack", multiply: 2, remainingTurns: 1 });
                         displayCombatMessage(`La prochaine attaque magique de ${user.name} fera le double de ses dégâts.`);
                         break;
                     case 'flame_protection':
-                        cible.activeDebuff.push({ type: "burst", duration: parseInt(params[0]) });
+                        user.activeBonuses.push({ type: "flamme_body", remainingTurns: parseInt(params[0]) });
                         displayCombatMessage(`${user.name} se protège avec un voile de feu.`);
                         break;
                     case 'increase_speed':
-                        user.activeBonuses.push({ type: "speed", value: parseInt(params[0]), duration: parseInt(params[1]) });
+                        user.activeBonuses.push({ type: "speed", value: parseInt(params[0]), remainingTurns: parseInt(params[1]) });
                         displayCombatMessage(`${user.name} augmente sa vitesse de ${params[0]} pendant ${params[1]} tours.`);
-                        break;
-                    case 'knock_back':
-                        displayCombatMessage(`${cible.name} est repoussé par la force du sort.`);
-                        break;
-                    case 'pull_enemies':
-                        displayCombatMessage(`${cible.name} est attiré vers le centre de la zone de gravité.`);
                         break;
                     case 'increase_mana':
                         user.manaMax += parseInt(params[0]);
-                        user.valIncrease.push({ type : "mana", val : params[0], duration: params[1]});
+                        user.valIncrease.push({ type : "mana", val : params[0], remainingTurns: params[1]});
                         document.getElementById('heroManaMax').textContent = user.manaMax;
                         displayCombatMessage(`${user.name} augmente sa capacité de mana de ${params[0]} pendant ${params[1]} tours.`);
                         break;
                     case 'blind_target':
-                        cible.activeDebuff.push({ type: "blind", duration: parseInt(params[0]) });
+                        cible.activeDebuff.push({ type: "blind", remainingTurns: parseInt(params[0]) });
                         displayCombatMessage(`${cible.name} est aveuglé pendant ${params[0]} tours.`);
                         break;
-                        case 'damage':
+                    case 'damage':
                             const dieRoll = rollDie();
                             const defenseRoll = rollDie();
                             const rawDamage = dieRoll + parseInt(params[0]);
                             const defense = calculateDefense(cible, defenseRoll);
                         
                             let finalDamage = Math.max(0, rawDamage - defense);
-                            const soulRecoveryIndex = user.activeBonuses.findIndex(bonus => bonus.type === "magick_attack" && bonus.multiply === 2);
+                            const soulRecoveryIndex = user.activeBonuses.findIndex(bonus => bonus.type === "magick_attack");
                             if (soulRecoveryIndex !== -1) {
                                 finalDamage *= user.activeBonuses[soulRecoveryIndex].multiply;
                                 displayCombatMessage(`<strong>Effet Soul Recovery activé : Dégâts multipliés par ${user.activeBonuses[soulRecoveryIndex].multiply} !</strong>`);
-                                user.activeBonuses[soulRecoveryIndex].duration -= 1;
-                                if (user.activeBonuses[soulRecoveryIndex].duration <= 0) {
+                                user.activeBonuses[soulRecoveryIndex].remainingTurns -= 1;
+                                if (user.activeBonuses[soulRecoveryIndex].remainingTurns <= 0) {
                                     user.activeBonuses.splice(soulRecoveryIndex, 1);
                                 }
                             }
@@ -345,19 +375,25 @@ try{
                         
                             if (cible.pv <= 0) {
                                 displayCombatMessage(`${cible.name} a été vaincu par le sort !`);
-                                endFight(user, cible, nextChapterWin, consumablesData);
+                                if(cible.type == 'monster'){
+                                    endFight(user, cible, nextChapterWin, nextChapterRun, nextChapterLose, consumablesData, "victoire");
+                                }else{
+                                    endFight(user, cible, nextChapterWin, nextChapterRun, nextChapterLose, consumablesData, "défaite");
+                                }
+
                             } else {
-                                performMonsterAttack(user, cible, nextChapterWin, nextChapterLose, nextChapterRun);
+                                if (cible.type == 'monster'){
+                                    performMonsterAttack(user, cible, nextChapterWin, nextChapterLose, nextChapterRun);
+                                }else{
+                                    performHeroAttack(user, cible, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData);
+                                }
                             }
                             break;                        
                     default:
                         console.log(`Effet inconnu : ${effectName} avec paramètres ${params.join(', ')}.`);
                 }
                 console.log(user.activeBonuses, cible.activeDebuff);
-            });
-        } else {
-            displayCombatMessage(`${user.name} ne dispose pas assez de mana pour lancer le sort !`);
-        }    
+            }); 
     }
     
     
@@ -398,17 +434,27 @@ try{
 
     function useConsumable(item, hero, consumablesData, index) {
         if (item.effect_type === 'heal') {
-            hero.pv = Math.min(hero.pv + item.heal_amount, hero.pvMax);
+            qtSoins = item.heal_amount
+            if(hero.talent == "Chaire putrifiée"){
+                qtSoins = Math.floor(qtSoins / 2)
+                displayCombatMessage('Du a la Chaitr putrifiée, les soins exterieur voit leur quantité divisé par 2')
+            }
+            hero.pv = Math.min(hero.pv + qtSoins, hero.pvMax);
             document.getElementById('heroPv').textContent = hero.pv;
         } else if (item.effect_type === 'mana') {
-            hero.mana = Math.min(hero.mana + item.mana_amount, hero.manaMax);
+            qtMana = item.mana_amount
+            if(hero.talent == "Chaire putrifiée"){
+                qtMana = Math.floor(qtSoins / 2)
+                displayCombatMessage('Du a la Chaitr putrifiée, les position de mana exterieur voit leur quantité divisé par 2')
+            }
+            hero.mana = Math.min(hero.mana + qtMana, hero.manaMax);
             document.getElementById('heroMana').textContent = hero.mana;
         } else if (item.effect_type === 'buff') {
             if (item.attack_buff) {
-                hero.activeBonuses.push({ type: 'attack', value: item.attack_buff, remainingTurns: item.duration });
+                hero.activeBonuses.push({ type: 'attack', value: item.attack_buff, remainingTurns: item.remainingTurns });
             }
             if (item.defense_buff) {
-                hero.activeBonuses.push({ type: 'defense', value: item.defense_buff, remainingTurns: item.duration });
+                hero.activeBonuses.push({ type: 'defense', value: item.defense_buff, remainingTurns: item.remainingTurns });
             }
         }
     
@@ -441,7 +487,7 @@ try{
     }
     
     
-    function Debuff(character, hero, monster, nextChapterWin, consumablesData) {
+    function Debuff(character, hero, monster, nextChapterWin, nextChapterLose, consumablesData) {
         if (!Array.isArray(character.activeDebuff)) {
             character.activeDebuff = [];
         }
@@ -455,23 +501,43 @@ try{
                     debuffMessages.push(`${character.name} a pris <span style="color:red;">-2</span> de vie dû au brûlure.`);
                     if(character.pv <= 0){
                         if(character == hero){
-
+                            endFight(hero, monster, nextChapterWin, null, nextChapterLose, consumablesData, "défaite");
+                            return;
                         }else{
-                            endFight(hero, monster);
-                            const continueButton = document.createElement('button');
-                            continueButton.textContent = "Continuer l'aventure";
-                            continueButton.id = "continueButton";
-                            continueButton.addEventListener('click', function () {
-                                window.location.href = `/DungeonXplorer/chapter/view/${nextChapterWin}`;
-                            });
-                            document.getElementById('combatActions').appendChild(continueButton);
+                            endFight(hero, monster, nextChapterWin, null, nextChapterLose, consumablesData, "victoire");
+                            return;
                         }
                     }
+                    break;
+                case "profane_burst":
+                    character.pv -= 4;
+                    debuffMessages.push(`${character.name} a pris <span style="color:red;">-4</span> de vie dû au brûlure.`);
+                    character.pvMax -= 2;
+                    debuffMessages.push(`${character.name} a pris <span style="color:red;">-2</span> de vie maximum dû au brûlure.`);
+
+                    if(character.pv <= 0){
+                        if(character == hero){
+                            endFight(hero, monster, nextChapterWin, null, nextChapterLose, consumablesData, "défaite");
+                            return;
+                        }else{
+                            endFight(hero, monster, nextChapterWin, null, nextChapterLose, consumablesData, "victoire");
+                            return;
+                        }
+                    }
+
+                    debuff.remainingTurns++;
                     break;
                 case 'poison':
                     character.pv -= debuff.damagePerTurn;
                     debuffMessages.push(`${character.name} a pris <span style="color:red;">-${debuff.damagePerTurn}</span> de vie dû au poisons.`);
                     debuff.damagePerTurn++;   
+                    if(character.pv <= 0){
+                        if(character == hero){
+                            endFight(hero, monster, nextChapterWin, null, nextChapterLose, consumablesData, "défaite");
+                        }else{
+                            endFight(hero, monster, nextChapterWin, null, nextChapterLose, consumablesData, "victoire");
+                        }
+                    }
                     break; 
                 case "paralyze" :
                     character.isParalyzed = Boolean(true);
@@ -498,17 +564,18 @@ try{
                     debuffMessages.push(`${character.name} subit une réduction de moral : <span style="color:red;">-${debuff.value}</span>.`);
                     break;
                 }
-            debuff.duration --;
+            debuff.remainingTurns --;
         });
 
-        character.activeDebuff = character.activeDebuff.filter(debuff => debuff.duration > 0);
-        console.log(character.activeDebuff);
+        character.activeDebuff = character.activeDebuff.filter(debuff => debuff.remainingTurns > 0);
 
         debuffMessages.forEach(message => displayCombatMessage(message));
         if(character == hero){
             document.getElementById('heroPv').textContent = character.pv = Math.max(0, character.pv);
+            document.getElementById('heroPvMax').textContent = character.pvMax = Math.max(0, character.pvMax);
         }else{
             document.getElementById('monsterPv').textContent = character.pv = Math.max(0, character.pv);
+            document.getElementById('monsterPvMax').textContent = character.pvMax = Math.max(0, character.pvMax);
         }
     }    
 
@@ -605,9 +672,9 @@ try{
     function handleValIncrease(hero) {
         for (let i = 0; i < hero.valIncrease.length; i++) {
             let effect = hero.valIncrease[i];
-            effect.duration -= 1; 
+            effect.remainingTurns -= 1; 
     
-            if (effect.duration <= 0) {
+            if (effect.remainingTurns <= 0) {
                 removeValIncreaseEffect(hero, effect);
                 hero.valIncrease.splice(i, 1);
                 i--; 
@@ -637,9 +704,9 @@ try{
     function performHeroAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData) {
         clearCombatMessages();
         handleValIncrease(hero);
+        
 
-        console.log(hero.valIncrease);
-        Debuff(hero, hero, monster, nextChapterWin, consumablesData);
+        Debuff(hero, hero, monster, nextChapterWin, nextChapterLose, consumablesData);
         if (hero.isParalyzed == Boolean(true)) {
             hero.isParalyzed = Boolean(false);
             performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
@@ -674,42 +741,45 @@ try{
             monster.pv -= damage;
             if(monster.isImmobelize == true && damage > 0){
                 monster.isImmobelize = Boolean(false)
-                monster.activeDebuff.filter(name => debuff.name !== 'debuff => debuff.duration > 0');
+                monster.activeDebuff.filter(name => debuff.name !== 'debuff => debuff.remainingTurns > 0');
                 displayCombatMessage(`${monster.name} n'est plus immobilisé !`);
             }
+            else if(damage > 0 && hero.talent == "Chaire putrifiée"){
+                displayCombatMessage(`La chaire putrifier de ${hero.name} lui permet de gagner 2 pv !`)
+                hero.pv = Math.min(hero.pv + 2, hero.pvMax);
+                document.getElementById('heroPv').textContent = hero.pv;
+            }else if(damage > 0 && hero.talent == "Puissance Fragile"){
+                const damageAgainstHero = Math.floor(damage/2);
+                displayCombatMessage(`Mais ${hero.name} se blaisse en contre coup !`);
+                hero.pv = Math.max(hero.pv - damageAgainstHero, 1);
+                document.getElementById('heroPv').textContent = hero.pv;
+           }
             document.getElementById('monsterPv').textContent = Math.max(0, monster.pv);
 
 
             if (monster.pv <= 0) {
-                displayCombatMessage(`${monster.name} a était tuée`);
-                endFight(hero, monster, nextChapterWin, consumablesData);
-
-                document.getElementById('ActionButton').style.display = 'none';
-
-
-                const continueButton = document.createElement('button');
-                continueButton.textContent = "Continuer l'aventure";
-                continueButton.id = "continueButton";
-                continueButton.addEventListener('click', function () {
-                    window.location.href = `/DungeonXplorer/chapter/view/${nextChapterWin}`;
-                });
-                document.getElementById('combatActions').appendChild(continueButton);
+                endFight(hero, monster, nextChapterWin, nextChapterRun, nextChapterLose, consumablesData, "victoire");
             } else {
                 
-                const bonusesHealPerTurn = hero.activeBonuses.find(bonus => bonus.type === 'heal_user_turn');
+                const bonusesHealPerTurn = monster.activeBonuses.find(bonus => bonus.type === 'heal_user_turn');
                 if (bonusesHealPerTurn){
-                    hero.pv = Math.min(hero.pv + bonusesHealPerTurn.value, hero.pvMax);
-                    bonusesHealPerTurn.duration--;
-                    hero.activeBonuses.filter(bonus => bonus.duration > 0);
-                    displayCombatMessage(`${hero.name} se soigne de ${bonusesHealPerTurn.value}`);
+                    monster.pv = Math.min(monster.pv + bonusesHealPerTurn.value, monster.pvMax);
+                    monster.activeBonuses.filter(bonus => bonus.remainingTurns > 0);
+                    displayCombatMessage(`${monster.name} se soigne de ${bonusesHealPerTurn.value}`);
                 }
 
-                const debufDrainedHeal = monster.activeDebuff.find(debuff => debuff.type === 'drain_health');
+                const bonusesFlammeProtection = monster.activeBonuses.find(bonus => bonus.type === "flamme_body")
+                if (bonusesFlammeProtection){
+                    hero.activeDebuff.push({type : "burst", remainingTurns: 1});
+                    monster.activeBonuses.filter(bonus => bonus.remainingTurns > 0);
+                    displayCombatMessage(`${monster.name} brûle ${hero.name} avec son corps de flamme !`);
+                }
+
+                const debufDrainedHeal = hero.activeDebuff.find(debuff => debuff.type === 'drain_health');
                 if (debufDrainedHeal){
-                    monster.pv = Math.max(monster.pv - debufDrainedHeal.damagePerTurn, 1);
-                    debufDrainedHeal.duration --
-                    monster.activeDebuff.filter(debuff => debuff.duration > 0);
-                    displayCombatMessage(`${monster.name} perd ${debufDrainedHeal.damagePerTurn}`)
+                    hero.pv = Math.max(hero.pv - debufDrainedHeal.damagePerTurn, 1);
+                    hero.activeDebuff.filter(debuff => debuff.remainingTurns > 0);
+                    displayCombatMessage(`${hero.name} perd ${debufDrainedHeal.damagePerTurn}`)
                 }
                 updateBonuses(hero);
                 performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
@@ -717,8 +787,10 @@ try{
         }, 2000)
     }
 
-    function performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun) {
-        Debuff(monster,  hero, monster, nextChapterWin);
+    function performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData) {
+        
+
+        Debuff(monster,  hero, monster, nextChapterWin, nextChapterLose, consumablesData);
         if (monster.isParalyzed) {
             monster.isParalyzed = false;
             return;
@@ -737,43 +809,69 @@ try{
         if (monster.pv <= 0){
             return;
         }
-        const attackRoll = rollDie();
-        const defenseRoll = rollDie();
+        const index = Math.floor(Math.random() * monster.attack.length);
+        console.log( monster.attack);
+        const choosenAttack = monster.attack[index];
 
-        afficherNombreAleatoire(attackRoll, defenseRoll, 2000);
-        setTimeout(() => {
-            const attack = calculateAttack(monster, attackRoll);
-            const defense = calculateDefense(hero, defenseRoll);
-            const damage = Math.max(0, attack - defense);
+        displayCombatMessage(`${monster.name} lance ${choosenAttack.name}.`)
 
-            displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts.`);
-            hero.pv -= damage;
-            document.getElementById('heroPv').textContent = Math.max(0, hero.pv);
-
+        if (choosenAttack.is_physical == 1){
+            console.log("physique")
             
-            const bonusesHealPerTurn = hero.activeBonuses.find(bonus => bonus.type === 'heal_user_turn');
-            if (bonusesHealPerTurn){
-                hero.pv = Math.min(hero.pv + bonusesHealPerTurn.value, hero.pvMax);
-                bonusesHealPerTurn.duration--;
-                hero.activeBonuses.filter(bonus => bonus.duration > 0);
-                displayCombatMessage(`${hero.name} se soigne de ${bonusesHealPerTurn.value}`);
-            }
 
-            const debufDrainedHeal = monster.activeDebuff.find(debuff => debuff.type === 'drain_health');
-            if (debufDrainedHeal){
-                monster.pv = Math.max(monster.pv - debufDrainedHeal.damagePerTurn, 1);
-                debufDrainedHeal.duration --
-                monster.activeDebuff.filter(debuff => debuff.duration > 0);
-            }
+            const attackRoll = rollDie();
+            const defenseRoll = rollDie();
 
-            if (hero.pv <= 0) {
-                displayCombatMessage(`${hero.name} a été vaincu !`);
-                setTimeout(() => window.location.href = `/DungeonXplorer/chapter/view/${nextChapterLose}`, 1500);
+            afficherNombreAleatoire(attackRoll, defenseRoll, 2000);
+            setTimeout(() => {
+                const attack = calculateAttack(monster, attackRoll);
+                const defense = calculateDefense(hero, defenseRoll);
+                const damage = Math.max(0, attack - defense);
+
+                displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts.`);
+                hero.pv -= damage;
+                document.getElementById('heroPv').textContent = Math.max(0, hero.pv);
+
+                
+                const bonusesFlammeProtection = hero.activeBonuses.find(bonus => bonus.type === "flamme_body");
+                
+                if (bonusesFlammeProtection){
+                    monster.activeDebuff.push({type : "burst", remainingTurns: 1});
+                    hero.activeBonuses.filter(bonus => bonus.remainingTurns > 0);
+                    displayCombatMessage(`${hero.name} brûle ${monster.name} avec son corps de flamme !`);
+                }
+
+
+                if (hero.pv <= 0) {
+                    displayCombatMessage(`${hero.name} a été vaincu !`);
+                    endFight(hero, monster, nextChapterWin, nextChapterRun, nextChapterLose, [], "défaite");
+                }
+            }, 2000)
+            if(choosenAttack.effect_function != null){
+                analyzeEffectFunction(choosenAttack.effect_function, monster, hero, nextChapterWin, nextChapterLose, nextChapterRun, [])
             }
-        }, 2000)
+        }else{
+            console.log("Magique")
+            CastSpell(choosenAttack.effect_function, choosenAttack.mana_cost, monster, hero, nextChapterWin, nextChapterLose, nextChapterRun, []);
+        }
+
+        const bonusesHealPerTurn = hero.activeBonuses.find(bonus => bonus.type === 'heal_user_turn');
+        if (bonusesHealPerTurn){
+            hero.pv = Math.min(hero.pv + bonusesHealPerTurn.value, hero.pvMax);
+            hero.activeBonuses.filter(bonus => bonus.remainingTurns > 0);
+            displayCombatMessage(`${hero.name} se soigne de ${bonusesHealPerTurn.value}`);
+        }
+
+        const debufDrainedHeal = monster.activeDebuff.find(debuff => debuff.type === 'drain_health');
+        if (debufDrainedHeal){
+            monster.pv = Math.max(monster.pv - debufDrainedHeal.damagePerTurn, 1);
+            monster.activeDebuff.filter(debuff => debuff.remainingTurns > 0);
+        }
+
+
     }
 
-    function attemptEscape(hero, monster, nextChapterRun, NextChapterWin, consumablesData) {
+    function attemptEscape(hero, monster, nextChapterRun, nextChapterLose, NextChapterWin, consumablesData) {
         clearCombatMessages();
 
         Debuff(hero, hero, monster, NextChapterWin, consumablesData);
@@ -784,7 +882,6 @@ try{
             escapeRoll = rollDie() + hero.initiative;
             const debuff = hero.activeDebuff.find(debuff => debuff.type === 'perception');
             if (debuff){
-                console.log("héro réduit")
                 escapeRoll = Math.min(escapeRoll - debuff.values, 0);
             }
         }
@@ -804,97 +901,114 @@ try{
         if (escapeRoll > monsterReactionRoll) {
             displayCombatMessage(`${hero.name} parvient à s'échapper !`);
 
-            const data = {
-                pv: hero.pv,
-                mana: hero.mana,
-                xp : hero.xp
-            }
-
-            fetch('/DungeonXplorer/hero/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)  
-            })
-            .then(response => response.json())  
-            .then(data => {
-                if (data.success) {
-                    console.log(`Héro mise a jour`);
-                } else {
-                    console.error(`Erreur lors de la mise a jour du héro`);
-                }
-            })
-            .catch(error => {
-                console.error('Erreur de communication avec le serveur:', error);
-            });
-            saveConsumablesState(consumablesData);
-            setTimeout(() => window.location.href = `/DungeonXplorer/chapter/view/${nextChapterRun}`, 1500);
+            endFight(hero, monster, NextChapterWin, nextChapterRun, nextChapterLose, consumablesData, 'fuite');
         } else {
             updateBonuses(hero);
             displayCombatMessage(`${hero.name} échoue à fuir et reste engagé dans le combat.`);
-            performMonsterAttack(hero, monster);
+            performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun);
         }
     }
 
-    function endFight(hero, monster, nextChapterWin, consumablesData) {
-        displayCombatMessage(`${monster.name} a été vaincu !`);
-        
-        const xpGained = monster.xp;
-        hero.xp += xpGained;
-        displayCombatMessage(`${hero.name} gagne <span style="color:gold;">${xpGained} xp</span> !`);
-        console.log(monster.loot);
-        handleLoot(monster.loot);
-    
-        const data = {
-            pv: hero.pv,
-            mana: hero.mana,
-            xp: parseInt(hero.xp, 10),
-        };
-        console.log( JSON.stringify(data));
+    function endFight(hero, monster, nextChapterWin, nextChapterRun, nextChapterLose, consumablesData, directory) {
+        switch(directory){ 
+            case 'victoire' :
+                document.getElementById('ActionButton').style.display = 'none';
 
-    
-        fetch('/DungeonXplorer/hero/update', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())  
-        .then(data => {
-            console.log('Réponse JSON parsée :', data);
-            if (data.success) {
-                if (data.modalContent) {
-                    const levelModal = document.getElementById('levelUpModal');
+                const continueButton = document.createElement('button');
+                continueButton.textContent = "Continuer l'aventure";
+                continueButton.id = "continueButton";
+                continueButton.addEventListener('click', function () {
+                    window.location.href = `/DungeonXplorer/chapter/view/${nextChapterWin}`;
+                });
+                
+                document.getElementById('combatActions').appendChild(continueButton);
 
-                    levelModal.style.display="flex";
+                const xpGained = monster.xp;
+                hero.xp += xpGained;
+                displayCombatMessage(`${hero.name} gagne <span style="color:gold;">${xpGained} xp</span> !`);
+                handleLoot(monster.loot);
+            
+                const data = {
+                    pv: hero.pv,
+                    mana: hero.mana,
+                    xp: parseInt(hero.xp, 10),
+                };
+                console.log( JSON.stringify(data));
 
-                    const modalContent = data.modalContent;
+            
+                fetch('/DungeonXplorer/hero/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())  
+                .then(data => {
+                    console.log('Réponse JSON parsée :', data);
+                    if (data.success) {
+                        if (data.modalContent) {
+                            const levelModal = document.getElementById('levelUpModal');
 
-                    document.getElementById("level").textContent=modalContent.newLevel
+                            levelModal.style.display="flex";
 
-                    document.getElementById("newPVBonus").textContent=modalContent.pvBonus
-                    document.getElementById("newManaBonus").textContent=modalContent.manaBonus
-                    document.getElementById("newStrenghtBonus").textContent=modalContent.strengthBonus
-                    document.getElementById("newInitiativeBonus").textContent=modalContent.initiativeBonus
+                            const modalContent = data.modalContent;
+
+                            document.getElementById("level").textContent=modalContent.newLevel
+
+                            document.getElementById("newPVBonus").textContent=modalContent.pvBonus
+                            document.getElementById("newManaBonus").textContent=modalContent.manaBonus
+                            document.getElementById("newStrenghtBonus").textContent=modalContent.strengthBonus
+                            document.getElementById("newInitiativeBonus").textContent=modalContent.initiativeBonus
 
 
-                    document.getElementById("continueButtonNewLevel").addEventListener('click',  function() {
-                        levelModal.style.display = "none";
-                    });
+                            document.getElementById("continueButtonNewLevel").addEventListener('click',  function() {
+                                levelModal.style.display = "none";
+                            });
+                        }
+                    } else {
+                        console.error('Erreur:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur de communication avec le serveur:', error);
+                });
+                
+            
+                saveConsumablesState(consumablesData);
+                break;
+            case 'fuite' :
+                const data_fuite = {
+                    pv: hero.pv,
+                    mana: hero.mana,
+                    xp : hero.xp
                 }
-            } else {
-                console.error('Erreur:', data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Erreur de communication avec le serveur:', error);
-        });
-        
     
-        saveConsumablesState(consumablesData);
-
+                fetch('/DungeonXplorer/hero/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data_fuite)  
+                })
+                .then(response => response.json())  
+                .then(data_fuite => {
+                    if (data_fuite.success) {
+                        console.log(`Héro mise a jour`);
+                    } else {
+                        console.error(`Erreur lors de la mise a jour du héro`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur de communication avec le serveur:', error);
+                });
+                saveConsumablesState(consumablesData);
+                setTimeout(() => window.location.href = `/DungeonXplorer/chapter/view/${nextChapterRun}`, 1500);
+                break
+            case "défaite" :
+                setTimeout(() => window.location.href = `/DungeonXplorer/chapter/view/${nextChapterLose}`, 1500);
+                break;
+        }
     }
     
 

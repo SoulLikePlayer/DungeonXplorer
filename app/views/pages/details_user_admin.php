@@ -6,7 +6,7 @@
     </div>
     <div class ="container-detail-admin">
         <h2> Informations Héros </h2>
-        <?php if (isset($_SESSION['admin']['userHeros'])) :?>
+        <?php if ($_SESSION['admin']['userHeros']) :?>
             <?php $hero = $_SESSION['admin']['userHeros']; ?> 
                 <h2>Personnage: <?= htmlspecialchars($hero['hero_firstname']) . " " . htmlspecialchars($hero['hero_lastname']) ?></h2>
 
@@ -19,12 +19,6 @@
                     <ul>
                         <li><strong>Points de vie (PV) de base:</strong> <?= htmlspecialchars($hero['pv_max']) ?></li>
                         <li><strong>Mana de base:</strong> <?= htmlspecialchars($hero['mana_max']) ?></li>
-
-                        <?php if (isset($_SESSION['Chapitre'])): ?>
-                            <!-- Si l'utilisateur a commencé l'histoire, afficher les PV et Mana restants -->
-                            <li><strong>Points de vie (PV) restants:</strong> <?= htmlspecialchars($hero['current_pv']) ?></li>
-                            <li><strong>Mana restant:</strong> <?= htmlspecialchars($hero['current_mana']) ?></li>
-                        <?php endif; ?>
 
                         <li><strong>Force:</strong> <?= htmlspecialchars($hero['strength']) ?></li>
                         <li><strong>Initiative:</strong> <?= htmlspecialchars($hero['initiative']) ?></li>
@@ -69,7 +63,7 @@
                     </div>
                 </div>    
             <?php else : ?>
-                <p>Aucun héros créé. Veuillez créer un personnage pour commencer votre aventure.</p>
+                <p>Aucun héros créé.</p>
             <?php endif; ?> 
             </div>
             </div>

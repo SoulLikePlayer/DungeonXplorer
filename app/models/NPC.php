@@ -2,7 +2,6 @@
 
 class NPC extends Model {
     public function getNPCById($NPCId) {
-        // Connexion à la base de données
         $db = $this->getDatabaseConnection();
 
         $NPCQuery = 'SELECT * FROM NPC WHERE id = :NPCid';
@@ -43,6 +42,36 @@ class NPC extends Model {
                 $merchantStock = $merchantStockStmt->fetchAll(PDO::FETCH_ASSOC);
                 if ($merchantStock){
                     $resultNPC['merchent']['stock'] = $merchantStock;
+                }
+            }
+
+            $heroRaceId = $_SESSION['user']['hero']['race_id'];
+            $racismeQuery = 'SELECT * FROM Racisme WHERE npc_id = :NPCid AND race_id = :race_id';
+            $racismeStmt = $db->prepare($racismeQuery);
+            $racismeStmt->bindParam(':NPCid', $NPCId);
+            $racismeStmt->bindParam(':race_id', $heroRaceId);
+            $racismeStmt->execute();
+
+            $racisme = $racismeStmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($racisme) {
+                $resultNPC['INTRO_SENTENCE'] = $racisme['colère'];
+
+                $merchantQuery = 'SELECT * FROM Merchant_Racisme WHERE npc_id = :NPCid AND race_id = :race_id';
+                $merchantStmt = $db->prepare($merchantQuery);
+                $merchantStmt->bindParam(':NPCid', $NPCId);
+                $merchantStmt->bindParam(':race_id', $heroRaceId);
+                $merchantStmt->execute();
+
+                $merchantRacisme = $merchantStmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($merchantRacisme) {
+                    if ($merchantRacisme['refus_vente_achat'] === 1) {
+                        $resultNPC['merchent']['refus_vente_achat'] = true;
+                    }else{
+                        $resultNPC['merchent']['refus_vente_achat'] = false;
+                    }
+                    $resultNPC['merchent']['multiplicateur'] = $merchantRacisme['multiplicateur'];
                 }
             }
             $_SESSION['npc'] = $resultNPC;

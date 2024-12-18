@@ -20,6 +20,8 @@ session_start();
     <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/exploration.css">
     <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/merchant.css">
     <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/admin.css">
+    <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/Profil.css">
+
 
     <link rel="icon" href="../../../../DungeonXplorer/public/assets/image/Logo.png" type="image/x-icon">
 </head>
@@ -56,6 +58,7 @@ session_start();
         $router->addRoute('user/edit', 'UserController@edit');         // Route pour éditer un utilisateur
         $router->addRoute('user/update/{id}', 'UserController@update');     // Route pour mettre à jour un utilisateur
         $router->addRoute('user/delete', 'UserController@delete');     // Route pour supprimer un utilisateur
+        $router->addRoute('user/selectHero','UserController@selectHero');
 
         /*Route lié pour l'histoire*/ 
         $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter', true); 
@@ -66,6 +69,7 @@ session_start();
         $router->addRoute('inventory/loadInventory','InventoryController@loadInventory');
         $router->addRoute('inventory/saveLoot', 'InventoryController@saveLoot');
         $router->addRoute('inventory/update', "InventoryController@updateConsumables");
+        $router->addRoute('inventory/sellLoot', "InventoryController@sellLoot");
 
 
         /*Route lié au hero*/
@@ -74,6 +78,8 @@ session_start();
         $router->addRoute('hero/update', 'HeroController@updateStats');
         $router->addRoute('hero/updateGold', 'heroController@updateGold');
         $router->addRoute('hero/reset', 'HeroController@reset');
+        $router->addRoute('hero/updateWeaponSet','HeroController@equipWeapon');
+        $router->addRoute('hero/updateArmorSet', 'HeroController@equipArmor');
 
         /* Route Admin*/
         $router->addRoute('admin/pannel', 'UserController@pannelAdmin');

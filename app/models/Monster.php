@@ -14,8 +14,8 @@ class Monster extends Model {
                 m.mana,
                 m.initiative,
                 m.strength,
-                m.attack,
-                m.xp
+                m.xp,
+                m.mana
             FROM Monster m
             WHERE m.id = :monsterId
         ");
@@ -37,7 +37,6 @@ class Monster extends Model {
                 m.mana,
                 m.initiative,
                 m.strength,
-                m.attack,
                 m.xp
             FROM Monster m
             ORDER BY m.id ASC
@@ -65,25 +64,6 @@ class Monster extends Model {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Crée un nouveau monstre dans la base de données
-    public function createMonster($name, $pv, $mana, $initiative, $strength, $attack, $xp) {
-        $db = $this->getDatabaseConnection();
-
-        $query = 'INSERT INTO Monster (name, pv, mana, initiative, strength, attack, xp)
-                  VALUES (:name, :pv, :mana, :initiative, :strength, :attack, :xp)';
-        $stmt = $db->prepare($query);
-
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':pv', $pv);
-        $stmt->bindParam(':mana', $mana);
-        $stmt->bindParam(':initiative', $initiative);
-        $stmt->bindParam(':strength', $strength);
-        $stmt->bindParam(':attack', $attack);
-        $stmt->bindParam(':xp', $xp);
-
-        return $stmt->execute();
-    }
-
     // Vérifie si un monstre existe déjà par son nom
     public function monsterExists($name) {
         $db = $this->getDatabaseConnection();
@@ -93,6 +73,26 @@ class Monster extends Model {
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getAttacksByMonsterId($monsterId) {
+        $db = $this->getDatabaseConnection();
+
+        $stmt = $db->prepare('
+            SELECT 
+                ma.id,
+                ma.name,
+                ma.effect,
+                ma.effect_function,
+                ma.mana_cost,
+                ma.is_physical
+            FROM Monster_Attack ma
+            WHERE ma.monster_id = :monsterId
+        ');
+        $stmt->bindParam(':monsterId', $monsterId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>

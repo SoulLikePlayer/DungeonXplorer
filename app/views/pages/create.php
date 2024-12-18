@@ -31,6 +31,7 @@
                             <input type="text" name="firstname" id="firstname" required>
                         </div>
                     </div>
+                    <input type="hidden" name="talent_id" id="talent_id" value="">
 
                     <div class="row">
                         <div class="col-25">
@@ -59,7 +60,10 @@
                                 <?php foreach ($races as $race): ?>
                                     <option value="<?= htmlspecialchars($race['name']) ?>" 
                                             data-description="<?= htmlspecialchars($race['description']) ?>"
-                                            data-question="<?= htmlspecialchars($race['question']) ?>">
+                                            data-question="<?= htmlspecialchars($race['question']) ?>"
+                                            data-talent-name="<?= htmlspecialchars($raceTalents[$race['name']]['name']) ?>"
+                                            data-talent-desc="<?= htmlspecialchars($raceTalents[$race['name']]['description']) ?>"
+                                            data-talent-id="<?= htmlspecialchars($raceTalents[$race['name']]['id']) ?? null ?>">
                                         <?= htmlspecialchars($race['name']) ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -87,6 +91,11 @@
                         <h3>Description de la race :</h3>
                         <p id="description-text-race"></p>
                         <p id="description-question-race"></p>
+                    </div>
+                    <div class="row" id="race-talent" style="display:none;">
+                        <h3>Talent de la race :</h3>
+                        <p id="talent-name"></p>
+                        <p id="talent-desc"></p>
                     </div>
                 </div>
             </div>

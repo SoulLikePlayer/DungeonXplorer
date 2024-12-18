@@ -3,11 +3,11 @@
         <div class="container-items">
             <?php if (isset($_SESSION['user']['hero'])): ?>
                 <?php $hero = $_SESSION['user']['hero']; ?> 
-
                 <h2>Personnage: <?= htmlspecialchars($hero['hero_firstname']) . " " . htmlspecialchars($hero['hero_lastname']) ?></h2>
 
                 <p><strong>Classe:</strong> <?= htmlspecialchars($hero['class_name']) ?></p>
                 <p><strong>Race:</strong> <?= htmlspecialchars($hero['race_name']) ?></p>
+                <p><strong>Talent:</strong> <?= htmlspecialchars($hero['talent_name'] ?? 'aucun talent')?></p>
 
                 <p><strong>Biographie:</strong> <?= htmlspecialchars($hero['biography'] ?? 'Non renseignée') ?></p>
                 <div class="hero-card">
@@ -63,6 +63,11 @@
                             <li><strong>Bonus de défense :</strong> <?= htmlspecialchars($hero['total_defense_bonus']) ?></li>
                         </ul>
                     </div>
+                    <div class="button-container">
+                    <a href="/DungeonXplorer/hero/create" id='hero-button'>
+                        <button> Créer un nouveau personnage </button>
+                    </a>
+                </div>
                 </div>    
             <?php elseif ((!isset($_SESSION['user']['hero'])) && (isset($_SESSION['user']))): ?>
                 <p>Aucun héros créé. Veuillez créer un personnage pour commencer votre aventure.</p>
@@ -99,16 +104,20 @@
                 <div class="inventory-grid">
                     <?php foreach($_SESSION['user']['inventory'] as $item): ?>
                         <div class="inventory-item">
-                            <h4><?= htmlspecialchars($item['name']) ?></h4>
-                            <p><strong>Description:</strong> <?= htmlspecialchars($item['description']) ?></p>
-                            <p><strong>Poids:</strong> <?= htmlspecialchars($item['poids']) ?> kg</p>
-                            <p><strong>Place occupée:</strong> <?= htmlspecialchars($item['unite_inv']) ?></p>
+                            <?php 
+                                if ($item['imageName']):
+                            ?>
+                                <img class="pixelInventory" src="<?= htmlspecialchars("../DungeonXplorer/public/assets/PixelArt/" . $item['imageName']) ?>" alt="<?= htmlspecialchars($item['name']) ?>" class="inventory-image">
+                            <?php else: ?>
+                                <h4><?= htmlspecialchars($item['name']) ?></h4>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
                 <p>Inventaire vide.</p>
             <?php endif; ?> 
-        </div>    
+        </div>
+
     </div>
 </main>

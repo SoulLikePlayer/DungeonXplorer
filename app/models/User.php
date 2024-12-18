@@ -3,23 +3,24 @@
 class User extends Model {
 
     // Ajouter un utilisateur à la base de données
-    public function createAccount($username, $password, $email) {
+    public function createAccount($username, $password, $email, $firstName, $lastName) {
         $db = $this->getDatabaseConnection();
-
-        // Hashage du mot de passe avant de le stocker
+    
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        // Requête SQL pour insérer un nouvel utilisateur
-        $query = 'INSERT INTO Account (username, password, email) VALUES (:username, :password, :email)';
+    
+        $query = 'INSERT INTO Account (username, password, email, first_name, last_name) 
+                  VALUES (:username, :password, :email, :first_name, :last_name)';
         $stmt = $db->prepare($query);
-
-        // Liaison des paramètres et exécution
+    
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':password', $hashedPassword);
         $stmt->bindParam(':email', $email);
-
+        $stmt->bindParam(':first_name', $firstName);
+        $stmt->bindParam(':last_name', $lastName);
+    
         return $stmt->execute();
     }
+    
 
     
 
@@ -49,11 +50,49 @@ class User extends Model {
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    
+    public function getUserByUsernameOrEmail($usernameOrEmail) {
+        $db = $this->getDatabaseConnection();
+    
+        $query = 'SELECT * FROM Account WHERE username = :usernameOrEmail OR email = :usernameOrEmail';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':usernameOrEmail', $usernameOrEmail);
+        $stmt->execute();
+    
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
 
     public function getHeroByUserId($userId) {
-        $heroModel = new Hero();       
-        return $heroModel->getHeroByUserId($userId);
+        $db = $this->getDatabaseConnection();
+        
+        // Requête pour récupérer tous les hero_id associés à cet utilisateur
+        $query = 'SELECT hero_id 
+                  FROM Account_Hero 
+                  WHERE account_id = :userId';
+        
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':userId', $userId);
+        $stmt->execute();
+        
+        $heroIds = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if (empty($heroIds)) {
+            return null; // Aucun héros associé à cet utilisateur
+        }
+    
+        $heroModel = new Hero();
+        $heroes = [];
+        
+        foreach ($heroIds as $heroId) {
+            $heroes[] = $heroModel->getHeroById($heroId['hero_id']);
+        }
+    
+        $_SESSION['user']['allHero'] = $heroes;
+        
+        return $heroes[0]; // Le premier héros dans la liste
     }
+    
 
     // Récupérer un utilisateur par son ID
     public function getUserById($id) {

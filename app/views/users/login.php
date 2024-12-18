@@ -13,7 +13,7 @@
         <form action="/DungeonXplorer/user/handleLogin" method="POST">
         <div class="row">
                 <div class='col-25'>
-                    <label for="username">Nom d'utilisateur</label>
+                    <label for="username">Nom d'utilisateur ou Email</label>
                 </div>
                 <div class="col-75">
                     <input type="text" name="username" id="username" required>

@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const itemGoldValue = document.getElementById('itemGoldValue');
     const itemQuantity = document.getElementById('itemQuantity');
     const itemImage = document.getElementById('itemImage');
+    const itemActionButtons = document.getElementById('itemActionButtons'); 
 
     function openModal() {
         modal.style.display = 'flex';
@@ -41,12 +42,74 @@ document.addEventListener('DOMContentLoaded', function () {
         itemGoldValue.textContent = item.gold_value;
         itemQuantity.textContent = item.quantity;
 
+        itemActionButtons.innerHTML = '';
+
         if (item.imageName) {
             itemImage.src = `../../public/assets/PixelArt/${item.imageName}`;
             itemImage.style.display = 'block';
         } else {
             itemImage.style.display = 'none'; 
         }
+
+        if (item.item_type === 'weapon') {
+            createWeaponButtons(item);
+        } else if (item.item_type === 'armor') {
+            createArmorButton(item);
+        }
+    }
+
+    function createWeaponButtons(item) {
+        const primaryButton = document.createElement('button');
+        primaryButton.textContent = 'Equiper en arme principal';
+        primaryButton.addEventListener('click', () => equipWeapon(item.item_id, 'primary'));
+        itemActionButtons.appendChild(primaryButton);
+
+        const secondaryButton = document.createElement('button');
+        secondaryButton.textContent = 'Equiper en arme secondaire';
+        secondaryButton.addEventListener('click', () => equipWeapon(item.item_id, 'secondary'));
+        itemActionButtons.appendChild(secondaryButton);
+    }
+
+    function createArmorButton(item) {
+        const equipButton = document.createElement('button');
+        equipButton.textContent = 'Equiper';
+        equipButton.addEventListener('click', () => equipArmor(item.item_id));
+        itemActionButtons.appendChild(equipButton);
+    }
+
+    function equipWeapon(itemId, type) {
+        const url = `/DungeonXplorer/hero/updateWeaponSet`;
+        const data = {
+            id: itemId,
+            type: type
+        };
+        sendRequest(url, data);
+    }
+
+    function equipArmor(itemId) {
+        const url = `/DungeonXplorer/hero/updateArmorSet`;
+        const data = {
+            id: itemId
+        };
+        sendRequest(url, data);
+    }
+
+    function sendRequest(url, data) {
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            window.location.reload()
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 
     function closeModal() {

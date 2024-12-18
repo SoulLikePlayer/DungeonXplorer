@@ -2,13 +2,14 @@
 
 class Hero extends Model {
 
-    public function createHero($lastname, $firstname, $classId, $raceId, $biography, $pv, $mana, $strength, $initiative) {
+    public function createHero($lastname, $firstname, $classId, $raceId, $biography, $pv, $mana, $strength, $initiative, $talentId) {
         $db = $this->getDatabaseConnection();
-        $idt = $_SESSION['user']['id'];
-        $query = 'INSERT INTO Hero (id, lastname, firstname, class_id, race_id, biography, pv_max, mana_max, strength, initiative)
-                  VALUES (:idt, :lastname, :firstname, :classId, :raceId, :biography, :pv_max, :mana_max, :strength, :initiative)';
+        $idt = $_SESSION['user']['id'];  // Récupérer l'ID du compte
+        $query = 'INSERT INTO Hero (lastname, firstname, class_id, race_id, biography, pv_max, mana_max, strength, initiative, talent_id)
+                  VALUES (:lastname, :firstname, :classId, :raceId, :biography, :pv_max, :mana_max, :strength, :initiative, :talentId)';
+        
+        // Préparer la requête d'insertion pour le héros
         $stmt = $db->prepare($query);
-        $stmt->bindParam(':idt', $idt);
         $stmt->bindParam(':lastname', $lastname);
         $stmt->bindParam(':firstname', $firstname);
         $stmt->bindParam(':classId', $classId);
@@ -18,8 +19,28 @@ class Hero extends Model {
         $stmt->bindParam(':mana_max', $mana);
         $stmt->bindParam(':strength', $strength);
         $stmt->bindParam(':initiative', $initiative);
-        return $stmt->execute();
+        $stmt->bindParam(':talentId', $talentId);        
+        $resCreaHero = $stmt->execute();
+
+        $_SESSION['heroId'] =  $db->lastInsertId(); 
+
+    
+        if ($resCreaHero) {
+            $heroId =  $_SESSION['heroId'];
+    
+            $query2 = 'INSERT INTO Account_Hero (Account_id, Hero_id) VALUES (:idt, :hero_id)';
+            $stmt2 = $db->prepare($query2);
+            $stmt2->bindParam(':idt', $idt);  // ID du compte
+            $stmt2->bindParam(':hero_id', $heroId);  // ID du héros
+            
+            $resCreaAccountHero = $stmt2->execute();
+    
+            return $resCreaHero && $resCreaAccountHero;
+        }
+    
+        return false;
     }
+    
 
     public function deleteHero($id){
         $db = $this->getDatabaseConnection();
@@ -60,7 +81,7 @@ class Hero extends Model {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getHeroByUserId($userId) {
+    public function getHeroById($userId) {
         $db = $this->getDatabaseConnection();
         $query = '
         SELECT 
@@ -72,6 +93,8 @@ class Hero extends Model {
             c.name AS class_name,
             h.race_id,
             r.name AS race_name,
+            h.talent_id,
+            t.name AS talent_name,
             h.pv_max,
             h.mana_max,
             h.strength,
@@ -138,6 +161,10 @@ class Hero extends Model {
             Armor gloves_armor ON gloves.id = gloves_armor.item_id
         LEFT JOIN 
             Hero_Story hs ON h.id = hs.hero_id
+        LEFT JOIN
+            Talent_Race tr ON tr.race_id = h.race_id
+        LEFT JOIN
+            Talent t ON h.talent_id = t.id
         WHERE
             h.id = :userId;';
         $stmt = $db->prepare($query);
@@ -148,14 +175,26 @@ class Hero extends Model {
 
     public function startSession($playerId) {
         $db = $this->getDatabaseConnection();
-        
-        $query = 'INSERT INTO PlayerSessions (player_id, session_start) VALUES (:player_id, NOW())';
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':player_id', $playerId, PDO::PARAM_INT);
-        $stmt->execute();
+
+        $verifQuery = 'SELECT * FROM PlayerSessions WHERE player_id = :player_id AND session_end IS NULL';
+        $verifStmt = $db->prepare($verifQuery);
+        $verifStmt->bindParam(':player_id', $playerId);
+        $verifStmt->execute();
+
+        $existing = $verifStmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($existing){
+            return $existing['id'];
+        }
     
+        $insertQuery = 'INSERT INTO PlayerSessions (player_id, session_start) VALUES (:player_id, NOW())';
+        $insertStmt = $db->prepare($insertQuery);
+        $insertStmt->bindParam(':player_id', $playerId, PDO::PARAM_INT);
+        $insertStmt->execute();
+        
         return $db->lastInsertId();
     }
+    
     
     public function endSession($sessionId) {
         $db = $this->getDatabaseConnection();
@@ -243,5 +282,73 @@ class Hero extends Model {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getLastInsertedHeroId() {
+        $db = $this->getDatabaseConnection();
+        return $db->lastInsertId();  // Retourne le dernier ID inséré dans la base de données
+    }
+    
+
+    public function updatePrimaryWeapon($heroId, $weaponId) {
+        $db = $this->getDatabaseConnection();
+        
+        $query = 'SELECT * FROM Hero_Weapons WHERE hero_id = :hero_id';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':hero_id', $heroId);
+        $stmt->execute();
+        $heroWeapon = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($heroWeapon) {
+            $query = 'UPDATE Hero_Weapons SET primary_weapon_id = :weaponId WHERE hero_id = :heroId';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':heroId', $heroId);
+            $stmt->bindParam(':weaponId', $weaponId);
+            return $stmt->execute();
+        } else {
+            $query = 'INSERT INTO Hero_Weapons (hero_id, primary_weapon_id) VALUES (:hero_id, :weaponId)';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':heroId', $heroId);
+            $stmt->bindParam(':weaponId', $weaponId);
+            return $stmt->execute();
+        }
+    }
+
+    public function updateSecondaryWeapon($heroId, $weaponId) {
+        $db = $this->getDatabaseConnection();
+        
+        $query = 'SELECT * FROM Hero_Weapons WHERE hero_id = :hero_id';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':hero_id', $heroId);
+        $stmt->execute();
+        $heroWeapon = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($heroWeapon) {
+            $query = 'UPDATE Hero_Weapons SET secondary_weapon_id = :weaponId WHERE hero_id = :heroId';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':heroId', $heroId);
+            $stmt->bindParam(':weaponId', $weaponId);
+            return $stmt->execute();
+        } else {
+            $query = 'INSERT INTO Hero_Weapons (hero_id, secondary_weapon_id) VALUES (:hero_id, :weaponId)';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':heroId', $heroId);
+            $stmt->bindParam(':weaponId', $weaponId);
+            return $stmt->execute();
+        }
+    }
+    
+    public function updateHeroArmorSlot($heroId, $slotColumn, $itemId) {
+        $db = $this->getDatabaseConnection();
+    
+        $updateQuery = "UPDATE Hero_Armor SET $slotColumn = :itemId WHERE hero_id = :heroId";
+    
+        $stmt = $db->prepare($updateQuery);
+        $stmt->bindParam(':itemId', $itemId);
+        $stmt->bindParam(':heroId', $heroId);
+    
+        return $stmt->execute();
+    }
+    
+    
 }
 ?>
