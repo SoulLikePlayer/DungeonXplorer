@@ -132,14 +132,14 @@
                         <div id="heroDies-container">
                             <p><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span><br />
                             <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" /> : <span id="heroPv"></span> / <span id="heroPvMax"></span><br />
-                            Mana : <span id="heroMana"></span> / <span id="heroManaMax"></span><br />
+                            <img src="../../public/assets/PixelArt/Mana.png" width="42" height="42" /> : <span id="heroMana"></span> / <span id="heroManaMax"></span><br />
                             Résultat <span id="heroDice"></p>
                         </div>
                         <div id="combatMessages" class="combat-messages"></div>
                         <div id="monsterDies-container">
                             <p><span id="monsterName"><?= htmlspecialchars($_SESSION['monster']['name'])?></span><br />
                             <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" />  : <span id="monsterPv"></span> / <span id="monsterPvMax"></span><br />
-                            Mana : <span id="monsterMana"></span> / <span id="monsterManaMax"></span><br />
+                            <img src="../../public/assets/PixelArt/Mana.png" width="42" height="42" /> : <span id="monsterMana"></span> / <span id="monsterManaMax"></span><br />
                             Résultat <span id="monsterDice"></p>
                         </div>
                     </div>    
@@ -150,7 +150,7 @@
                         </select>
                         <div id="ActionButton">
                             <button id="attackButton"><img src="../../public/assets/PixelArt/Arme.png" width="42" height="42" /></button>
-                            <button id="useSpellButton" data-spells='<?= json_encode($_SESSION['user']['inventoryCodex'] ?? []) ?>'>Lancer un sort</button>
+                            <button id="useSpellButton" data-spells='<?= json_encode($_SESSION['user']['inventoryCodex'] ?? []) ?>'><img src="../../public/assets/PixelArt/Sort.png" width="42" height="42" /></button>
                             <button id="useItemButton" data-inventory='<?= json_encode($_SESSION['user']['inventoryCons'])?>'><img src="../../public/assets/PixelArt/Consomable.png" width="42" height="42" /></button>
                             <button id="runButton"><img src="../../public/assets/PixelArt/Fuite.png" width="42" height="42" /></button>
                         </div>
