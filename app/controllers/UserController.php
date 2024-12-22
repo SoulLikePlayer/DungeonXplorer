@@ -70,7 +70,7 @@ class UserController extends Controller {
                     $_SESSION['Chapitre'] = $chapter["chapter"];
                 }
     
-                $sessionId = $heroModel->startSession($_SESSION['user']['id']);
+                $sessionId = $userModel->startSession($_SESSION['user']['id']);
                 $_SESSION["session_id"] = $sessionId;
     
                 header("Location: /DungeonXplorer/inventory/loadInventory");
@@ -90,8 +90,8 @@ class UserController extends Controller {
     public function logout() {
         unset($_SESSION['user']);
         if(isset($_SESSION['session_id'])){
-            $heroModel = new Hero();
-            $heroModel->endSession($_SESSION['session_id']);
+            $userModel = new User();
+            $userModel->endSession($_SESSION['session_id']);
         }
         session_destroy();
         header('Location: /DungeonXplorer');

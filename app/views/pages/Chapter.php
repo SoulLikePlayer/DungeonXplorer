@@ -106,9 +106,11 @@
                     data-hero-primary-weapon-name="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_name']) ?>"
                     data-hero-primary-weapon-damage-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_damage_bonus']) ?>"
                     data-hero-primary-weapon-defense-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_defense_bonus']) ?>"
+                    data-hero-primary-weapon-effect="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_effect'] ?? 'Aucune') ?>"
                     data-hero-secondary-weapon-name="<?= htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_name']) ?>"
                     data-hero-secondary-weapon-damage-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_damage_bonus']) ?>"
                     data-hero-secondary-weapon-defense-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_defense_bonus']) ?>"
+                    data-hero-secondary-weapon-effect="<?=htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_effect'] ?? 'Aucune')?>"
                     data-hero-total-defense-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['total_defense_bonus']) ?>"
                     data-monster-name="<?= htmlspecialchars($_SESSION['monster']['name']) ?>"
                     data-monster-pv="<?= htmlspecialchars($_SESSION['monster']['pv']) ?>"
@@ -167,7 +169,7 @@
                 </div>
             </div> 
             <script src="../../public/assets/js/lootSystem.js"></script>
-            <script src="../../public/assets/js/combatSystem.js"></script>
+            <script src="../../public/assets/js/CombatSystem.js"></script>
         <?php elseif($chapter['chapter_type'] === 'npc_interaction' || $chapter['chapter_type'] === 'merchent'): ?>
             <div class="npc-container" id="npcContainer"
                 data-dialogues='<?= json_encode($_SESSION['npc']['dialogues'] ?? []) ?>'

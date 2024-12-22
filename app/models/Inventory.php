@@ -150,28 +150,45 @@ class Inventory extends Model {
 
     public function addItemToInventory($heroId, $itemId, $quantity) {
         $db = $this->getDatabaseConnection();
-        
-        $queryCheck = 'SELECT id, quantity FROM Inventory WHERE hero_id = :hero_id AND item_id = :item_id';
-        $stmtCheck = $db->prepare($queryCheck);
-        $stmtCheck->bindParam(':hero_id', $heroId, PDO::PARAM_INT);
-        $stmtCheck->bindParam(':item_id', $itemId, PDO::PARAM_INT);
-        $stmtCheck->execute();
-        
-        $existingItem = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+        $queryCheckPlace = "SELECT 
+                                SUM(quantity) AS total_items_count   
+                            FROM 
+                                Inventory
+                            WHERE hero_id = :heroId";
+        $stmtCheckPlace = $db->prepare($queryCheckPlace);
+        $stmtCheckPlace->bindParam(':heroId', $heroId);
+        $stmtCheckPlace->execute();
 
-        if ($existingItem) {
-            $queryUpdate = 'UPDATE Inventory SET quantity = quantity + :quantity WHERE id = :id';
-            $stmtUpdate = $db->prepare($queryUpdate);
-            $stmtUpdate->bindParam(':quantity', $quantity, PDO::PARAM_INT);
-            $stmtUpdate->bindParam(':id', $existingItem['id'], PDO::PARAM_INT);
-            $stmtUpdate->execute();
-        } else {
-            $queryInsert = 'INSERT INTO Inventory (hero_id, item_id, quantity) VALUES (:hero_id, :item_id, :quantity)';
-            $stmtInsert = $db->prepare($queryInsert);
-            $stmtInsert->bindParam(':hero_id', $heroId, PDO::PARAM_INT);
-            $stmtInsert->bindParam(':item_id', $itemId, PDO::PARAM_INT);
-            $stmtInsert->bindParam(':quantity', $quantity, PDO::PARAM_INT);
-            $stmtInsert->execute();
+        $place = $stmtCheckPlace->fetch(PDO::FETCH_ASSOC);
+        $totalItems = (int)$place['total_items_count'];
+        $maxItems = (int)$_SESSION['user']['hero']['nb_items_max'];
+
+        if ($totalItems + $quantity > $maxItems) {
+            return false;
+        }else {
+            $queryCheck = 'SELECT id, quantity FROM Inventory WHERE hero_id = :hero_id AND item_id = :item_id';
+            $stmtCheck = $db->prepare($queryCheck);
+            $stmtCheck->bindParam(':hero_id', $heroId, PDO::PARAM_INT);
+            $stmtCheck->bindParam(':item_id', $itemId, PDO::PARAM_INT);
+            $stmtCheck->execute();
+            
+            $existingItem = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+            if ($existingItem) {
+                $queryUpdate = 'UPDATE Inventory SET quantity = quantity + :quantity WHERE id = :id';
+                $stmtUpdate = $db->prepare($queryUpdate);
+                $stmtUpdate->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+                $stmtUpdate->bindParam(':id', $existingItem['id'], PDO::PARAM_INT);
+                $stmtUpdate->execute();
+            } else {
+                $queryInsert = 'INSERT INTO Inventory (hero_id, item_id, quantity) VALUES (:hero_id, :item_id, :quantity)';
+                $stmtInsert = $db->prepare($queryInsert);
+                $stmtInsert->bindParam(':hero_id', $heroId, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':item_id', $itemId, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+                $stmtInsert->execute();
+            }
+            return true;
         }
     }
 

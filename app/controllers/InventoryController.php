@@ -62,7 +62,7 @@ class InventoryController extends Controller {
             $quantity = $data['quantity'];
     
             $inventoryModel = new Inventory();
-            $inventoryModel->addItemToInventory($heroId, $itemId, $quantity);
+            $result = $inventoryModel->addItemToInventory($heroId, $itemId, $quantity);
 
             $inventory = $inventoryModel->getInventory(); 
             $inventoryCons = $inventoryModel->getInventoryConsumable(); 
@@ -72,9 +72,13 @@ class InventoryController extends Controller {
                 $_SESSION['user']['inventoryCons'] = $inventoryCons;
                 $inventoryModel->getInventoryCodex();
             }
-
-    
-            echo json_encode(['success' => true]);
+            
+            ob_clean();
+            if ($result){
+                echo json_encode(['success' => true]);
+            }else {
+                echo json_encode(['success' => false]);
+            }
             exit;
         } else {
             echo json_encode(['success' => false, 'message' => 'Données invalides']);

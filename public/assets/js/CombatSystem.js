@@ -15,9 +15,11 @@ try{
             primaryWeaponName: this.dataset.heroPrimaryWeaponName,
             primaryWeaponDamageBonus: parseInt(this.dataset.heroPrimaryWeaponDamageBonus),
             primaryWeaponDefenseBonus: parseInt(this.dataset.heroPrimaryWeaponDefenseBonus),
+            primaryWeaponEffect: this.dataset.heroPrimaryWeaponEffect,
             secondaryWeaponName: this.dataset.heroSecondaryWeaponName,
             secondaryWeaponDamageBonus: parseInt(this.dataset.heroSecondaryWeaponDamageBonus),
             secondaryWeaponDefenseBonus: parseInt(this.dataset.heroSecondaryWeaponDefenseBonus),
+            secondaryWeaponEffect: this.dataset.heroSecondaryWeaponEffect,
             totalDefenseBonus: parseInt(this.dataset.heroTotalDefenseBonus),
             activeBonuses: [],
             activeDebuff: [],
@@ -650,12 +652,14 @@ try{
             ? {
                 damageBonus: hero.primaryWeaponDamageBonus,
                 defenseBonus: hero.primaryWeaponDefenseBonus,
-                weaponName: hero.primaryWeaponName
+                weaponName: hero.primaryWeaponName,
+                effect : hero.primaryWeaponEffect
             }
             : {
                 damageBonus: hero.secondaryWeaponDamageBonus,
                 defenseBonus: hero.secondaryWeaponDefenseBonus,
-                weaponName: hero.secondaryWeaponName
+                weaponName: hero.secondaryWeaponName,
+                effect: hero.secondaryWeaponEffect
             };
     }
 
@@ -726,7 +730,7 @@ try{
         }
         const weaponChoice = document.getElementById('weaponChoice').value;
         const weaponBonus = getWeaponBonus(hero, weaponChoice);
-
+        analyzeEffectFunction(weaponBonus.effect, hero, monster, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData);
         const attackRoll = rollDie();
         const defenseRoll = rollDie();
 

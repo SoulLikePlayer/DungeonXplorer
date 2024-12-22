@@ -217,4 +217,35 @@ class User extends Model {
         return $details;
     }
     
+    public function startSession($playerId) {
+        $db = $this->getDatabaseConnection();
+
+        $verifQuery = 'SELECT * FROM PlayerSessions WHERE player_id = :player_id AND session_end IS NULL';
+        $verifStmt = $db->prepare($verifQuery);
+        $verifStmt->bindParam(':player_id', $playerId);
+        $verifStmt->execute();
+
+        $existing = $verifStmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($existing){
+            return $existing['id'];
+        }
+    
+        $insertQuery = 'INSERT INTO PlayerSessions (player_id, session_start) VALUES (:player_id, NOW())';
+        $insertStmt = $db->prepare($insertQuery);
+        $insertStmt->bindParam(':player_id', $playerId, PDO::PARAM_INT);
+        $insertStmt->execute();
+        
+        return $db->lastInsertId();
+    }
+    
+    
+    public function endSession($sessionId) {
+        $db = $this->getDatabaseConnection();
+    
+        $query = 'UPDATE PlayerSessions SET session_end = NOW() WHERE id = :session_id';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':session_id', $sessionId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }

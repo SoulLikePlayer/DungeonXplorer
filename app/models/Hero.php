@@ -83,8 +83,7 @@ class Hero extends Model {
 
     public function getHeroById($userId) {
         $db = $this->getDatabaseConnection();
-        $query = '
-        SELECT 
+        $query = 'SELECT 
             h.id AS hero_id,
             h.lastname AS hero_lastname,
             h.firstname AS hero_firstname,
@@ -108,12 +107,15 @@ class Hero extends Model {
             primary_weapon.name AS primary_weapon_name,
             COALESCE(primary_weapon_weapon.damage_bonus, 0) AS primary_weapon_damage_bonus,
             COALESCE(primary_weapon_weapon.defense_bonus, 0) AS primary_weapon_defense_bonus,
+            primary_weapon_effect.effect_function AS primary_weapon_effect,
             secondary_weapon.name AS secondary_weapon_name,
             COALESCE(secondary_weapon_weapon.damage_bonus, 0) AS secondary_weapon_damage_bonus,
             COALESCE(secondary_weapon_weapon.defense_bonus, 0) AS secondary_weapon_defense_bonus,
+            secondary_weapon_effect.effect_function AS secondary_weapon_effect,
             (COALESCE(primary_weapon_weapon.damage_bonus, 0) + COALESCE(secondary_weapon_weapon.damage_bonus, 0)) AS total_damage_bonus,
             (COALESCE(primary_weapon_weapon.defense_bonus, 0) + COALESCE(secondary_weapon_weapon.defense_bonus, 0) 
-            + COALESCE(helmet_armor.defense, 0) + COALESCE(body_armor.defense, 0) + COALESCE(greaves_armor.defense, 0) + COALESCE(gloves_armor.defense, 0)) AS total_defense_bonus,
+                + COALESCE(helmet_armor.defense, 0) + COALESCE(body_armor.defense, 0) 
+                + COALESCE(greaves_armor.defense, 0) + COALESCE(gloves_armor.defense, 0)) AS total_defense_bonus,
             ha.helmet_id,
             ha.armor_id,
             ha.greaves_id,
@@ -138,9 +140,13 @@ class Hero extends Model {
         LEFT JOIN 
             Weapon primary_weapon_weapon ON primary_weapon.id = primary_weapon_weapon.item_id
         LEFT JOIN 
+            WeaponEffect primary_weapon_effect ON primary_weapon_weapon.item_id = primary_weapon_effect.weapon_id
+        LEFT JOIN 
             Items secondary_weapon ON hw.secondary_weapon_id = secondary_weapon.id
         LEFT JOIN 
             Weapon secondary_weapon_weapon ON secondary_weapon.id = secondary_weapon_weapon.item_id
+        LEFT JOIN 
+            WeaponEffect secondary_weapon_effect ON secondary_weapon_weapon.item_id = secondary_weapon_effect.weapon_id
         LEFT JOIN 
             Hero_Armor ha ON h.id = ha.hero_id
         LEFT JOIN 
@@ -156,7 +162,7 @@ class Hero extends Model {
         LEFT JOIN 
             Armor greaves_armor ON greaves.id = greaves_armor.item_id
         LEFT JOIN 
-        	Items gloves ON ha.gloves_id = gloves.id
+            Items gloves ON ha.gloves_id = gloves.id
         LEFT JOIN 
             Armor gloves_armor ON gloves.id = gloves_armor.item_id
         LEFT JOIN 
@@ -171,38 +177,6 @@ class Hero extends Model {
         $stmt->bindParam(':userId', $userId);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function startSession($playerId) {
-        $db = $this->getDatabaseConnection();
-
-        $verifQuery = 'SELECT * FROM PlayerSessions WHERE player_id = :player_id AND session_end IS NULL';
-        $verifStmt = $db->prepare($verifQuery);
-        $verifStmt->bindParam(':player_id', $playerId);
-        $verifStmt->execute();
-
-        $existing = $verifStmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($existing){
-            return $existing['id'];
-        }
-    
-        $insertQuery = 'INSERT INTO PlayerSessions (player_id, session_start) VALUES (:player_id, NOW())';
-        $insertStmt = $db->prepare($insertQuery);
-        $insertStmt->bindParam(':player_id', $playerId, PDO::PARAM_INT);
-        $insertStmt->execute();
-        
-        return $db->lastInsertId();
-    }
-    
-    
-    public function endSession($sessionId) {
-        $db = $this->getDatabaseConnection();
-    
-        $query = 'UPDATE PlayerSessions SET session_end = NOW() WHERE id = :session_id';
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':session_id', $sessionId, PDO::PARAM_INT);
-        return $stmt->execute();
     }
     
 
