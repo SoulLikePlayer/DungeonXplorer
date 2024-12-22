@@ -21,6 +21,8 @@ session_start();
     <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/merchant.css">
     <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/admin.css">
     <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/Profil.css">
+    <link rel="stylesheet" href="../../../../DungeonXplorer/public/assets/css/CreateHero.css">
+
 
 
     <link rel="icon" href="../../../../DungeonXplorer/public/assets/image/Logo.png" type="image/x-icon">
@@ -60,37 +62,39 @@ session_start();
         $router->addRoute('user/delete', 'UserController@delete');     // Route pour supprimer un utilisateur
         $router->addRoute('user/selectHero','UserController@selectHero');
 
-        /*Route lié pour l'histoire*/ 
-        $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter', true); 
-        $router->addRoute('chapter/reset', 'ChapterController@resetChapter');
+        if (isset($_SESSION['user'])){
+            /* Route lié à l'inventaire */
+            $router->addRoute('inventory/loadInventory','InventoryController@loadInventory');
+            $router->addRoute('inventory/saveLoot', 'InventoryController@saveLoot');
+            $router->addRoute('inventory/update', "InventoryController@updateConsumables");
+            $router->addRoute('inventory/sellLoot', "InventoryController@sellLoot");
 
 
-        /* Route lié à l'inventaire */
-        $router->addRoute('inventory/loadInventory','InventoryController@loadInventory');
-        $router->addRoute('inventory/saveLoot', 'InventoryController@saveLoot');
-        $router->addRoute('inventory/update', "InventoryController@updateConsumables");
-        $router->addRoute('inventory/sellLoot', "InventoryController@sellLoot");
+            /*Route lié au hero*/
+            $router->addRoute('hero/store', 'HeroController@store');
+            $router->addRoute('hero/create', 'HeroController@create');
+            $router->addRoute('hero/update', 'HeroController@updateStats');
+            $router->addRoute('hero/updateGold', 'heroController@updateGold');
+            $router->addRoute('hero/reset', 'HeroController@reset');
+            $router->addRoute('hero/updateWeaponSet','HeroController@equipWeapon');
+            $router->addRoute('hero/updateArmorSet', 'HeroController@equipArmor');
 
+            if (isset($_SESSION['user']['hero'])){
+                /*Route lié pour l'histoire*/ 
+                $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter', true); 
+                $router->addRoute('chapter/reset', 'ChapterController@resetChapter');
+            }
 
-        /*Route lié au hero*/
-        $router->addRoute('hero/store', 'HeroController@store');
-        $router->addRoute('hero/create', 'HeroController@create');
-        $router->addRoute('hero/update', 'HeroController@updateStats');
-        $router->addRoute('hero/updateGold', 'heroController@updateGold');
-        $router->addRoute('hero/reset', 'HeroController@reset');
-        $router->addRoute('hero/updateWeaponSet','HeroController@equipWeapon');
-        $router->addRoute('hero/updateArmorSet', 'HeroController@equipArmor');
-
-        /* Route Admin*/
-        $router->addRoute('admin/pannel', 'UserController@pannelAdmin');
-        $router->addRoute('admin/delete/{id}', 'UserController@deleteUserAdmin');
-        $router->addRoute('admin/details/{id}', 'UserController@details_user_admin');
+            if ($_SESSION['user']['is_admin']===1){
+                /* Route Admin*/
+                $router->addRoute('admin/pannel', 'UserController@pannelAdmin');
+                $router->addRoute('admin/delete/{id}', 'UserController@deleteUserAdmin');
+                $router->addRoute('admin/details/{id}', 'UserController@details_user_admin');
+            }
+        }
         
-        /*Route */
         $router->addRoute('about', 'AboutController@index');
 
-
-        // Traiter la route demandée
         $router->route(trim($_SERVER['REQUEST_URI'], '/'));
 
         

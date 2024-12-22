@@ -42,7 +42,8 @@
                                 <option value="" disabled selected>Sélectionner une classe</option>
                                 <?php foreach ($classes as $class): ?>
                                     <option value="<?= htmlspecialchars($class['name']) ?>" 
-                                            data-description="<?= htmlspecialchars($class['description']) ?>">
+                                            data-description="<?= htmlspecialchars($class['description']) ?>"
+                                            data-image="<?= htmlspecialchars($class['imageName']) ?>">
                                         <?= htmlspecialchars($class['name']) ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -87,6 +88,9 @@
                         <h3>Description de la classe :</h3>
                         <p id="description-text-class"></p>
                     </div>
+                    <div class="row" id="class-image" style="display:none;">
+                        <img id="image-class" src="" alt="Image de la classe" style="width: 50%; height: auto;">
+                    </div>
                     <div class="row" id="race-description" style="display:none;">
                         <h3>Description de la race :</h3>
                         <p id="description-text-race"></p>
@@ -98,6 +102,7 @@
                         <p id="talent-desc"></p>
                     </div>
                 </div>
+
             </div>
 
             <div>
@@ -107,4 +112,4 @@
     </div>
 </main>
 
-<script src="../public/assets/js/classDescription.js"></script>
+<script src="../public/assets/js/DescriptionHeroSystem.js"></script>

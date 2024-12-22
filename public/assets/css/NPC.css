@@ -18,8 +18,8 @@
 }
 
 .ChoiceButton{
-    background: transparent;
-    border: transparent;
+    background: transparent !important;
+    border: transparent !important;
     color : #c4975e;
     font-family: var(--font-family-title);
     font-size: 1.5em;

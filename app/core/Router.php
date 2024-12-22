@@ -70,7 +70,7 @@ class Router
             }
         }
 
-        echo "Erreur 404 : Route non trouvée.";
+        require_once  dirname(__DIR__) . '/' . 'views/pages/404.php';
     }
 
     private function isUserAttemptingToModifyUrl($url)

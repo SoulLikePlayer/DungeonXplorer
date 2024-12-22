@@ -184,7 +184,7 @@ button {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
 }
 
-button:hover:not(.npc-dialogue) {
+button:hover:not(.npc-dialogue, .ChoiceButton) {
     background-color: var(--hover-color);
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(255, 215, 0, 0.7);

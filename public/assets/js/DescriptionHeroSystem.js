@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var raceSelect = document.getElementById("race");
     var descriptionTextClass = document.getElementById("description-text-class");
     var descriptionRowClass = document.getElementById("class-description");
+    var classImageRow = document.getElementById("class-image");
+    var classImage = document.getElementById("image-class");
 
     var descriptionTextRace = document.getElementById("description-text-race");
     var descriptionQuestionRace = document.getElementById("description-question-race");
@@ -17,11 +19,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var description = selectedOption.getAttribute('data-description');
 
+        var imageName = selectedOption.getAttribute('data-image');
         if (description) {
             descriptionTextClass.textContent = description;
             descriptionRowClass.style.display = "block";
         } else {
             descriptionRowClass.style.display = "none";
+        }
+
+        if (imageName) {
+            classImage.src = `../../DungeonXplorer/public/assets/PixelArt/${imageName}`;
+            classImageRow.style.display = "block";
+        } else {
+            classImageRow.style.display = "none";
         }
     }
 
