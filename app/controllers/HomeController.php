@@ -4,14 +4,8 @@ class HomeController
     public function index()
     {
         if (isset($_SESSION['user']['hero'])){
-            /*Gestion de héro*/
-            if(!isset($_SESSION['user']['hero'])){
-                $heroModel = new User();
-                $_SESSION['user']['hero'] = $heroModel->getHeroByUserId($_SESSION['user']['id']);
-            }else{
-                $heroModel = new Hero();
-                $_SESSION['user']['hero'] = $heroModel->getHeroById($_SESSION['user']['hero']['hero_id']);
-            }
+            $heroModel = new Hero();
+            $_SESSION['user']['hero'] = $heroModel->getHeroById($_SESSION['user']['hero']['hero_id']);
 
             /*Gestion de l'inventaire */
             $inventoryModel = new Inventory(); 

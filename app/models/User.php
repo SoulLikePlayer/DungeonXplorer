@@ -65,8 +65,6 @@ class User extends Model {
 
     public function getHeroByUserId($userId) {
         $db = $this->getDatabaseConnection();
-        
-        // Requête pour récupérer tous les hero_id associés à cet utilisateur
         $query = 'SELECT hero_id 
                   FROM Account_Hero 
                   WHERE account_id = :userId';
@@ -78,7 +76,7 @@ class User extends Model {
         $heroIds = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         if (empty($heroIds)) {
-            return null; // Aucun héros associé à cet utilisateur
+            return null; 
         }
     
         $heroModel = new Hero();
@@ -90,8 +88,22 @@ class User extends Model {
     
         $_SESSION['user']['allHero'] = $heroes;
         
-        return $heroes[0]; // Le premier héros dans la liste
+        return $heroes[0]; 
     }
+
+    public function getAllHeroByUserId($userId) {
+        $db = $this->getDatabaseConnection();
+        
+        $query = 'SELECT * FROM Hero 
+                  WHERE id IN (SELECT hero_id FROM Account_Hero WHERE account_id = :userId)';
+        
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':userId', $userId);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
     
 
     // Récupérer un utilisateur par son ID

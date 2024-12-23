@@ -2,11 +2,11 @@
 
 class Hero extends Model {
 
-    public function createHero($lastname, $firstname, $classId, $raceId, $biography, $pv, $mana, $strength, $initiative, $talentId) {
+    public function createHero($lastname, $firstname, $classId, $raceId, $biography, $pv, $mana, $strength, $initiative, $domination, $talentId) {
         $db = $this->getDatabaseConnection();
         $idt = $_SESSION['user']['id'];  // Récupérer l'ID du compte
-        $query = 'INSERT INTO Hero (lastname, firstname, class_id, race_id, biography, pv_max, mana_max, strength, initiative, talent_id)
-                  VALUES (:lastname, :firstname, :classId, :raceId, :biography, :pv_max, :mana_max, :strength, :initiative, :talentId)';
+        $query = 'INSERT INTO Hero (lastname, firstname, class_id, race_id, biography, pv_max, mana_max, strength, initiative, domination, talent_id)
+                  VALUES (:lastname, :firstname, :classId, :raceId, :biography, :pv_max, :mana_max, :strength, :initiative, :domination, :talentId)';
         
         // Préparer la requête d'insertion pour le héros
         $stmt = $db->prepare($query);
@@ -19,6 +19,7 @@ class Hero extends Model {
         $stmt->bindParam(':mana_max', $mana);
         $stmt->bindParam(':strength', $strength);
         $stmt->bindParam(':initiative', $initiative);
+        $stmt->bindParam(':domination', $domination);
         $stmt->bindParam(':talentId', $talentId);        
         $resCreaHero = $stmt->execute();
 
@@ -98,6 +99,7 @@ class Hero extends Model {
             h.mana_max,
             h.strength,
             h.initiative,
+            h.domination,
             h.xp,
             h.current_level,
             h.poids_max,
@@ -203,7 +205,7 @@ class Hero extends Model {
         return $result && $result2;
     }
 
-    public function updateHeroStatsAndLevel($heroId, $pvMax, $manaMax, $strength, $initiative, $xp, $newLevel) {
+    public function updateHeroStatsAndLevel($heroId, $pvMax, $manaMax, $strength, $initiative, $domination, $xp, $newLevel) {
         $db = $this->getDatabaseConnection();
     
         $query = 'UPDATE Hero_Story 
@@ -225,13 +227,14 @@ class Hero extends Model {
         $result2 = $stmt2->execute();
     
         $query3 = 'UPDATE Hero
-                   SET pv_max = :pv_max, mana_max = :mana_max, strength = :strength, initiative = :initiative
+                   SET pv_max = :pv_max, mana_max = :mana_max, strength = :strength, initiative = :initiative, domination = :domination
                    WHERE id = :heroId';
         $stmt3 = $db->prepare($query3);
         $stmt3->bindParam(":pv_max", $pvMax);
         $stmt3->bindParam(":mana_max", $manaMax);
         $stmt3->bindParam(":strength", $strength);
         $stmt3->bindParam(":initiative", $initiative);
+        $stmt3->bindParam(':domination', $domination);
         $stmt3->bindParam(":heroId", $heroId);
         $result3 = $stmt3->execute();
     

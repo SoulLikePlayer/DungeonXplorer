@@ -6,6 +6,30 @@
         </div>
         <div class ="container-detail-admin">
             <h2>Informations sur les héros</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($_SESSION['admin']['userHeros'])) : ?>
+                        <?php foreach ($_SESSION['admin']['userHeros'] as $index => $hero) : ?>
+                            <tr>
+                                <td><?= $index + 1 ?></td>
+                                <td><?= htmlspecialchars($hero['firstname']) ?></td>
+                                <td><?= htmlspecialchars($hero['lastname']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr>
+                            <td colspan="3">Aucun héros trouvé.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div> 
         <div class="container-detail-admin">
             <h2> Statistiques de l'utilisateur </h2>

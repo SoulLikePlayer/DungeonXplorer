@@ -70,6 +70,7 @@ class HeroController extends Controller {
                 $classData['base_mana'],
                 $classData['strength'],
                 $classData['initiative'],
+                $classData['domination'],
                 $talentId
             );
 
@@ -105,6 +106,7 @@ class HeroController extends Controller {
             $pv = $data['pv'] ?? 0;
             $mana = $data['mana'] ?? 0;
             $xp = intval($data['xp']) ?? 0;
+            $_SESSION['Chapitre'] = $data['nextChapterWin'];
     
             $heroModel = new Hero();
             $levelModel = new levelModel();
@@ -123,6 +125,7 @@ class HeroController extends Controller {
                 $manaMax = $_SESSION['user']['hero']['mana_max'] + $level['mana_bonus'];
                 $strength = $_SESSION['user']['hero']['strength'] + $level['strength_bonus'];
                 $initiative = $_SESSION['user']['hero']['initiative'] + $level['initiative_bonus'];
+                $domination = $_SESSION['user']['hero']['domination'] + $level['domination_bonus'];
                 $remainingXp -= $level['required_xp'];
     
                 $updateSuccess = $heroModel->updateHeroStatsAndLevel(
@@ -131,6 +134,7 @@ class HeroController extends Controller {
                     $manaMax, 
                     $strength, 
                     $initiative, 
+                    $domination,
                     $remainingXp, 
                     $newLevel
                 );
@@ -141,6 +145,7 @@ class HeroController extends Controller {
                     $_SESSION['user']['hero']['mana_max'] = $manaMax;
                     $_SESSION['user']['hero']['strength'] = $strength;
                     $_SESSION['user']['hero']['initiative'] = $initiative;
+                    $_SESSION['user']['hero']['domination'] = $domination;
                     $_SESSION['user']['hero']['xp'] = 0;
                     
                     ob_clean();
@@ -151,8 +156,11 @@ class HeroController extends Controller {
                             'pvBonus' => $level['pv_bonus'],
                             'manaBonus' => $level['mana_bonus'],
                             'strengthBonus' => $level['strength_bonus'],
-                            'initiativeBonus' => $level['initiative_bonus']
-                        ]
+                            'initiativeBonus' => $level['initiative_bonus'],
+                            'dominationBonus' => $level['domination_bonus']
+                        ],
+                        'chapter' => $_SESSION['Chapitre'],
+                        'chapter2' => $data['nextChapterWin']
                     ]);
                     exit; 
                 } else {

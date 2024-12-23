@@ -286,6 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const discountElement = document.getElementById('discount');
     let successCount = 0;
 
+    const trickyLevel = parseInt(document.getElementById('npcActionButtons').getAttribute('data-merchant-tricky-level'), 10) || 0;
+    const heroDomination = parseInt(document.getElementById('npcActionButtons').getAttribute('data-hero-domination-level'), 10) || 0;
+    
     negotiateButton.addEventListener('click', () => {
         count = 0;
         discountPercentage = 0;
@@ -299,17 +302,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const rollDie = () => {
         return Math.floor(Math.random() * 6) + 1;
     };
-
+    
     rollDiceButton.addEventListener('click', () => {
         const merchantRoll = rollDie();
         const playerRoll = rollDie();
-        merchantRollElement.textContent = merchantRoll;
-        playerRollElement.textContent = playerRoll;
-
-        if (playerRoll > merchantRoll) {
+        const merchantFinal = merchantRoll + Math.ceil(trickyLevel / 2);
+        const playerFinal = playerRoll + heroDomination;
+    
+        merchantRollElement.textContent = `${merchantRoll} + ${Math.ceil(trickyLevel / 2)} = ${merchantFinal}`;
+        playerRollElement.textContent = `${playerRoll} + ${heroDomination} = ${playerFinal}`;
+    
+        if (playerFinal > merchantFinal) {
             successCount++;
             successCountElement.textContent = successCount;
-
+    
             if (successCount === 1) {
                 discountPercentage = 0.25;
             } else if (successCount === 2) {
@@ -317,25 +323,25 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (successCount === 3) {
                 discountPercentage = 0.75;
             }
-
+    
             negotiationMessageElement.textContent = `Vous avez gagné cette tentative !`;
         } else {
             negotiationMessageElement.textContent = `Vous avez perdu cette tentative.`;
         }
-
+    
         count++;
-
-        discountElement.textContent = `${discountPercentage * 100}% de réduction`;
+    
+        discountElement.textContent = `${(discountPercentage * 100).toFixed(0)}% de réduction`;
         calculateTotal();
-
+    
         if (count >= 3) {
             setTimeout(() => {
-                negotiationModal.style.display = 'none';
-                alert(`Vous avez joué toutes les tentatives ! Réduction de ${discountPercentage * 100}% appliquée.`);
+                alert(`Vous avez joué toutes les tentatives ! Réduction de ${(discountPercentage * 100).toFixed(0)}% appliquée.`);
                 negotiationModal.style.display = 'none';
                 negotiateButton.style.display = 'none';
             }, 1000);
         }
     });
+    
 
 });

@@ -40,6 +40,7 @@
                 <li>Mana maximum : <strong>+<span id="newManaBonus"></<span></strong></li>
                 <li>Force : <strong>+<span id="newStrenghtBonus"></<span></strong></li>
                 <li>Initiative : <strong>+<span id="newInitiativeBonus"></<span></strong></li>
+                <li>Domination : <strong>+<span id="newDominationBonus"></span></strong></li>
                 </ul>
                 <button id="continueButtonNewLevel">Continuer l'aventure</button>
             </div>
@@ -181,7 +182,9 @@
                 <h3><?= htmlspecialchars($_SESSION['npc']['name']) ?></h3>
                 <h2 class="npc-dialogue"></h2>
                 <?php if ($chapter['chapter_type'] === 'merchent'): ?>
-                    <div id="npcActionButtons">
+                    <div id="npcActionButtons"
+                                    data-merchant-tricky-level="<?=htmlspecialchars($_SESSION['npc']['merchent']['trickery_level'])?>"
+                                    data-hero-domination-level="<?=htmlspecialchars($_SESSION['user']['hero']['domination'])?>">
                         <?php if(isset($_SESSION['npc']['merchent']['refus_vente_achat'])): ?>
                             <?php if($_SESSION['npc']['merchent']['refus_vente_achat'] === false): ?>
                                 <button id="buyButtonTab">Acheter</button>

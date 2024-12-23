@@ -936,6 +936,7 @@ try{
                     pv: hero.pv,
                     mana: hero.mana,
                     xp: parseInt(hero.xp, 10),
+                    nextChapterWin : nextChapterWin,
                 };
                 console.log( JSON.stringify(data));
 
@@ -964,6 +965,7 @@ try{
                             document.getElementById("newManaBonus").textContent=modalContent.manaBonus
                             document.getElementById("newStrenghtBonus").textContent=modalContent.strengthBonus
                             document.getElementById("newInitiativeBonus").textContent=modalContent.initiativeBonus
+                            document.getElementById("newDominationBonus").textContent = modalContent.dominationBonus
 
 
                             document.getElementById("continueButtonNewLevel").addEventListener('click',  function() {

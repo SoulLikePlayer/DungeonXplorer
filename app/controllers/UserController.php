@@ -107,6 +107,7 @@ class UserController extends Controller {
         $userModel = new User();
         $heroes = $userModel->getHeroByUserId($_SESSION['user']['id']);
 
+
         $this->view('users/profile', ['heroes' => $_SESSION['user']['allHero'] ?? []]);
     }
 
@@ -197,7 +198,7 @@ class UserController extends Controller {
     public function details_user_admin($id){
         $userModel = new User();
         $userSelected = $userModel->getUserById($id);
-        $userHeros = $userModel->getHeroByUserId($id);
+        $userHeros = $userModel->getAllHeroByUserId($id);
         $details = $userModel->getUserDetails($id);
 
         $_SESSION['admin']['userSelect'] = $userSelected;
