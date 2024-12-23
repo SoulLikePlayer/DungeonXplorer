@@ -306,10 +306,10 @@ document.addEventListener('DOMContentLoaded', () => {
     rollDiceButton.addEventListener('click', () => {
         const merchantRoll = rollDie();
         const playerRoll = rollDie();
-        const merchantFinal = merchantRoll + Math.ceil(trickyLevel / 2);
+        const merchantFinal = merchantRoll + trickyLevel;
         const playerFinal = playerRoll + heroDomination;
     
-        merchantRollElement.textContent = `${merchantRoll} + ${Math.ceil(trickyLevel / 2)} = ${merchantFinal}`;
+        merchantRollElement.textContent = `${merchantRoll} + ${trickyLevel} = ${merchantFinal}`;
         playerRollElement.textContent = `${playerRoll} + ${heroDomination} = ${playerFinal}`;
     
         if (playerFinal > merchantFinal) {

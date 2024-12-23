@@ -183,8 +183,8 @@
                 <h2 class="npc-dialogue"></h2>
                 <?php if ($chapter['chapter_type'] === 'merchent'): ?>
                     <div id="npcActionButtons"
-                                    data-merchant-tricky-level="<?=htmlspecialchars($_SESSION['npc']['merchent']['trickery_level'])?>"
-                                    data-hero-domination-level="<?=htmlspecialchars($_SESSION['user']['hero']['domination'])?>">
+                            data-merchant-tricky-level="<?=htmlspecialchars($_SESSION['npc']['merchent']['trickery_level'])?>"
+                            data-hero-domination-level="<?=htmlspecialchars($_SESSION['user']['hero']['domination'])?>">
                         <?php if(isset($_SESSION['npc']['merchent']['refus_vente_achat'])): ?>
                             <?php if($_SESSION['npc']['merchent']['refus_vente_achat'] === false): ?>
                                 <button id="buyButtonTab">Acheter</button>
