@@ -22,6 +22,27 @@ class talentModel extends Model{
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getNoTalent(){
+        $db = $this->getDatabaseConnection();
+    
+        $query = 'SELECT t.* FROM Talent t WHERE t.id = 0';
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+    
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getCurse(){
+        $db = $this->getDatabaseConnection();
+    
+        $query = "SELECT * FROM Talent WHERE type = 'curse'";
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+    }
+
     public function getRandomTalentForRace($raceId) {
         $talents = $this->getTalentByRaceId($raceId);
 
@@ -30,8 +51,15 @@ class talentModel extends Model{
                 return $talents[array_rand($talents)];
             }
         }
+
+        $talents = $this->getCurse();
+        if(rand(1, 2) === 1){
+            return $talents[array_rand($talents)];
+        }
+
+        $talents = $this->getNoTalent();
         
-        return null; 
+        return $talents; 
     }
     
 }

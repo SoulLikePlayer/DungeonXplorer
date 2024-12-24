@@ -26,9 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const combatContainer = document.getElementById('combatContainer');
         const linksContainer = document.querySelector('.links');
         const npcContainer = document.getElementById('npcContainer');
+        const treasureContainer = document.getElementById('treasureContainer')
 
         if (combatContainer) {
             combatContainer.style.display = 'block';
+        }else if(treasureContainer){
+            treasureContainer.style.display="block";
         } else if (linksContainer) {
             linksContainer.style.display = 'flex';
         } else if (npcContainer) {

@@ -61,17 +61,21 @@ class AudioManager {
 
         if (chapterType === 'death') {
             this.initializeMusic('../../public/assets/SongTheme/JustAnotherDeath.mp3');
+            console.log("mort")
         } else if (chapterType === 'npc_interaction' || chapterType === 'merchent') {
             const npcContainer = document.getElementById('npcContainer');
             const npcOST = npcContainer?.getAttribute('data-ost');
             if (npcOST) {
+                console.log("ost personaliser")
                 this.initializeMusic(`../../public/assets/SongTheme/${npcOST}.mp3`);
             }else{
                 this.initializeMusic(this.baseMusicPath);
             }
         } else if (chapterType === 'combat'){
+            console.log("combat")
             this.changeMusic('../../public/assets/SongTheme/FightOrDie.mp3');
         } else {
+            console.log("normal")
             this.initializeMusic(this.baseMusicPath);
         }
     }

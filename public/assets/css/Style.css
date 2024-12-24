@@ -23,7 +23,6 @@ footer {
     background-color: var(--background-dark);
     color: var(--text-light);
     text-align: center;
-    padding: 15px 0;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.8);
 }
 
@@ -327,7 +326,7 @@ input[type=submit]:hover {
     padding: 20px;
 }
 
-#ChapterTitle, #ChapterTitleDeath {
+#ChapterTitle, #ChapterTitleDeath, #ChapterTitleReturnDeath {
     font-family: var(--font-family-title);
     text-align: center;
     font-size: 2.5em;
@@ -336,6 +335,10 @@ input[type=submit]:hover {
 
 #ChapterTitleDeath {
     color: var(--warning-error);
+}
+
+#ChapterTitleReturnDeath {
+    color: #6134c2
 }
 
 #ChapterTitle {
@@ -476,7 +479,7 @@ input[type=submit]:hover {
     text-align: center;
 }
 
-#combatContainer, .links, #npcContainer {
+#combatContainer, .links, #npcContainer, #treasureContainer {
     display: none;
 }
 

@@ -1,4 +1,5 @@
 <main data-chapter-type="<?= htmlspecialchars($chapter['chapter_type']) ?>">
+    <p><?=var_dump($_SESSION["Visited_Chapter"])?></p>
     <div class="story-container">
         <!-- Bouton pour afficher l'inventaire général -->
         <button id="showInventoryButton" data-inventory='<?= json_encode($_SESSION['user']['inventory'] ?? []) ?>'>Afficher l'inventaire</button>
@@ -83,7 +84,11 @@
         <?php if($chapter['chapter_type'] !== 'death'): ?>
             <h2 id="ChapterTitle"><?= htmlspecialchars($chapter['titre'] ?? 'Inconnu') ?></h2>
         <?php else: ?>
-            <h2 id="ChapterTitleDeath"><?= htmlspecialchars($chapter['titre'] ?? 'Inconnu') ?></h2>
+            <?php if($_SESSION['user']['hero']['talent_id'] === 21) : ?>
+                <h2 id="ChapterTitleReturnDeath"><?= htmlspecialchars($chapter['titre'] ?? 'Inconnu') ?></h2>
+            <?php else: ?>
+                <h2 id="ChapterTitleDeath"><?= htmlspecialchars($chapter['titre'] ?? 'Inconnu') ?></h2>
+            <?php endif; ?>
         <?php endif ?>
 
         <div class="chapter-content">
@@ -334,21 +339,34 @@
                     <?php endforeach; ?>
                 </div>
             </div>            
-        <?php else: ?>
-            <div class="links">
-                <?php foreach ($links as $link): ?>
-                    <div class="link">
-                        <?php if($chapter['chapter_type'] !== 'death'): ?>    
-                            <a href="/DungeonXplorer/chapter/view/<?= htmlspecialchars($link['next_chapter_id'] ?? '#') ?>">
-                        <?php else: ?>
-                            <a href="/DungeonXplorer/chapter/reset">
-                        <?php endif; ?>
-                                <button><?= nl2br(htmlspecialchars($link['description'] ?? 'Pas de description')) ?></button>
-                            </a>
+            <?php else: ?>
+                <?php if($chapter['chapter_type'] == "treasure") : ?>
+                    <div class="treasure-container" id="treasureContainer">
+                        <p>Un trésor pas loin ! Faites au minimum <span id="treasure-condition"><?= htmlspecialchars($_SESSION['treasure']['condition'] ?? 0) ?></span> pour le trouver !</p>
+                        <button id="roll-dice" data-condition="<?= htmlspecialchars($_SESSION['treasure']['condition'] ?? 0) ?>" 
+                                data-item-name="<?= htmlspecialchars($_SESSION['treasure']['item_name'] ?? 'Un objet mystère') ?>"
+                                data-item-id="<?= htmlspecialchars($_SESSION['treasure']['item_id'] ?? 0) ?>"
+                                data-item-quantity="<?= htmlspecialchars($_SESSION['treasure']['quantity'] ?? 0)?>">
+                                Lancer le dé
+                        </button>
+                        <p id="treasure-result"></p>
                     </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
+                    <script src="../../public/assets/js/treasure.js"></script>
+                <?php endif; ?>
+                <div class="links" id="chapter-links">
+                    <?php foreach ($links as $link): ?>
+                        <div class="link">
+                            <?php if($chapter['chapter_type'] !== 'death'): ?>    
+                                <a href="/DungeonXplorer/chapter/view/<?= htmlspecialchars($link['next_chapter_id'] ?? '#') ?>">
+                            <?php else: ?>
+                                <a href="/DungeonXplorer/chapter/reset">
+                            <?php endif; ?>
+                                    <button><?= nl2br(htmlspecialchars($link['description'] ?? 'Pas de description')) ?></button>
+                                </a>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
 
     <div class="navigation">
         <a href="/DungeonXplorer">Retour à l'accueil</a> 

@@ -38,6 +38,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function showDescriptionAndQuestion() {
         var selectedOption = raceSelect.options[raceSelect.selectedIndex];
         const talentId = selectedOption.dataset.talentId; 
+        const talentType = selectedOption.dataset.talentType;
+        
+        console.log(talentType);
         document.getElementById('talent_id').value = talentId || '';
        
         var description = selectedOption.getAttribute('data-description');
@@ -58,11 +61,19 @@ document.addEventListener('DOMContentLoaded', function () {
             talentName.textContent = talentNameText;
             talentDesc.textContent = talentDescText;
             talentRow.style.display = "block";
+
+            talentName.classList.remove('talent', 'curse', 'nothing'); 
+            if (talentType === 'talent') {
+                talentName.classList.add('talent');
+            } else if (talentType === 'curse') {
+                talentName.classList.add('curse');
+            } else {
+                talentName.classList.add('nothing');
+            }
         } else {
             talentRow.style.display = "none";
         }
     }    
-
 
     classSelect.addEventListener('change', showDescription);
     raceSelect.addEventListener('change', showDescriptionAndQuestion);

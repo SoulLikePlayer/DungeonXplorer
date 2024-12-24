@@ -109,7 +109,7 @@ try{
 
     
             document.getElementById('useSpellButton').addEventListener('click', function(){
-                openSpellModal(codexData, hero, monster, consumablesData);
+                openSpellModal(codexData, hero, monster, consumablesData, nextChapterWin, nextChapterLose, nextChapterRun);
             })
     
             document.getElementById('attackButton').addEventListener('click', function () {
@@ -374,7 +374,7 @@ try{
                         
                             cible.pv -= finalDamage;
                             document.getElementById('monsterPv').textContent = Math.max(0, cible.pv);
-                        
+                            console.log(nextChapterWin);
                             if (cible.pv <= 0) {
                                 displayCombatMessage(`${cible.name} a été vaincu par le sort !`);
                                 if(cible.type == 'monster'){
@@ -792,7 +792,7 @@ try{
     }
 
     function performMonsterAttack(hero, monster, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData) {
-        
+        document.getElementById('ActionButton').style.display = 'none';
 
         Debuff(monster,  hero, monster, nextChapterWin, nextChapterLose, consumablesData);
         if (monster.isParalyzed) {
@@ -850,6 +850,8 @@ try{
                     displayCombatMessage(`${hero.name} a été vaincu !`);
                     endFight(hero, monster, nextChapterWin, nextChapterRun, nextChapterLose, [], "défaite");
                 }
+                document.getElementById('ActionButton').style.display = 'flex';
+
             }, 2000)
             if(choosenAttack.effect_function != null){
                 analyzeEffectFunction(choosenAttack.effect_function, monster, hero, nextChapterWin, nextChapterLose, nextChapterRun, [])
@@ -857,6 +859,7 @@ try{
         }else{
             console.log("Magique")
             CastSpell(choosenAttack.effect_function, choosenAttack.mana_cost, monster, hero, nextChapterWin, nextChapterLose, nextChapterRun, []);
+            document.getElementById('ActionButton').style.display = 'flex';
         }
 
         const bonusesHealPerTurn = hero.activeBonuses.find(bonus => bonus.type === 'heal_user_turn');
@@ -871,7 +874,6 @@ try{
             monster.pv = Math.max(monster.pv - debufDrainedHeal.damagePerTurn, 1);
             monster.activeDebuff.filter(debuff => debuff.remainingTurns > 0);
         }
-
 
     }
 

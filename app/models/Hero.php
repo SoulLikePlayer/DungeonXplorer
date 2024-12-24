@@ -100,6 +100,7 @@ class Hero extends Model {
             h.strength,
             h.initiative,
             h.domination,
+            h.madness,
             h.xp,
             h.current_level,
             h.poids_max,

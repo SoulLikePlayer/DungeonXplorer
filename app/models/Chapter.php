@@ -12,7 +12,8 @@ class Chapter extends Model {
                     ELSE e.event_type
                 END AS chapter_type,
                 e.related_monster_id,
-                e.related_npc_id
+                e.related_npc_id,
+                e.related_treasure_id
             FROM Chapter c
             LEFT JOIN Event e ON c.id = e.chapter_id
             WHERE c.id = :id
@@ -20,28 +21,64 @@ class Chapter extends Model {
         $stmt->bindParam(':id', $chapterId, PDO::PARAM_INT);
         $stmt->execute();
     
-        $chapter = $stmt->fetch(PDO::FETCH_ASSOC);
+        $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-        // Si le chapitre est de type "combat", on charge les informations du monstre
-        if ($chapter['chapter_type'] === 'combat' && isset($chapter['related_monster_id'])) {
-            $monsterModel = new Monster();
-            $monster = $monsterModel->getMonsterById($chapter['related_monster_id']);
-            
-            // Enregistrer les informations du monstre dans la session
-            if ($monster) {
-                $_SESSION['monster'] = $monster;
-                $_SESSION['monster']['loot'] = $monsterModel->getLootById($chapter['related_monster_id']);
-                $_SESSION['monster']['attack'] = $monsterModel->getAttacksByMonsterId($chapter['related_monster_id']);
-            }
+        $chapter = null;
+        if (!empty($events)) {
+            $chapter = $events[0];
+            $chapter['events'] = $events;
         }
-
-        if (($chapter['chapter_type'] === 'npc_interaction' || $chapter['chapter_type'] === 'merchent') && isset($chapter['related_npc_id'])) {
-            $npcModel = new NPC();
-            $npcModel->getNPCById($chapter['related_npc_id']);
+    
+        foreach ($events as $event) {
+            switch ($event['chapter_type']) {
+                case 'combat':
+                    if (isset($event['related_monster_id'])) {
+                        $monsterModel = new Monster();
+                        $monster = $monsterModel->getMonsterById($event['related_monster_id']);
+    
+                        if ($monster) {
+                            $_SESSION['monster'] = $monster;
+                            $_SESSION['monster']['loot'] = $monsterModel->getLootById($event['related_monster_id']);
+                            $_SESSION['monster']['attack'] = $monsterModel->getAttacksByMonsterId($event['related_monster_id']);
+                        }
+                    }
+                    break;
+    
+                case 'npc_interaction':
+                    if (isset($event['related_npc_id'])) {
+                        $npcModel = new NPC();
+                        $npc = $npcModel->getNPCById($event['related_npc_id']);
+                    }
+                    break;
+                case 'merchant':
+                    if (isset($event['related_npc_id'])) {
+                        $npcModel = new NPC();
+                        $npc = $npcModel->getNPCById($event['related_npc_id']);
+                    }
+                    break;
+    
+                case 'treasure':
+                    if (isset($event['related_treasure_id'])) {
+                        $treasureModel = new Treasure();
+                        $treasure = $treasureModel->getTreasureById($event['related_treasure_id']);
+    
+                        if ($treasure) {
+                            $_SESSION['treasure'] = $treasure;
+                        }
+                    }
+                    break;
+    
+                case 'healing':
+                    $_SESSION['user']['hero']['current_pv'] = $_SESSION['user']['hero']['pv_max'];
+                    $_SESSION['user']['hero']['current_mana'] = $_SESSION['user']['hero']['mana_max'];
+                    break;
+    
+            }
         }
     
         return $chapter;
     }
+    
     
     
 

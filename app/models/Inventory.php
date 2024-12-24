@@ -51,7 +51,7 @@ class Inventory extends Model {
         $db = $this->getDatabaseConnection();
     
         $inventoryCodexQuery = '
-        SELECT c.item_id, i.name, inv.quantity
+        SELECT DISTINCT c.item_id, i.name, inv.quantity
         FROM Codex c 
         JOIN Items i ON c.item_id = i.id 
         JOIN Inventory inv ON inv.item_id = i.id

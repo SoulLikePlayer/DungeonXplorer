@@ -15,14 +15,6 @@ class HeroController extends Controller {
         foreach ($races as $race) {
             $randomTalent = $talentModel->getRandomTalentForRace($race['id']);
     
-            if (!$randomTalent) {
-                $randomTalent = [
-                    "id" => 0,
-                    'name' => 'Aucun talent',
-                    'description' => 'Vous êtes venu dans ce misérable monde en étant banal.',
-                ];
-            }
-    
             $raceTalents[$race['name']] = $randomTalent;
         }
     
@@ -41,24 +33,22 @@ class HeroController extends Controller {
         $raceName = $_POST['race'] ?? '';
         $biography = $_POST['bio'] ?? '';
         $talentId = $_POST['talent_id'] ?? 0;
-
+    
         if (empty($lastname) || empty($firstname) || empty($className) || empty($raceName)) {
             $this->view('pages/create', ['error' => 'Nom, prénom, race et classe sont obligatoires.']);
             return;
         }
-
+    
         $heroModel = new Hero();
         $userModel = new User();
         $classModel = new ClassModel();
         $classData = $classModel->getClassStats($className);
-
+    
         $raceModel = new RaceModel();
         $raceData = $raceModel->getRaceName($raceName);
-
-        if ($talentId == 8){
-            $classData['strength'] += 5;
-        }
-
+    
+        $this->applyTalentEffects($talentId, $classData);
+    
         if ($classData) {
             $heroCreated = $heroModel->createHero(
                 $lastname,
@@ -73,19 +63,19 @@ class HeroController extends Controller {
                 $classData['domination'],
                 $talentId
             );
-
+    
             if ($heroCreated) {
                 $_SESSION['user']['hero'] = $userModel->getHeroByUserId($_SESSION['user']['id']);
                 $levelModel = new levelModel();
-                $level = $levelModel -> getNextLevelById($_SESSION['user']['hero']['hero_id'], $_SESSION['user']['hero']['class_id']);
-                if ($level){
+                $level = $levelModel->getNextLevelById($_SESSION['user']['hero']['hero_id'], $_SESSION['user']['hero']['class_id']);
+                if ($level) {
                     $_SESSION['user']['hero']['nextLevel'] = $level;
                 }
-                $chapter = $heroModel->getChapterByHeroId( $_SESSION['user']['hero']['hero_id']);
+                $chapter = $heroModel->getChapterByHeroId($_SESSION['user']['hero']['hero_id']);
                 if ($chapter) {
-                    $_SESSION['Chapitre'] = $chapter["chapter"]; 
+                    $_SESSION['Chapitre'] = $chapter["chapter"];
                 }
-                
+    
                 header("Location: /DungeonXplorer/");
                 exit;
             } else {
@@ -94,7 +84,62 @@ class HeroController extends Controller {
         } else {
             $this->view('pages/create', ['error' => 'Classe non valide.']);
         }
-    }    
+    }
+    
+    private function applyTalentEffects($talentId, &$classData) {
+        switch ($talentId) {
+            case 8:  // Puissance Fragile
+                $classData['strength'] += 5;
+                break;
+            case 10: // Talent pour race Sépulcrales
+                $classData['strength'] += 2;
+                $classData['domination'] -= 2;
+                break;
+            case 11: // Talent pour race Boréals
+                $classData['strength'] += 3;
+                $classData['base_pv'] -= 3;
+                break;
+            case 12: // Talent pour race Sang-de-Sang
+                $classData['strength'] += 4;
+                $classData['initiative'] -= 2;
+                break;
+            case 13: // Talent pour race Miasmes
+                $classData['strength'] -= 2;
+                $classData['base_mana'] += 3;
+                break;
+            case 14: // Talent pour race Oubliés
+                $classData['strength'] -= 3;
+                $classData['domination'] += 5;
+                break;
+            case 15: // Talent pour race Profanés
+                $classData['strength'] += 4;
+                $classData['base_mana'] -= 4;
+                break;
+            case 16: // Talent pour race Résidus
+                $classData['domination'] += 5;
+                $classData['strength'] -= 3;
+                break;
+            case 17: // Talent pour race Cendres
+                $classData['initiative'] += 6;
+                $classData['base_pv'] -= 6;
+                break;
+            case 18: // Talent pour race Hérétiques
+                $classData['domination'] += 6;
+                $classData['strength'] -= 4;
+                break;
+            case 19: // Talent pour race Spectres
+                $classData['base_mana'] += 5;
+                $classData['base_pv'] -= 5;
+                break;
+            case 20: // Talent pour race Larmes
+                $classData['base_mana'] += 3;
+                $classData['base_pv'] -= 4;
+                break;
+            default:
+                break;
+        }
+    }
+     
 
     public function updateStats() {
         ob_clean();
@@ -357,6 +402,7 @@ class HeroController extends Controller {
             $classData['base_mana'],
             $classData['strength'],
             $classData['initiative'],
+            $classData['domination'],
             $talentId
         );
     

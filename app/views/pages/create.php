@@ -64,7 +64,8 @@
                                             data-question="<?= htmlspecialchars($race['question']) ?>"
                                             data-talent-name="<?= htmlspecialchars($raceTalents[$race['name']]['name']) ?>"
                                             data-talent-desc="<?= htmlspecialchars($raceTalents[$race['name']]['description']) ?>"
-                                            data-talent-id="<?= htmlspecialchars($raceTalents[$race['name']]['id']) ?? null ?>">
+                                            data-talent-id="<?= htmlspecialchars($raceTalents[$race['name']]['id']) ?? null ?>"
+                                            data-talent-type="<?= htmlspecialchars($raceTalents[$race['name']]['type'])?>">
                                         <?= htmlspecialchars($race['name']) ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -98,7 +99,7 @@
                     </div>
                     <div class="row" id="race-talent" style="display:none;">
                         <h3>Talent de la race :</h3>
-                        <p id="talent-name"></p>
+                        <h4 id="talent-name"></h4>
                         <p id="talent-desc"></p>
                     </div>
                 </div>
