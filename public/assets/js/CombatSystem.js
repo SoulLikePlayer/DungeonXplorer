@@ -839,11 +839,34 @@ try{
                 const attack = calculateAttack(monster, attackRoll);
                 const defense = calculateDefense(hero, defenseRoll);
                 const damage = Math.max(0, attack - defense);
+                
+                const bonusesManaShield = hero.activeBonuses.find(bonus => bonus.type === "mana_shield");
 
-                displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts.`);
-                hero.pv -= damage;
+                if(bonusesManaShield){
+                    
+                    if(bonusesManaShield.value<damage){
+                        const damageSup = damage - bonusesManaShield.value
+                        displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts au bouclier de mana qui se brise et touche le joueur lui infligeant ${damageSup}.`);
+                        hero.activeBonuses.find(bonus => bonus.type === "mana_shield") -= damage;
+                        hero.pv -= damageSup;
+                    }
+                    if(bonusesManaShield.value>damage){
+                        displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts au bouclier de mana.`);
+                        hero.activeBonuses.find(bonus => bonus.type === "mana_shield") -= damage;
+                        hero.activeBonuses = hero.activeBonuses.filter(bonus => ((bonus.type === "mana_shield")&&bonus.value>0)||(!(bonus.type === "mana_shield")));
+                    }
+                    if(bonusesManaShield.value==damage){
+                        displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts au bouclier de mana qui se brise.`);
+                        hero.activeBonuses.find(bonus => bonus.type === "mana_shield") -= damage;
+                        hero.activeBonuses = hero.activeBonuses.filter(bonus => ((bonus.type === "mana_shield")&&bonus.value>0)||(!(bonus.type === "mana_shield")));
+                    }
+                    
+                }
+                else{
+                    displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts.`);
+                    hero.pv -= damage;
+                }
                 document.getElementById('heroPv').textContent = Math.max(0, hero.pv);
-
                 
                 const bonusesFlammeProtection = hero.activeBonuses.find(bonus => bonus.type === "flamme_body");
                 
