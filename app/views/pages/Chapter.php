@@ -1,5 +1,4 @@
 <main data-chapter-type="<?= htmlspecialchars($chapter['chapter_type']) ?>">
-    <p><?=var_dump($_SESSION["Visited_Chapter"])?></p>
     <div class="story-container">
         <!-- Bouton pour afficher l'inventaire général -->
         <button id="showInventoryButton" data-inventory='<?= json_encode($_SESSION['user']['inventory'] ?? []) ?>'>Afficher l'inventaire</button>
@@ -25,6 +24,16 @@
                         <div id="itemActionButtons"></div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!--modal du changement de malédiction -->
+        <div id="curseModal" class="modal" 
+            data-curse-modif="<?= htmlspecialchars($new_talent['new_name'] ?? "aucun") ?>">
+            <div class="modal-content">
+                <span class="close-button" id="closeModalButton">&times;</span>
+                <h2> Votre malédiction passe de <span class="curse"> <?= htmlspecialchars($new_talent['old_name'] ?? "N/A") ?> </span> à <span><?= htmlspecialchars($new_talent['new_name'] ?? "N/A") ?></span></h2>
+                <p><?= htmlspecialchars($new_talent['new_description'] ?? "N/A") ?></p>
             </div>
         </div>
 
@@ -373,5 +382,6 @@
     </div>
 </main>
 <script src="../../public/assets/js/typewritingSystem.js"></script>
-<script src="../../public/assets/js/modal.js"></script>
+<script src="../../public/assets/js/inventoryModal.js"></script>
+<script src="../../public/assets/js/curseModal.js"></script>
 <script src="../../public/assets/js/songSystem.js"></script>

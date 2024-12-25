@@ -989,7 +989,8 @@ try{
                 const data_fuite = {
                     pv: hero.pv,
                     mana: hero.mana,
-                    xp : hero.xp
+                    xp : hero.xp,
+                    nextChapterWin : nextChapterRun,
                 }
     
                 fetch('/DungeonXplorer/hero/update', {

@@ -206,6 +206,22 @@ class Hero extends Model {
         return $result && $result2;
     }
 
+    public function updateHeroMadness($madnessQuantity, $heroId){
+        $db = $this->getDatabaseConnection();
+
+        $query = 'UPDATE Hero
+                  SET madness = madness + :madness
+                  WHERE id = :heroId';
+
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':madness', $madnessQuantity);
+        $stmt->bindParam(':heroId', $heroId);
+
+        $stmt->execute();
+
+        $_SESSION['user']['hero']['madness'] += $madnessQuantity;
+    }
+
     public function updateHeroStatsAndLevel($heroId, $pvMax, $manaMax, $strength, $initiative, $domination, $xp, $newLevel) {
         $db = $this->getDatabaseConnection();
     

@@ -14,6 +14,9 @@ class ChapterController extends Controller {
             $_SESSION['user']['hero']['current_pv'] = $pvMax;
             $_SESSION['user']['hero']['current_mana'] = $manaMax;
         } else {
+            if(!isset( $_SESSION['Visited_Chapter'])){
+                $_SESSION['Visited_Chapter'] = [(int)$chapterId];
+            }
             $chapterModel = new Chapter();
             $chapter = $chapterModel->getChapterById($chapterId);
 
@@ -39,7 +42,11 @@ class ChapterController extends Controller {
         if ($chapter && $chapter['chapter_type'] === 'death' && $_SESSION['user']['hero']['talent_id'] === 21) {
             $_SESSION['user']['hero']['current_pv'] = $_SESSION['user']['hero']['pv_max'];
             $_SESSION['user']['hero']['current_mana'] = $_SESSION['user']['hero']['mana_max'];
-                        
+              
+            $heroModel = new Hero();
+            $heroModel->updateHeroMadness(5, $_SESSION['user']['hero']['hero_id']);
+
+
             $titles = [
                 "Encore mort... hehe...",
                 "Haha, encore une fois...",
@@ -80,7 +87,14 @@ class ChapterController extends Controller {
         }
 
         if ($chapter) {
-            $this->view('pages/Chapter', ['chapter' => $chapter, 'links' => $link]);
+            if(isset($_SESSION['talent_change'])){
+                $talent_change = $_SESSION['talent_change'];
+                unset($_SESSION['talent_change']);
+                $this->view('pages/Chapter', ['chapter' => $chapter, 'links' => $link, "new_talent" => $talent_change]);
+            }else{
+                $this->view('pages/Chapter', ['chapter' => $chapter, 'links' => $link]);
+            }
+
         } else {
             echo "Chapitre non trouvé";
         }
@@ -99,7 +113,7 @@ class ChapterController extends Controller {
                     $_SESSION['Visited_Chapter'],
                     fn($chapterId) => $chapterId <= $savePoint['id']
                 );
-
+                $this->determineMadness();
                 header('Location: /DungeonXplorer/chapter/view/' . $savePoint['id']);
                 exit;
             }
@@ -133,4 +147,16 @@ class ChapterController extends Controller {
 
         return null;
     }
+
+    public function determineMadness() {
+        if ($_SESSION['user']['hero']['madness'] >= 50) {
+            $talentModel = new talentModel();
+            $talentChange = $talentModel->evolveCurse($_SESSION['user']['hero']['talent_id'], $_SESSION['user']['hero']['hero_id']);
+    
+            if ($talentChange) {
+                $_SESSION['talent_change'] = $talentChange;
+            }
+        }
+    }
+    
 }

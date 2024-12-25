@@ -380,9 +380,31 @@ class HeroController extends Controller {
         // Création d'une instance du modèle Hero
         $heroModel = new Hero();
     
+        // Vérification du talent_id
+        if ($talentId === 22) {
+            // Suppression du héros
+            $heroModel->deleteHero($_SESSION['user']['hero']['hero_id']);
+            
+            // Nettoyage de la session liée au héros
+            unset($_SESSION['user']['hero']);
+            unset($_SESSION['Chapitre']);
+    
+            // Gestion de l'inventaire ou autres données liées au héros
+            unset($_SESSION['user']['inventory']);
+            unset($_SESSION['user']['inventoryCons']);
+            unset($_SESSION['user']['inventoryWeapon']);
+            unset($_SESSION['user']['inventoryArmor']);
+            unset($_SESSION['user']['inventoryMis']);
+            unset($_SESSION['user']['inventoryCodex']);
+    
+            // Redirection vers la page d'accueil ou autre page pertinente
+            header('Location: /DungeonXplorer');
+            exit;
+        }
+    
         // Suppression du héros actuel
         $heroModel->deleteHero($_SESSION['user']['hero']['hero_id']);
-    
+        
         // Récupération des données de la classe
         $classModel = new ClassModel();
         $classData = $classModel->getClassStats($className);
@@ -407,7 +429,7 @@ class HeroController extends Controller {
         );
     
         if ($heroCreated) {
-            $heroId =  $_SESSION['heroId'];
+            $heroId = $_SESSION['heroId'];
     
             $_SESSION['user']['hero'] = $heroModel->getHeroById($heroId);
     
@@ -421,10 +443,38 @@ class HeroController extends Controller {
             if ($chapter) {
                 $_SESSION['Chapitre'] = $chapter["chapter"];
             }
+        } else {
+            unset($_SESSION['user']['hero']);
+            unset($_SESSION['user']['inventory']);
+            unset($_SESSION['user']['inventoryCons']);
+            unset($_SESSION['user']['inventoryWeapon']);
+            unset($_SESSION['user']['inventoryArmor']);
+            unset($_SESSION['user']['inventoryMis']);
+            unset($_SESSION['user']['inventoryCodex']);
+            unset($_SESSION['Chapitre']);
     
-            header("Location: /DungeonXplorer/");
+            $userModel = new User();
+    
+            $hero = $userModel->getHeroByUserId($_SESSION['user']['id']);
+            if ($hero) {
+                $_SESSION['user']['hero'] = $hero;
+                $heroModel = new Hero();
+                $chapter = $heroModel->getChapterByHeroId($_SESSION['user']['hero']['hero_id']);
+                if ($chapter) {
+                    $_SESSION['Chapitre'] = $chapter["chapter"];
+                }
+                $sessionId = $userModel->startSession($_SESSION['user']['id']);
+                $_SESSION["session_id"] = $sessionId;
+                header("Location: /DungeonXplorer/inventory/loadInventory");
+                exit;
+            }
+            header('Location: /DungeonXplorer');
+            ob_end_flush();
+            exit;
         }
+        header("Location: /DungeonXplorer/");
     }
+    
     
 }
 ?>
