@@ -4,9 +4,21 @@ class NPC extends Model {
     public function getNPCById($NPCId, $chapterId) {
         $db = $this->getDatabaseConnection();
 
-        $NPCQuery = 'SELECT * FROM NPC WHERE id = :NPCid';
+        $NPCQuery = 'SELECT 
+                        NPC.*, 
+                        NPC_FS.INTRO_SENTENCE
+                    FROM 
+                        NPC AS NPC
+                    JOIN 
+                        NPC_FirstSentence AS NPC_FS ON NPC.id = NPC_FS.npc_id
+                    WHERE 
+                        NPC_FS.chapter_id = :ChapterId
+                    AND NPC.id = :NPCid;
+                    ';
         $NPCStmt = $db->prepare($NPCQuery);
         $NPCStmt->bindParam(':NPCid', $NPCId);
+        $NPCStmt->bindParam(':ChapterId', $chapterId);
+
         $NPCStmt->execute();
 
         $resultNPC = $NPCStmt->fetch(PDO::FETCH_ASSOC);
