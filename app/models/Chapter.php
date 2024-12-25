@@ -46,13 +46,13 @@ class Chapter extends Model {
                 case 'npc_interaction':
                     if (isset($chapter['related_npc_id'])) {
                         $npcModel = new NPC();
-                        $npc = $npcModel->getNPCById($chapter['related_npc_id']);
+                        $npc = $npcModel->getNPCById($chapter['related_npc_id'], $chapterId);
                     }
                     break;
                 case 'merchent':
                     if (isset($chapter['related_npc_id'])) {
                         $npcModel = new NPC();
-                        $npc = $npcModel->getNPCById($chapter['related_npc_id']);
+                        $npc = $npcModel->getNPCById($chapter['related_npc_id'], $chapterId);
                     }
                     break;
     

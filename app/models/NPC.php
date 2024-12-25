@@ -1,7 +1,7 @@
 <?php
 
 class NPC extends Model {
-    public function getNPCById($NPCId) {
+    public function getNPCById($NPCId, $chapterId) {
         $db = $this->getDatabaseConnection();
 
         $NPCQuery = 'SELECT * FROM NPC WHERE id = :NPCid';
@@ -12,9 +12,10 @@ class NPC extends Model {
         $resultNPC = $NPCStmt->fetch(PDO::FETCH_ASSOC);
 
         if ($resultNPC) {
-            $dialogueQuery = 'SELECT * FROM NPC_Dialogue WHERE id_npc = :NPCid';
+            $dialogueQuery = 'SELECT * FROM NPC_Dialogue WHERE id_npc = :NPCid AND chapter = :chapterId';
             $dialogueStmt = $db->prepare($dialogueQuery);
             $dialogueStmt->bindParam(':NPCid', $NPCId);
+            $dialogueStmt->bindParam(':chapterId', $chapterId);
             $dialogueStmt->execute();
 
             $dialogues = $dialogueStmt->fetchAll(PDO::FETCH_ASSOC);
