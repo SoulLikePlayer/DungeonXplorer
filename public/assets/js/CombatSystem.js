@@ -403,14 +403,16 @@ try{
     function openConsumableModal(consumablesData, hero) {
         const consumableModal = document.getElementById('consumableModal');
         const consumablesList = document.getElementById('consumablesList');
-
+    
         consumableModal.style.display = 'flex';
         consumablesList.innerHTML = '';
-
-        if (consumablesData.length === 0) {
+    
+        const validConsumables = consumablesData.filter(item => item.quantity > 0);
+    
+        if (validConsumables.length === 0) {
             consumablesList.innerHTML = '<li>Aucun consommable dans l\'inventaire.</li>';
         } else {
-            consumablesData.forEach((item, index) => {
+            validConsumables.forEach((item, index) => {
                 const listItem = document.createElement('button');
                 listItem.className = "ConsButton";
                 listItem.textContent = `${item.name} (X${item.quantity})`;
@@ -421,33 +423,35 @@ try{
                 consumablesList.appendChild(listItem);
             });
         }
-
+    
         document.getElementById('closeConsumableModalButton').addEventListener('click', function () {
             consumableModal.style.display = 'none';
         });
-
+    
         window.addEventListener('click', function (event) {
             if (event.target === consumableModal) {
                 consumableModal.style.display = 'none';
             }
         });
     }
-
-
+    
     function useConsumable(item, hero, consumablesData, index) {
+        let qtSoins = 0;
+        let qtMana = 0;
+    
         if (item.effect_type === 'heal') {
-            qtSoins = item.heal_amount
-            if(hero.talent == "Chaire putrifiée"){
-                qtSoins = Math.floor(qtSoins / 2)
-                displayCombatMessage('Du a la Chaitr putrifiée, les soins exterieur voit leur quantité divisé par 2')
+            qtSoins = item.heal_amount;
+            if (hero.talent == "Chaire putrifiée") {
+                qtSoins = Math.floor(qtSoins / 2);
+                displayCombatMessage('En raison de la Chaire putrifiée, les soins extérieurs voient leur quantité divisée par 2');
             }
             hero.pv = Math.min(hero.pv + qtSoins, hero.pvMax);
             document.getElementById('heroPv').textContent = hero.pv;
         } else if (item.effect_type === 'mana') {
-            qtMana = item.mana_amount
-            if(hero.talent == "Chaire putrifiée"){
-                qtMana = Math.floor(qtSoins / 2)
-                displayCombatMessage('Du a la Chaitr putrifiée, les position de mana exterieur voit leur quantité divisé par 2')
+            qtMana = item.mana_amount;
+            if (hero.talent == "Chaire putrifiée") {
+                qtMana = Math.floor(qtMana / 2);
+                displayCombatMessage('En raison de la Chaire putrifiée, les positions de mana extérieures voient leur quantité divisée par 2');
             }
             hero.mana = Math.min(hero.mana + qtMana, hero.manaMax);
             document.getElementById('heroMana').textContent = hero.mana;
@@ -462,9 +466,13 @@ try{
     
         item.quantity--;
         if (item.quantity <= 0) {
-            consumablesData.splice(index, 1);
+            console.log(`L'item ${item.name} a épuisé sa quantité.`);
         }
+    
+        console.log(consumablesData);
     }
+    
+
 
     function rollDie() {
         return Math.floor(Math.random() * 6) + 1;

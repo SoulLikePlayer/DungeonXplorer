@@ -32,11 +32,20 @@
             data-curse-modif="<?= htmlspecialchars($new_talent['new_name'] ?? "aucun") ?>">
             <div class="modal-content">
                 <span class="close-button" id="closeModalButton">&times;</span>
-                <h2> Votre malédiction passe de <span class="curse"> <?= htmlspecialchars($new_talent['old_name'] ?? "N/A") ?> </span> à <span><?= htmlspecialchars($new_talent['new_name'] ?? "N/A") ?></span></h2>
+                <h2> Votre malédiction passe de <span class="curse"> <?= htmlspecialchars($new_talent['old_name'] ?? "N/A") ?> </span> à <span class="final-curse"><?= htmlspecialchars($new_talent['new_name'] ?? "N/A") ?></span></h2>
                 <p><?= htmlspecialchars($new_talent['new_description'] ?? "N/A") ?></p>
             </div>
         </div>
 
+        <?php if($_SESSION['user']['hero']['talent_id'] === 23) : ?>
+                <div id="future-modal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close-modal">&times;</span>
+                        <h3>Vision de l'avenir</h3>
+                        <p id="future-vision-content">...</p>
+                    </div>
+                </div>
+        <?php endif;?>
 
         <!--Modal de passage a niveaux-->
 
@@ -365,16 +374,28 @@
                 <div class="links" id="chapter-links">
                     <?php foreach ($links as $link): ?>
                         <div class="link">
-                            <?php if($chapter['chapter_type'] !== 'death'): ?>    
+                            <?php if ($chapter['chapter_type'] !== 'death'): ?>
                                 <a href="/DungeonXplorer/chapter/view/<?= htmlspecialchars($link['next_chapter_id'] ?? '#') ?>">
-                            <?php else: ?>
-                                <a href="/DungeonXplorer/chapter/reset">
-                            <?php endif; ?>
                                     <button><?= nl2br(htmlspecialchars($link['description'] ?? 'Pas de description')) ?></button>
                                 </a>
+                            <?php else: ?>
+                                <a href="/DungeonXplorer/chapter/reset">
+                                    <button><?= nl2br(htmlspecialchars($link['description'] ?? 'Pas de description')) ?></button>
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if ($_SESSION['user']['hero']['talent_id'] === 23 && $chapter['chapter_type'] !== "death"): ?>
+                                <!-- Bouton Voir l'avenir -->
+                                <button class="view-future-btn" data-chapter-id="<?= htmlspecialchars($link['next_chapter_id'] ?? '#') ?>">
+                                    Voir l'avenir
+                                </button>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
+                <?php if ($_SESSION['user']['hero']['talent_id'] === 23): ?> 
+                    <script src="../../public/assets/js/FuturChapterSystem.js"></script>         
+                <?php endif; ?>     
             <?php endif; ?>
 
     <div class="navigation">

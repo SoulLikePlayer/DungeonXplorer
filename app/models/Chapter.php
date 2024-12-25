@@ -23,44 +23,43 @@ class Chapter extends Model {
     
         $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-        $chapter = null;
         if (!empty($events)) {
             $chapter = $events[0];
-            $chapter['events'] = $events;
         }
+        unset($_SESSION['npc']);
     
         foreach ($events as $event) {
             switch ($event['chapter_type']) {
                 case 'combat':
-                    if (isset($event['related_monster_id'])) {
+                    if (isset($chapter['related_monster_id'])) {
                         $monsterModel = new Monster();
-                        $monster = $monsterModel->getMonsterById($event['related_monster_id']);
+                        $monster = $monsterModel->getMonsterById($chapter['related_monster_id']);
     
                         if ($monster) {
                             $_SESSION['monster'] = $monster;
-                            $_SESSION['monster']['loot'] = $monsterModel->getLootById($event['related_monster_id']);
-                            $_SESSION['monster']['attack'] = $monsterModel->getAttacksByMonsterId($event['related_monster_id']);
+                            $_SESSION['monster']['loot'] = $monsterModel->getLootById($chapter['related_monster_id']);
+                            $_SESSION['monster']['attack'] = $monsterModel->getAttacksByMonsterId($chapter['related_monster_id']);
                         }
                     }
                     break;
     
                 case 'npc_interaction':
-                    if (isset($event['related_npc_id'])) {
+                    if (isset($chapter['related_npc_id'])) {
                         $npcModel = new NPC();
-                        $npc = $npcModel->getNPCById($event['related_npc_id']);
+                        $npc = $npcModel->getNPCById($chapter['related_npc_id']);
                     }
                     break;
-                case 'merchant':
-                    if (isset($event['related_npc_id'])) {
+                case 'merchent':
+                    if (isset($chapter['related_npc_id'])) {
                         $npcModel = new NPC();
-                        $npc = $npcModel->getNPCById($event['related_npc_id']);
+                        $npc = $npcModel->getNPCById($chapter['related_npc_id']);
                     }
                     break;
     
                 case 'treasure':
-                    if (isset($event['related_treasure_id'])) {
+                    if (isset($chapter['related_treasure_id'])) {
                         $treasureModel = new Treasure();
-                        $treasure = $treasureModel->getTreasureById($event['related_treasure_id']);
+                        $treasure = $treasureModel->getTreasureById($chapter['related_treasure_id']);
     
                         if ($treasure) {
                             $_SESSION['treasure'] = $treasure;

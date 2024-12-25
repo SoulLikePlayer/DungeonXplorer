@@ -483,3 +483,35 @@ input[type=submit]:hover {
     display: none;
 }
 
+div.links button.view-future-btn {
+    background: linear-gradient(135deg, #5e17eb, #1a95ff);
+    color: #e4f1ff;
+    border: 2px solid rgba(94, 23, 235, 0.6);
+    padding: 12px 30px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.4s ease, transform 0.3s ease, box-shadow 0.4s ease;
+    box-shadow: 0 4px 15px rgba(94, 23, 235, 0.7), 0 0 10px rgba(26, 149, 255, 0.5);
+    text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.8);
+}
+
+div.links button.view-future-btn:hover {
+    background: linear-gradient(135deg, #7f3fff, #22a6f0);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(94, 23, 235, 0.9), 0 0 15px rgba(34, 166, 240, 0.8);
+}
+
+div.links button.view-future-btn:active {
+    transform: translateY(2px) scale(1);
+    background: linear-gradient(135deg, #3b0fc6, #156bff);
+    box-shadow: 0 3px 10px rgba(94, 23, 235, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+div.links button.view-future-btn:disabled {
+    background: linear-gradient(135deg, #2e2e2e, #6b6b6b);
+    color: #b0b0b0;
+    cursor: not-allowed;
+    box-shadow: none;
+    text-shadow: none;
+}

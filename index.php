@@ -92,6 +92,10 @@ session_start();
                     /* Routes liées à l'histoire */
                     $router->addRoute('chapter/view/{chapterId}', 'ChapterController@viewChapter', true); 
                     $router->addRoute('chapter/reset', 'ChapterController@resetChapter');
+
+                    if($_SESSION['user']['hero']['talent_id'] === 23){
+                        $router->addRoute('chapter/previewFuture/{id}', 'ChapterController@previewFuture');
+                    }
                 }
 
                 if ($_SESSION['user']['is_admin']===1){
@@ -100,6 +104,7 @@ session_start();
                     $router->addRoute('admin/delete/{id}', 'UserController@deleteUserAdmin');
                     $router->addRoute('admin/details/{id}', 'UserController@details_user_admin');
                 }
+
             }
 
             $router->addRoute('about', 'AboutController@index');

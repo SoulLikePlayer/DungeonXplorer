@@ -84,6 +84,19 @@ class ChapterController extends Controller {
 
             $chapter['titre'] = $randomTitle;
             $chapter['content'] = $randomContent;
+        }elseif($_SESSION['user']['hero']['talent_id'] === 24){
+            $words = explode(' ', $chapter['content']); 
+            $flou = [];
+            $totalWords = count($words);
+
+            for ($i = 0; $i < $totalWords; $i++) {
+                if (rand(0, 3) === 0) { 
+                    $flou[] = $words[$i];
+                } else { 
+                    $flou[] = '...';
+                }
+            }
+            $chapter['content'] = implode(' ',$flou);
         }
 
         if ($chapter) {
@@ -99,6 +112,40 @@ class ChapterController extends Controller {
             echo "Chapitre non trouvé";
         }
     }
+
+    public function previewFuture($chapterId) {
+        header('Content-Type: application/json');
+    
+        $chapterModel = new Chapter();
+        $chapter = $chapterModel->getChapterById($chapterId);
+
+        $heroModel = new Hero();
+        $heroModel->updateHeroMadness(5, $_SESSION['user']['hero']['hero_id']);
+        $this->determineMadness();
+    
+        if ($chapter) {
+            $words = explode(' ', $chapter['content']); 
+            $flou = [];
+            $totalWords = count($words);
+
+            for ($i = 0; $i < $totalWords; $i++) {
+                if (rand(0, 3) === 0) { 
+                    $flou[] = $words[$i];
+                } elseif (end($flou) !== '...') { 
+                    $flou[] = '...';
+                }
+            }
+            ob_clean();
+            echo json_encode(['words' => $flou]);
+
+            exit;
+        } else {
+            ob_clean();
+            echo json_encode(['words' => ['...', 'avenir', 'flou', 'incertain', '...']]);
+            exit;
+        }
+    }
+    
 
     public function resetChapter() {
         $chapterModel = new Chapter();
