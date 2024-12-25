@@ -257,6 +257,8 @@ try{
                         user.mana = Math.min(user.mana + parseInt(params[0]), user.manaMax);
                         if (user.type == "hero"){
                             document.getElementById('heroMana').textContent = user.mana;
+                        }else{
+                            document.getElementById('monsterMana').textContent = user.mana;
                         }
                         displayCombatMessage(`${user.name} regagne ${params[0]} points de mana.`);
                         break;
@@ -264,6 +266,8 @@ try{
                         user.pv = Math.min(user.pv + parseInt(params[0]), user.pvMax);
                         if (user.type == "hero"){
                             document.getElementById('heroPv').textContent = user.pv;
+                        } else {
+                            document.getElementById('monsterPv').textContent = user.pv;
                         }
                         displayCombatMessage(`${user.name} se soigne de ${params[0]} points.`);
                         break;
@@ -291,6 +295,8 @@ try{
                         user.mana = Math.min(user.mana + parseInt(params[0]), user.manaMax);
                         if (user.type == 'hero'){
                             document.getElementById('heroMana').textContent = user.mana;
+                        }else{
+                            document.getElementById('monsterMana').textContent = user.mana;
                         }
                         displayCombatMessage(`${user.name} restaure ${params[0]} points de mana.`);
                         break;
@@ -299,7 +305,7 @@ try{
                         displayCombatMessage(`${cible.name} voit sa vitesse réduite de ${params[0]} pour ${params[1]} tours.`);
                         break;
                     case 'shield_target':
-                        user.activeBonuses.push({ type: "shield", value: parseInt(params[0]), remainingTurns: parseInt(params[1]) });
+                        user.activeBonuses.push({ type: "mana_shield", value: parseInt(params[0]), remainingTurns: parseInt(params[1]) });
                         displayCombatMessage(`${user.name} est protégé par un bouclier qui absorbe ${params[0]} dégâts pendant ${params[1]} tours.`);
                         break;
                     case 'drain_health':
@@ -313,7 +319,11 @@ try{
                             user.pv -= parseInt(params[0]);
                             displayCombatMessage(`${user.name} sacrifie ${params[0]} de vie.`);
                         }
-                        document.getElementById('heroPv').textContent = user.pv;
+                        if(user.type == "hero"){
+                            document.getElementById('heroPv').textContent = user.pv;
+                        }else{
+                            document.getElementById('monsterPv').textContent = user.pv;
+                        }
                         break;
                     case 'increase_attack':
                         user.activeBonuses.push({ type: 'attack', value: parseInt(params[0]), remainingTurns: parseInt(params[1]) });
@@ -842,31 +852,33 @@ try{
                 
                 const bonusesManaShield = hero.activeBonuses.find(bonus => bonus.type === "mana_shield");
 
-                if(bonusesManaShield){
-                    
-                    if(bonusesManaShield.value<damage){
-                        const damageSup = damage - bonusesManaShield.value
+                if (bonusesManaShield) {
+                    const shieldValue = bonusesManaShield.value;
+
+                    if (shieldValue < damage) {
+                        const damageSup = damage - shieldValue;
                         displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts au bouclier de mana qui se brise et touche le joueur lui infligeant ${damageSup}.`);
-                        hero.activeBonuses.find(bonus => bonus.type === "mana_shield") -= damage;
+                        bonusesManaShield.value = 0;
                         hero.pv -= damageSup;
-                    }
-                    if(bonusesManaShield.value>damage){
+                    } else if (shieldValue > damage) {
                         displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts au bouclier de mana.`);
-                        hero.activeBonuses.find(bonus => bonus.type === "mana_shield") -= damage;
-                        hero.activeBonuses = hero.activeBonuses.filter(bonus => ((bonus.type === "mana_shield")&&bonus.value>0)||(!(bonus.type === "mana_shield")));
-                    }
-                    if(bonusesManaShield.value==damage){
+                        bonusesManaShield.value -= damage;
+                    } else {
                         displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts au bouclier de mana qui se brise.`);
-                        hero.activeBonuses.find(bonus => bonus.type === "mana_shield") -= damage;
-                        hero.activeBonuses = hero.activeBonuses.filter(bonus => ((bonus.type === "mana_shield")&&bonus.value>0)||(!(bonus.type === "mana_shield")));
+                        bonusesManaShield.value = 0;
                     }
-                    
-                }
-                else{
+
+                    if (bonusesManaShield.value <= 0) {
+                        hero.activeBonuses = hero.activeBonuses.filter(bonus => bonus.type !== "mana_shield");
+                    }
+                } else {
                     displayCombatMessage(`${monster.name} attaque ${hero.name} et inflige ${damage} dégâts.`);
                     hero.pv -= damage;
                 }
+
                 document.getElementById('heroPv').textContent = Math.max(0, hero.pv);
+                document.getElementById('monsterPv').textContent = Math.max(0, monster.pv);
+
                 
                 const bonusesFlammeProtection = hero.activeBonuses.find(bonus => bonus.type === "flamme_body");
                 
