@@ -39,6 +39,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 .catch(error => {
                     console.log('Erreur de communication avec le serveur:', error);
                 });
+
+                fetch('/DungeonXplorer/inventory/getUpdateInventory')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success !== false) {
+                        console.log(data['inventory']);
+                        document.getElementById('showInventoryButton').setAttribute('data-inventory', JSON.stringify(data['inventory']))
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching inventory:', error);
+                });
             } else {
                 treasureResult.textContent = `Quel dommage... Vous avez échoué avec un score de ${roll}.`;
             }

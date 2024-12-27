@@ -78,6 +78,8 @@ session_start();
                 $router->addRoute('inventory/saveLoot', 'InventoryController@saveLoot');
                 $router->addRoute('inventory/update', "InventoryController@updateConsumables");
                 $router->addRoute('inventory/sellLoot', "InventoryController@sellLoot");
+                $router->addRoute('inventory/getUpdateInventory', 'InventoryController@getUpdatedInventory');
+
 
                 /* Routes liées au héros */
                 $router->addRoute('hero/store', 'HeroController@store');
@@ -103,6 +105,11 @@ session_start();
                     $router->addRoute('admin/pannel', 'UserController@pannelAdmin');
                     $router->addRoute('admin/delete/{id}', 'UserController@deleteUserAdmin');
                     $router->addRoute('admin/details/{id}', 'UserController@details_user_admin');
+
+                    $router->addRoute('chapter/getChapter/{chapterId}', 'ChapterController@getChapter');
+                    $router->addRoute('chapter/updateChapter', 'ChapterController@updateChapter');
+                    $router->addRoute('admin/chapterList', 'UserController@chaptersListAdmin');
+
                 }
 
             }

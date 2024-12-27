@@ -165,6 +165,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Erreur de communication avec le serveur:', error);
                 });
             });
+            fetch('/DungeonXplorer/inventory/getUpdateInventory')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success !== false) {
+                    document.getElementById('showInventoryButton').setAttribute('data-inventory', data['inventory'])
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching inventory:', error);
+            });
             console.log(parseInt(totalPriceElement.textContent))
             const gold = {
                 goldSpent : 0-parseInt(totalPriceElement.textContent)
@@ -245,7 +255,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Erreur de communication avec le serveur:', error);
                 });
             });
-
+            fetch('/DungeonXplorer/inventory/getUpdateInventory')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success !== false) {
+                    console.log(data['inventory']);
+                    document.getElementById('showInventoryButton').setAttribute('data-inventory', JSON.stringify(data['inventory']))
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching inventory:', error);
+            });
             const gold = {
                 goldSpent : parseInt(totalSalePriceElement.textContent)
             }

@@ -45,13 +45,23 @@ function saveLootToInventory(obtainedLoot) {
                 console.log('Erreur de communication avec le serveur:', error);
             });
         });
+        fetch('/DungeonXplorer/inventory/getUpdateInventory')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success !== false) {
+                console.log(data['inventory']);
+                document.getElementById('showInventoryButton').setAttribute('data-inventory', JSON.stringify(data['inventory']))
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching inventory:', error);
+        });
     } else {
         const noLootMessage = document.createElement('p');
         noLootMessage.textContent = "Aucun loot obtenu.";
         lootContainer.appendChild(noLootMessage);
     }
 }
-
 
 
 function handleLoot(lootTable) {

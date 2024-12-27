@@ -103,7 +103,6 @@ class Hero extends Model {
             h.madness,
             h.xp,
             h.current_level,
-            h.poids_max,
             h.nb_items_max,
             hw.primary_weapon_id,
             hw.secondary_weapon_id,

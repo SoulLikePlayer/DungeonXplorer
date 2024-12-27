@@ -205,5 +205,63 @@ class ChapterController extends Controller {
             }
         }
     }
+
+    public function getChapter($chapterId) {
+        header('Content-Type: application/json');
+    
+        $chapterModel = new Chapter();
+        $chapter = $chapterModel->getInformationById($chapterId)[0];
+    
+        if ($chapter) {
+            $data = [
+                'success' => true,
+                'chapter' => [
+                    'title' => htmlspecialchars($chapter['titre']),
+                    'content' => htmlspecialchars($chapter['content']),
+                    'events' => htmlspecialchars($chapter['chapter_type'])
+                ]
+            ];
+        } else {
+            $data = ['success' => false];
+        }
+        ob_clean();
+        echo json_encode($data);
+        exit;
+    }
+    
+    public function updateChapter() {
+        ob_clean();
+        header('Content-Type: application/json');
+        $data = json_decode(file_get_contents('php://input'), true);        
+        
+        if (isset($data['title']) || isset($data['content'])) {
+            if (isset($data['title'])) {
+                $newTitle = htmlspecialchars($data['title']);
+            } else {
+                $newTitle = null;
+            }
+    
+            if (isset($data['content'])) {
+                $newContent = htmlspecialchars($data['content']);
+            } else {
+                $newContent = null;
+            }
+
+            $chapterId=$data['chapterId'];
+    
+            $chapterModel = new Chapter();
+            $updateSuccess = $chapterModel->updateChapter($chapterId, $newTitle, $newContent);
+            
+            if ($updateSuccess) {
+                echo json_encode(['success' => true, 'message' => 'Chapitre mis à jour avec succès.']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour du chapitre.']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Aucune donnée valide reçue.']);
+        }
+    
+        exit;
+    }
     
 }

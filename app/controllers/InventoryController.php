@@ -98,5 +98,24 @@ class InventoryController extends Controller {
         $_SESSION['user']['inventory'] = $inventory->getInventory();
 
     }
+
+    public function getUpdatedInventory() {
+        header('Content-Type: application/json');
+        ob_clean();
+        if (isset($_SESSION['user'])) {
+            $inventory = $_SESSION['user']['inventory'] ?? [];
+            $inventoryCons = $_SESSION['user']['inventoryCons'] ?? [];
+
+            echo json_encode([
+                'inventory' => $inventory,
+                'inventoryCons' => $inventoryCons
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté']);
+        }
+
+        exit;
+    }
+
 }
 

@@ -96,7 +96,7 @@ class Inventory extends Model {
         $db = $this->getDatabaseConnection();
     
         $query = '
-            SELECT w.item_id, i.name, i.description, inv.quantity, w.damage_bonus, w.defense_bonus, w.weight
+            SELECT w.item_id, i.name, i.description, inv.quantity, w.damage_bonus, w.defense_bonus
             FROM Weapon w
             JOIN Items i ON w.item_id = i.id
             JOIN Inventory inv ON inv.item_id = i.id
@@ -114,7 +114,7 @@ class Inventory extends Model {
         $db = $this->getDatabaseConnection();
     
         $query = '
-            SELECT a.item_id, i.name, i.description, inv.quantity, a.defense, a.weight, a.slot
+            SELECT a.item_id, i.name, i.description, inv.quantity, a.defense, a.slot
             FROM Armor a
             JOIN Items i ON a.item_id = i.id
             JOIN Inventory inv ON inv.item_id = i.id
@@ -132,7 +132,7 @@ class Inventory extends Model {
         $db = $this->getDatabaseConnection();
     
         $query = '
-            SELECT m.item_id, i.name, i.description, inv.quantity, m.special_property
+            SELECT m.item_id, i.name, i.description, inv.quantity
             FROM Miscellaneous m
             JOIN Items i ON m.item_id = i.id
             JOIN Inventory inv ON inv.item_id = i.id
@@ -150,48 +150,64 @@ class Inventory extends Model {
 
     public function addItemToInventory($heroId, $itemId, $quantity) {
         $db = $this->getDatabaseConnection();
-        $queryCheckPlace = "SELECT 
-                                SUM(quantity) AS total_items_count   
-                            FROM 
-                                Inventory
-                            WHERE hero_id = :heroId";
-        $stmtCheckPlace = $db->prepare($queryCheckPlace);
-        $stmtCheckPlace->bindParam(':heroId', $heroId);
-        $stmtCheckPlace->execute();
-
-        $place = $stmtCheckPlace->fetch(PDO::FETCH_ASSOC);
-        $totalItems = (int)$place['total_items_count'];
-        $maxItems = (int)$_SESSION['user']['hero']['nb_items_max'];
-
-        if ($totalItems + $quantity > $maxItems) {
+    
+        $queryItemType = 'SELECT item_type FROM Items WHERE id = :item_id';
+        $stmtItemType = $db->prepare($queryItemType);
+        $stmtItemType->bindParam(':item_id', $itemId, PDO::PARAM_INT);
+        $stmtItemType->execute();
+        $item = $stmtItemType->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$item) {
             return false;
-        }else {
-            $queryCheck = 'SELECT id, quantity FROM Inventory WHERE hero_id = :hero_id AND item_id = :item_id';
-            $stmtCheck = $db->prepare($queryCheck);
-            $stmtCheck->bindParam(':hero_id', $heroId, PDO::PARAM_INT);
-            $stmtCheck->bindParam(':item_id', $itemId, PDO::PARAM_INT);
-            $stmtCheck->execute();
-            
-            $existingItem = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-
-            if ($existingItem) {
-                $queryUpdate = 'UPDATE Inventory SET quantity = quantity + :quantity WHERE id = :id';
-                $stmtUpdate = $db->prepare($queryUpdate);
-                $stmtUpdate->bindParam(':quantity', $quantity, PDO::PARAM_INT);
-                $stmtUpdate->bindParam(':id', $existingItem['id'], PDO::PARAM_INT);
-                $stmtUpdate->execute();
-            } else {
-                $queryInsert = 'INSERT INTO Inventory (hero_id, item_id, quantity) VALUES (:hero_id, :item_id, :quantity)';
-                $stmtInsert = $db->prepare($queryInsert);
-                $stmtInsert->bindParam(':hero_id', $heroId, PDO::PARAM_INT);
-                $stmtInsert->bindParam(':item_id', $itemId, PDO::PARAM_INT);
-                $stmtInsert->bindParam(':quantity', $quantity, PDO::PARAM_INT);
-                $stmtInsert->execute();
-            }
-            return true;
         }
+    
+        $itemType = $item['item_type'];
+    
+        if ($itemType !== 'key object') {
+            $queryCheckPlace = "SELECT 
+                                    SUM(quantity) AS total_items_count   
+                                FROM 
+                                    Inventory
+                                WHERE hero_id = :heroId";
+            $stmtCheckPlace = $db->prepare($queryCheckPlace);
+            $stmtCheckPlace->bindParam(':heroId', $heroId, PDO::PARAM_INT);
+            $stmtCheckPlace->execute();
+    
+            $place = $stmtCheckPlace->fetch(PDO::FETCH_ASSOC);
+            $totalItems = (int)$place['total_items_count'];
+            $maxItems = (int)$_SESSION['user']['hero']['nb_items_max'];
+    
+            if ($totalItems + $quantity > $maxItems) {
+                return false;
+            }
+        }
+    
+        $queryCheck = 'SELECT inv.id, inv.quantity FROM Inventory inv WHERE hero_id = :hero_id AND item_id = :item_id';
+        $stmtCheck = $db->prepare($queryCheck);
+        $stmtCheck->bindParam(':hero_id', $heroId, PDO::PARAM_INT);
+        $stmtCheck->bindParam(':item_id', $itemId, PDO::PARAM_INT);
+        $stmtCheck->execute();
+        
+        $existingItem = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+    
+        if ($existingItem) {
+            $queryUpdate = 'UPDATE Inventory SET quantity = quantity + :quantity WHERE id = :id';
+            $stmtUpdate = $db->prepare($queryUpdate);
+            $stmtUpdate->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+            $stmtUpdate->bindParam(':id', $existingItem['id'], PDO::PARAM_INT);
+            $stmtUpdate->execute();
+        } else {
+            $queryInsert = 'INSERT INTO Inventory (hero_id, item_id, quantity) VALUES (:hero_id, :item_id, :quantity)';
+            $stmtInsert = $db->prepare($queryInsert);
+            $stmtInsert->bindParam(':hero_id', $heroId, PDO::PARAM_INT);
+            $stmtInsert->bindParam(':item_id', $itemId, PDO::PARAM_INT);
+            $stmtInsert->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+            $stmtInsert->execute();
+        }
+    
+        return true;
     }
-
+    
 
     public function removeItemFromInventory($heroId, $itemId, $quantity) {
         $db = $this->getDatabaseConnection();

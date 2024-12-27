@@ -207,5 +207,11 @@ class UserController extends Controller {
         
         $this->view('pages/details_user_admin');
     }
+
+    public function chaptersListAdmin() {
+        $chapterModel = new Chapter();
+        $chapters = $chapterModel->getAllChapters();
+        $this->view('pages/chapterList', ['chapters' => $chapters]);
+    }
     
 }

@@ -20,11 +20,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log(previousDialogues);
             }
         }
+        previousDialogues = [];
+
 
     
         if (nextDialogues.length > 0) {
             npcChoicesContainer.innerHTML = ''; 
-    
             nextDialogues.forEach(dialogue => {
                 const choiceButton = document.createElement('button');
                 choiceButton.classList.add("ChoiceButton");

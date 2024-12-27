@@ -11,6 +11,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/DungeonXplorer/admin/pannel">Pannel Admin</a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/DungeonXplorer/admin/chapterList">liste des chapitres</a>
+                    </li>
                 <?php endif?>
 
                 <li class="nav-item">

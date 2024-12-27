@@ -60,7 +60,6 @@
                         <ul>
                             <li><strong>Niveau actuel:</strong> <?= htmlspecialchars($hero['current_level']) ?></li>
                             <li><strong>XP:</strong> <?= htmlspecialchars($hero['xp']) ?></li>
-                            <li><strong>Poids maximal:</strong> <?= htmlspecialchars($hero['poids_max']) ?> kg</li>
                             <li><strong>Nombre d'objets max:</strong> <?= htmlspecialchars($hero['nb_items_max']) ?></li>
                             <li><strong>Bonus de défense :</strong> <?= htmlspecialchars($hero['total_defense_bonus']) ?></li>
                         </ul>

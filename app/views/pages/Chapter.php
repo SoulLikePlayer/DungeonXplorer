@@ -1,4 +1,8 @@
-<main data-chapter-type="<?= htmlspecialchars($chapter['chapter_type']) ?>">
+<main 
+    data-chapter-type="<?= htmlspecialchars($chapter['chapter_type']) ?>" 
+    data-ost-normal="<?= htmlspecialchars($_SESSION['ost']['normal']) ?>" 
+    data-ost-combat="<?= htmlspecialchars($_SESSION['ost']['combat']) ?>"
+>
     <div class="story-container">
         <!-- Bouton pour afficher l'inventaire général -->
         <button id="showInventoryButton" data-inventory='<?= json_encode($_SESSION['user']['inventory'] ?? []) ?>'>Afficher l'inventaire</button>

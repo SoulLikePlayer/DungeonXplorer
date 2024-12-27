@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const showInventoryButton = document.getElementById('showInventoryButton');
     const closeModalButton = document.getElementById('closeModalButton');
     const inventoryList = document.getElementById('inventoryList');
-    const inventoryData = JSON.parse(showInventoryButton.getAttribute('data-inventory'));
 
     const itemName = document.getElementById('itemName');
     const itemType = document.getElementById('itemType');
@@ -17,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function openModal() {
         modal.style.display = 'flex';
         inventoryList.innerHTML = '';
+        const inventoryData = JSON.parse(showInventoryButton.getAttribute('data-inventory'));
 
         if (inventoryData.length === 0) {
             inventoryList.innerHTML = '<li>Aucun objet dans l\'inventaire.</li>';
