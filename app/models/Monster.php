@@ -38,7 +38,8 @@ class Monster extends Model {
                 m.mana,
                 m.initiative,
                 m.strength,
-                m.xp
+                m.xp,
+                m.ost
             FROM Monster m
             ORDER BY m.id ASC
         ");
@@ -95,5 +96,53 @@ class Monster extends Model {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function updateMonster($monsterId, $updatedData) {
+        $db = $this->getDatabaseConnection();
+    
+        $query = "UPDATE Monster SET ";
+    
+        $params = [];
+    
+        if (!empty($updatedData['name'])) {
+            $query .= "name = :name, ";
+            $params[':name'] = htmlspecialchars($updatedData['name']);
+        }
+    
+        if (isset($updatedData['pv'])) {
+            $query .= "pv = :pv, ";
+            $params[':pv'] = (int)$updatedData['pv'];
+        }
+    
+        if (isset($updatedData['mana'])) {
+            $query .= "mana = :mana, ";
+            $params[':mana'] = (int)$updatedData['mana'];
+        }
+    
+        if (isset($updatedData['initiative'])) {
+            $query .= "initiative = :initiative, ";
+            $params[':initiative'] = (int)$updatedData['initiative'];
+        }
+    
+        if (isset($updatedData['strength'])) {
+            $query .= "strength = :strength, ";
+            $params[':strength'] = (int)$updatedData['strength'];
+        }
+    
+        if (isset($updatedData['xp'])) {
+            $query .= "xp = :xp, ";
+            $params[':xp'] = (int)$updatedData['xp'];
+        }
+    
+        $query = rtrim($query, ', ');
+    
+        $query .= " WHERE id = :monsterId";
+        $params[':monsterId'] = $monsterId;
+    
+        $stmt = $db->prepare($query);
+    
+        return $stmt->execute($params);
+    }
+    
 }
 ?>

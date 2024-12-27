@@ -40,42 +40,8 @@
                 <div class="stats-card">
                     <h3>Statistiques générales</h3>
                     <ul>
-                        <li><strong>Total de morts :</strong> <?= htmlspecialchars($stats['stats']['total_deaths'] ?? 'Non disponible') ?></li>
-                        <li><strong>Chapitre maximal atteint :</strong> <?= htmlspecialchars($stats['stats']['max_chapter'] ?? 'Non disponible') ?></li>
                         <li><strong>Temps total passé en jeu :</strong> <?= isset($stats['sessions']['total']) ? gmdate("H:i:s", $stats['sessions']['total']) : 'Non disponible' ?></li>
                     </ul>
-                </div>
-
-                <div class="stats-card">
-                    <h3>Historique des morts</h3>
-                    <?php if (!empty($stats['deaths'])): ?>
-                        <ul>
-                            <?php foreach ($stats['deaths'] as $death): ?>
-                                <li>
-                                    <strong>Chapitre :</strong> <?= htmlspecialchars($death['chapter_id']) ?> - 
-                                    <strong>Morts :</strong> <?= htmlspecialchars($death['death_count']) ?>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php else: ?>
-                        <p>Aucun historique de morts.</p>
-                    <?php endif; ?>
-                </div>
-
-                <div class="stats-card">
-                    <h3>Historique des kills</h3>
-                    <?php if (!empty($stats['kills'])): ?>
-                        <ul>
-                            <?php foreach ($stats['kills'] as $kill): ?>
-                                <li>
-                                    <strong>Monstre :</strong> <?= htmlspecialchars($kill['monster_id']) ?> - 
-                                    <strong>Nombre de kills :</strong> <?= htmlspecialchars($kill['kill_count']) ?>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php else: ?>
-                        <p>Aucun historique de kills.</p>
-                    <?php endif; ?>
                 </div>
 
                 <div class="stats-card">

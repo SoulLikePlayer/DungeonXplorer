@@ -15,6 +15,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/DungeonXplorer/admin/chapterList">liste des chapitres</a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/DungeonXplorer/admin/monsterList">liste des monstres</a>
+                    </li>
                 <?php endif?>
 
                 <li class="nav-item">

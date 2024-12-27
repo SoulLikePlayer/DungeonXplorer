@@ -54,6 +54,7 @@ session_start();
             require 'app/controllers/InventoryController.php';
             require 'app/controllers/HeroController.php';
             require 'app/controllers/AboutController.php';
+            require 'app/controllers/MonsterController.php'; // Ajout du MonsterController
 
             $router = Router::getInstance('DungeonXplorer');
 
@@ -67,9 +68,9 @@ session_start();
             $router->addRoute('user/handleLogin', 'UserController@handleLogin');
             $router->addRoute('user/logout', 'UserController@logout');
             $router->addRoute('user/profile', 'UserController@profile');
-            $router->addRoute('user/edit', 'UserController@edit');         // Route pour éditer un utilisateur
-            $router->addRoute('user/update/{id}', 'UserController@update');     // Route pour mettre à jour un utilisateur
-            $router->addRoute('user/delete', 'UserController@delete');     // Route pour supprimer un utilisateur
+            $router->addRoute('user/edit', 'UserController@edit');
+            $router->addRoute('user/update/{id}', 'UserController@update');
+            $router->addRoute('user/delete', 'UserController@delete');
             $router->addRoute('user/selectHero','UserController@selectHero');
 
             if (isset($_SESSION['user'])){
@@ -79,7 +80,6 @@ session_start();
                 $router->addRoute('inventory/update', "InventoryController@updateConsumables");
                 $router->addRoute('inventory/sellLoot', "InventoryController@sellLoot");
                 $router->addRoute('inventory/getUpdateInventory', 'InventoryController@getUpdatedInventory');
-
 
                 /* Routes liées au héros */
                 $router->addRoute('hero/store', 'HeroController@store');
@@ -110,8 +110,12 @@ session_start();
                     $router->addRoute('chapter/updateChapter', 'ChapterController@updateChapter');
                     $router->addRoute('admin/chapterList', 'UserController@chaptersListAdmin');
 
+                    $router->addRoute('admin/monsterList', 'UserController@monstersListAdmin');
+                    
+                    /* Routes liées aux monstres */
+                    $router->addRoute('monster/getMonster/{monsterId}', 'MonsterController@getMonster');
+                    $router->addRoute('monster/updateMonster', 'MonsterController@updateMonster');
                 }
-
             }
 
             $router->addRoute('about', 'AboutController@index');

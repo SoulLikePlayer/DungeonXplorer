@@ -213,5 +213,18 @@ class UserController extends Controller {
         $chapters = $chapterModel->getAllChapters();
         $this->view('pages/chapterList', ['chapters' => $chapters]);
     }
+
+    public function monstersListAdmin() {
+        $monsterModel = new Monster();
+        $monsters = $monsterModel->getAllMonsters();
+    
+        foreach ($monsters as &$monster) {
+            $monster['loots'] = $monsterModel->getLootById($monster['id']);
+            $monster['attacks'] = $monsterModel->getAttacksByMonsterId($monster['id']);
+        }
+    
+        $this->view('pages/monsters_list_admin', ['monsters' => $monsters]);
+    }
+    
     
 }

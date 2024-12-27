@@ -14,8 +14,6 @@ class Treasure extends Model {
                 ct.quantity,
                 i.name AS item_name,
                 i.description AS item_description,
-                i.unite_inv,
-                i.poids,
                 i.item_type,
                 i.gold_value,
                 i.imageName

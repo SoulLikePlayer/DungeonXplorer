@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const chapterDescription = document.getElementById('chapter-description');
     const chapterEvents = document.getElementById('chapter-events');
     
-    let currentChapterId = null; // Variable to store the current chapter id
+    let currentChapterId = null;
 
     chapterButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -23,16 +23,14 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     editButton.addEventListener('click', function() {
-        // Cache the current content in the editable fields
         document.getElementById('edit-title').value = chapterTitle.textContent;
         document.getElementById('edit-content').value = chapterDescription.innerHTML;
 
-        // Hide the current title and description
         chapterTitle.style.display = 'none';
         chapterDescription.style.display = 'none';
         chapterEvents.style.display = 'none';
+        editButton.style.display = 'none';
 
-        // Show the edit section
         editSection.style.display = 'block';
     });
 
@@ -60,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                     editSection.style.display = 'none';
 
-                    modal.style.display = 'block';
+                    modal.style.display = 'flex';
                 } else {
                     alert("Chapitre non trouvé.");
                 }
