@@ -150,8 +150,13 @@
                 this.initializeMusic(this.baseMusicPath);
             }
         } else if (chapterType === 'combat') {
-            console.log("combat");
-            this.initializeMusic(this.combatMusicPath);
+            const combatButton = document.getElementById('startCombatButton');
+            const monsterOST = combatButton?.getAttribute('data-monster-ost');
+            if (monsterOST) {
+                this.initializeMusic(`../../public/assets/SongTheme/${monsterOST}.mp3`);
+            }else {
+                this.initializeMusic(this.combatMusicPath);
+            }
         } else {
             console.log("normal");
             this.initializeMusic(this.baseMusicPath);

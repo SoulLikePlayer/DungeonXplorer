@@ -146,6 +146,7 @@
                     data-monster-strength="<?= htmlspecialchars($_SESSION['monster']['strength']) ?>"
                     data-monster-initiative="<?= htmlspecialchars($_SESSION['monster']['initiative']) ?>"
                     data-monster-xp="<?= htmlspecialchars($_SESSION['monster']['xp']) ?>"
+                    data-monster-ost="<?=$_SESSION['monster']['ost'] === null ? null : htmlspecialchars($_SESSION['monster']['ost']) ?>"
                     data-next-chapter-win="<?= htmlspecialchars($links[0]['next_chapter_id']) ?? '#' ?>"
                     data-next-chapter-lose="<?= htmlspecialchars($links[1]['next_chapter_id']) ?? '#' ?>"
                     data-next-chapter-run="<?= htmlspecialchars($links[2]['next_chapter_id']) ?>"
