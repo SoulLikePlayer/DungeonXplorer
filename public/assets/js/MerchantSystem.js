@@ -102,7 +102,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     quantityInputsSell.forEach(input => {
-        input.addEventListener('input', updateTotalSalePrice);
+        input.addEventListener('input', () => { 
+            const itemId = input.getAttribute('data-item-id');
+            const itemName = input.name.replace('quantity_', '');
+            const itemStock = parseInt(input.getAttribute('max'), 10); 
+
+            let quantity = parseInt(input.value, 10) || 0;
+
+            if (quantity > itemStock) {
+                input.value = itemStock; 
+                quantity = itemStock; // 
+            }
+
+            updateTotalSalePrice()
+        });
     });
 
     buyButton.addEventListener('click', () => {

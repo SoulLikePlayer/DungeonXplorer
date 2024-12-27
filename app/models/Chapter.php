@@ -147,9 +147,10 @@ class Chapter extends Model {
         $db = $this->getDatabaseConnection();
 
         $stmt = $db->prepare("
-            SELECT ost_normal, fight_ost
+            SELECT ost_normal, fight_ost, chapter_id
             FROM ChangeOST
-            WHERE chapter_id = :chapter_id
+            WHERE chapter_id <= :chapter_id
+            ORDER BY chapter_id DESC
         ");
         $stmt->bindParam(':chapter_id', $chapterId, PDO::PARAM_INT);
         $stmt->execute();

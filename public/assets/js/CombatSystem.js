@@ -317,16 +317,21 @@ try{
                         displayCombatMessage(`${cible.name} se fait drainer ${params[0]} de vie pendant ${params[1]} tours.`);
                         break;
                     case 'sacrifice_health':
-                        if (user.pv - parseInt(params[0]) < 1) {
-                            displayCombatMessage(`${user.name} ne peut pas utiliser le sort car il n'a pas assez de PV !`);
-                        } else {
-                            user.pv -= parseInt(params[0]);
-                            displayCombatMessage(`${user.name} sacrifie ${params[0]} de vie.`);
-                        }
-                        if(user.type == "hero"){
-                            document.getElementById('heroPv').textContent = user.pv;
+                        if(user.type === "hero" && user.talent === "Âme de Carnifex"){
+                            user.activeDebuff.push({type: "burst", remainingTurns: 1});
+                            displayCombatMessage(`le talent de ${user.name} l'empêche de perdre de la vie mais son sang le brûle !`)
                         }else{
-                            document.getElementById('monsterPv').textContent = user.pv;
+                            if (user.pv - parseInt(params[0]) < 1) {
+                                displayCombatMessage(`${user.name} ne peut pas utiliser le sort car il n'a pas assez de PV !`);
+                            } else {
+                                user.pv -= parseInt(params[0]);
+                                displayCombatMessage(`${user.name} sacrifie ${params[0]} de vie.`);
+                            }
+                            if(user.type == "hero"){
+                                document.getElementById('heroPv').textContent = user.pv;
+                            }else{
+                                document.getElementById('monsterPv').textContent = user.pv;
+                            }
                         }
                         break;
                     case 'increase_attack':

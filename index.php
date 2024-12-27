@@ -54,7 +54,7 @@ session_start();
             require 'app/controllers/InventoryController.php';
             require 'app/controllers/HeroController.php';
             require 'app/controllers/AboutController.php';
-            require 'app/controllers/MonsterController.php'; // Ajout du MonsterController
+            require 'app/controllers/MonsterController.php';
 
             $router = Router::getInstance('DungeonXplorer');
 
@@ -73,7 +73,8 @@ session_start();
             $router->addRoute('user/delete', 'UserController@delete');
             $router->addRoute('user/selectHero','UserController@selectHero');
 
-            if (isset($_SESSION['user'])){
+            if (isset($_SESSION['user'])){             
+
                 /* Routes liées à l'inventaire */
                 $router->addRoute('inventory/loadInventory','InventoryController@loadInventory');
                 $router->addRoute('inventory/saveLoot', 'InventoryController@saveLoot');
