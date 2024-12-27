@@ -84,7 +84,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     quantityInputs.forEach(input => {
-        input.addEventListener('input', calculateTotal);
+        const itemId = input.getAttribute('data-item-id');
+        const stock = parseInt(input.getAttribute('max'), 10);
+        input.addEventListener('input', () => {
+            let value = parseInt(input.value, 10) || 0;
+            if (value > stock) {
+                input.value = stock; 
+            }
+        calculateTotal();
+        });
     });
 
     const updateTotalSalePrice = () => {
