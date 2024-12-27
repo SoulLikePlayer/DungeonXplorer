@@ -72,6 +72,7 @@ session_start();
             $router->addRoute('user/update/{id}', 'UserController@update');
             $router->addRoute('user/delete', 'UserController@delete');
             $router->addRoute('user/selectHero','UserController@selectHero');
+            $router->addRoute('user/deleteHero', 'UserController@deleteHero');
 
             if (isset($_SESSION['user'])){             
 

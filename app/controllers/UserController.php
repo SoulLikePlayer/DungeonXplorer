@@ -225,6 +225,32 @@ class UserController extends Controller {
     
         $this->view('pages/monsters_list_admin', ['monsters' => $monsters]);
     }
+
+    public function deleteHero() {
+        $heroId = $_POST['hero_id'] ?? null;
+    
+        if ($heroId) {
+            $heroModel = new Hero();
+            $userModel = new User();
+            
+            $hero = $heroModel->getHeroById($heroId);
+            if ($heroModel->deleteHero($heroId)) {
+                    if ($_SESSION['user']['hero']['hero_id'] === $heroId) {
+                        unset($_SESSION['user']['hero']);
+                        unset($_SESSION['Chapitre']);
+                    }
+    
+                    $heroes = $userModel->getHeroByUserId($_SESSION['user']['id']);
+                    
+                    $this->view('users/profile', ['success' => 'Héros supprimé avec succès.', 'heroes' => $_SESSION['user']['allHero']]);
+                } else {
+                    $this->view('users/profile', ['error' => 'Une erreur est survenue lors de la suppression du héros.']);
+            }
+        } else {
+            $this->view('users/profile', ['error' => 'Veuillez sélectionner un héros à supprimer.']);
+        }
+    }
+    
     
     
 }
