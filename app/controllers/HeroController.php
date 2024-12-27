@@ -88,50 +88,52 @@ class HeroController extends Controller {
     
     private function applyTalentEffects($talentId, &$classData) {
         switch ($talentId) {
-            case 8:  // Puissance Fragile
+            case 8: 
                 $classData['strength'] += 5;
                 break;
-            case 10: // Talent pour race Sépulcrales
+            case 1:
+                $classData['initiative'] -= 2;
+            case 10: 
                 $classData['strength'] += 2;
                 $classData['domination'] -= 2;
                 break;
-            case 11: // Talent pour race Boréals
+            case 11: 
                 $classData['strength'] += 3;
                 $classData['base_pv'] -= 3;
                 break;
-            case 12: // Talent pour race Sang-de-Sang
+            case 12:
                 $classData['strength'] += 4;
                 $classData['initiative'] -= 2;
                 break;
-            case 13: // Talent pour race Miasmes
+            case 13:
                 $classData['strength'] -= 2;
                 $classData['base_mana'] += 3;
                 break;
-            case 14: // Talent pour race Oubliés
+            case 14:  
                 $classData['strength'] -= 3;
                 $classData['domination'] += 5;
                 break;
-            case 15: // Talent pour race Profanés
+            case 15: 
                 $classData['strength'] += 4;
                 $classData['base_mana'] -= 4;
                 break;
-            case 16: // Talent pour race Résidus
+            case 16: 
                 $classData['domination'] += 5;
                 $classData['strength'] -= 3;
                 break;
-            case 17: // Talent pour race Cendres
+            case 17: 
                 $classData['initiative'] += 6;
                 $classData['base_pv'] -= 6;
                 break;
-            case 18: // Talent pour race Hérétiques
+            case 18:
                 $classData['domination'] += 6;
                 $classData['strength'] -= 4;
                 break;
-            case 19: // Talent pour race Spectres
+            case 19: 
                 $classData['base_mana'] += 5;
                 $classData['base_pv'] -= 5;
                 break;
-            case 20: // Talent pour race Larmes
+            case 20:
                 $classData['base_mana'] += 3;
                 $classData['base_pv'] -= 4;
                 break;

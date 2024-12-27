@@ -276,15 +276,19 @@ try{
                         displayCombatMessage(`${user.name} se soigne de ${params[0]} points pendant ${params[1]}.`);
                         break;
                     case 'poison_effect':
-                        displayCombatMessage(`${cible.name} est empoisonné et subira ${params[0]} dégâts par tour pendant ${params[1]} tours.`);
-                        if (cible.type == "hero" && cible.talent == "Puissance du Poison"){
-                            cible.activeDebuff.push({ type: "poison", damagePerTurn: parseInt(params[0])*2, remainingTurns: parseInt(params[1])*2 });
-                            displayCombatMessage(`Le poison reçu a doublé en puissance et durée.`)
-                        }else if (user.type == "hero" && user.talent == "Puissance du Poison"){
-                            cible.activeDebuff.push({ type: "poison", damagePerTurn: parseInt(params[0])*2, remainingTurns: parseInt(params[1]) });
-                            displayCombatMessage(`Votre poison reçu a doublé en puissance.`)
+                        if( cible.type == "hero" && cible.talent == "frost sanguinaire"){
+                            displayCombatMessage(`${cible.name} ce protège d'un poison.`);
                         }else{
-                            cible.activeDebuff.push({ type: "poison", damagePerTurn: parseInt(params[0]), remainingTurns: parseInt(params[1]) });
+                            displayCombatMessage(`${cible.name} est empoisonné et subira ${params[0]} dégâts par tour pendant ${params[1]} tours.`);
+                            if (cible.type == "hero" && cible.talent == "Puissance du Poison"){
+                                cible.activeDebuff.push({ type: "poison", damagePerTurn: parseInt(params[0])*2, remainingTurns: parseInt(params[1])*2 });
+                                displayCombatMessage(`Le poison reçu a doublé en puissance et durée.`)
+                            }else if (user.type == "hero" && user.talent == "Puissance du Poison"){
+                                cible.activeDebuff.push({ type: "poison", damagePerTurn: parseInt(params[0])*2, remainingTurns: parseInt(params[1]) });
+                                displayCombatMessage(`Votre poison reçu a doublé en puissance.`)
+                            }else{
+                                cible.activeDebuff.push({ type: "poison", damagePerTurn: parseInt(params[0]), remainingTurns: parseInt(params[1]) });
+                            }
                         }
                         break;
                     case 'mana_shield':
@@ -651,6 +655,11 @@ try{
             .reduce((total, debuff) => total + debuff.value, 0);
     
         baseDefense += bonusDefense - debuffDefense;
+        frostMultiplier = 1.0;
+        if (character.type == "hero" && character.talent == "frost sanguinaire") {
+            frostMultiplier = 1.1;
+            baseDefense = Math.floor(baseDefense * frostMultiplier);
+        }
     
         displayCombatMessage(
             `Lancer de défense: ${dieRoll} ` +
@@ -658,6 +667,7 @@ try{
             (bonusDefense > 0 ? ` <span style="color:green;">+${bonusDefense}</span>` : '') +
             (debuffDefense > 0 ? ` <span style="color:red;">-${debuffDefense}</span>` : '') +
             ` <span style="color: #85c1e9;">+${character.totalDefenseBonus || 0}</span>` +
+            (frostMultiplier > 1 ? ` <span style="color: #add8e6;">x${frostMultiplier.toFixed(1)}</span>` : '') +
             ` = Total: <strong>${baseDefense + (character.totalDefenseBonus || 0)}</strong>`
         );
     
