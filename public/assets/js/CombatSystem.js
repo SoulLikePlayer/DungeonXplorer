@@ -78,6 +78,7 @@ try{
         document.getElementById('monsterManaMax').textContent = monster.manaMax;
 
         document.getElementById('heroPv').textContent = hero.pv;
+        document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
         document.getElementById('heroPvMax').textContent = hero.pvMax;
         document.getElementById('heroMana').textContent = hero.mana;
         document.getElementById('heroManaMax').textContent = hero.manaMax;

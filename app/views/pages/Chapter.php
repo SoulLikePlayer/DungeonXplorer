@@ -163,6 +163,7 @@
                         <div id="heroDies-container">
                             <p><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span><br />
                             <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" /> : <span id="heroPv"></span> / <span id="heroPvMax"></span><br />
+                            <progress id="heroPvBar" max="100" value=""></progress><br />
                             <img src="../../public/assets/PixelArt/Mana.png" width="42" height="42" /> : <span id="heroMana"></span> / <span id="heroManaMax"></span><br />
                             Résultat <span id="heroDice"></p>
                         </div>
