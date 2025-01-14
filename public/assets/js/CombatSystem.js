@@ -75,6 +75,13 @@ try{
         document.getElementById('monsterPvBar').value = (monster.pv / monster.pvMax) * 100
 
         document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
+        
+
+        if ((hero.pv / hero.pvMax) * 100 <= 15) { 
+            document.getElementById('heroPvBar').classList.add('shaking');
+        } else {
+            document.getElementById('heroPvBar').classList.remove('shaking');
+        }
         document.getElementById('heroManaBar').value = (hero.mana / hero.manaMax) * 100
 
 
@@ -261,6 +268,12 @@ try{
                         user.pv = Math.min(user.pv + parseInt(params[0]), user.pvMax);
                         if (user.type == "hero"){
                             document.getElementById('heroPvBar').value = (user.pv / hero.pvMax) * 100
+                            if ((user.pv / hero.pvMax) * 100 <= 15) { 
+                                document.getElementById('heroPvBar').classList.add('shaking');
+                            } else {
+                                document.getElementById('heroPvBar').classList.remove('shaking');
+                            }
+                                  
 
                         } else {
                             document.getElementById('monsterPvBar').value = (user.pv / monster.pvMax) * 100
@@ -326,6 +339,12 @@ try{
                             }
                             if(user.type == "hero"){
                                 document.getElementById('heroPvBar').value = (user.pv / user.pvMax) * 100
+                                if ((user.pv / user.pvMax) * 100 <= 15) { 
+                                    document.getElementById('heroPvBar').classList.add('shaking');
+                                } else {
+                                    document.getElementById('heroPvBar').classList.remove('shaking');
+                                }
+                                      
 
                             }else{
                                 ;
@@ -467,6 +486,13 @@ try{
             }
             hero.pv = Math.min(hero.pv + qtSoins, hero.pvMax);
             document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
+            
+            
+            if ((hero.pv / hero.pvMax) * 100 <= 15) { 
+                document.getElementById('heroPvBar').classList.add('shaking');
+            } else {
+                document.getElementById('heroPvBar').classList.remove('shaking');
+            }
 
         } else if (item.effect_type === 'mana') {
             qtMana = item.mana_amount;
@@ -603,6 +629,12 @@ try{
         debuffMessages.forEach(message => displayCombatMessage(message));
         if(character == hero){
             document.getElementById('heroPvBar').value = (character.pv / hero.pvMax) * 100
+            
+            if ((character.pv / hero.pvMax) * 100 <= 15) { 
+                document.getElementById('heroPvBar').classList.add('shaking');
+            } else {
+                document.getElementById('heroPvBar').classList.remove('shaking');
+            }
 
         }else{
             document.getElementById('monsterPvBar').value = (character.pv / monster.pvMax) * 100
@@ -787,12 +819,25 @@ try{
                 displayCombatMessage(`La chaire putrifier de ${hero.name} lui permet de gagner 2 pv !`)
                 hero.pv = Math.min(hero.pv + 2, hero.pvMax);
                 document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
+  
+                if ((hero.pv / hero.pvMax) * 100 <= 15) { 
+                    document.getElementById('heroPvBar').classList.add('shaking');
+                } else {
+                    document.getElementById('heroPvBar').classList.remove('shaking');
+                }
 
             }else if(damage > 0 && hero.talent == "Puissance Fragile"){
                 const damageAgainstHero = Math.floor(damage/2);
                 displayCombatMessage(`Mais ${hero.name} se blaisse en contre coup !`);
                 hero.pv = Math.max(hero.pv - damageAgainstHero, 1);
                 document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
+
+                        
+                if ((hero.pv / hero.pvMax) * 100 <= 15) { 
+                    document.getElementById('heroPvBar').classList.add('shaking');
+                } else {
+                    document.getElementById('heroPvBar').classList.remove('shaking');
+                }
 
            }
             document.getElementById('monsterPvBar').value = (monster.pv / monster.pvMax) * 100
@@ -897,6 +942,12 @@ try{
                 }
 
                 document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
+                
+                if ((hero.pv / hero.pvMax) * 100 <= 15) { 
+                    document.getElementById('heroPvBar').classList.add('shaking');
+                } else {
+                    document.getElementById('heroPvBar').classList.remove('shaking');
+                }
                 
                 const bonusesFlammeProtection = hero.activeBonuses.find(bonus => bonus.type === "flamme_body");
                 
