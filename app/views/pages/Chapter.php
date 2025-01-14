@@ -162,16 +162,15 @@
                     <div id="combatInfoContainer">
                         <div id="heroDies-container">
                             <p><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span><br />
-                            <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" /> : <span id="heroPv"></span> / <span id="heroPvMax"></span><br />
-                            <progress id="heroPvBar" max="100" value=""></progress><br />
-                            <img src="../../public/assets/PixelArt/Mana.png" width="42" height="42" /> : <span id="heroMana"></span> / <span id="heroManaMax"></span><br />
+                            <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" /> : <progress id="heroPvBar" max="100" value="" data-label="<?= $_SESSION['user']['hero']['current_pv'] ?>/<?= $_SESSION['user']['hero']['pv_max'] ?>"></progress><br /> 
+                             <img src="../../public/assets/PixelArt/Mana.png" width="42" height="42" /> : <progress id="heroManaBar" max="100" value="" data-label="<?= $_SESSION['user']['hero']['current_mana'] ?>/<?= $_SESSION['user']['hero']['mana_max'] ?>"></progress><br />
                             Résultat <span id="heroDice"></p>
                         </div>
                         <div id="combatMessages" class="combat-messages"></div>
                         <div id="monsterDies-container">
                             <p><span id="monsterName"><?= htmlspecialchars($_SESSION['monster']['name'])?></span><br />
-                            <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" />  : <span id="monsterPv"></span> / <span id="monsterPvMax"></span><br />
-                            <img src="../../public/assets/PixelArt/Mana.png" width="42" height="42" /> : <span id="monsterMana"></span> / <span id="monsterManaMax"></span><br />
+                            <progress id="monsterPvBar" max="100" value="" data-label="<?= $_SESSION['monster']['pv'] ?>/<?= $_SESSION['monster']['pv_max'] ?>"></progress> : <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" /> <br />
+                            <progress id="monsterManaBar" max="100" value="" data-label="<?= $_SESSION['monster']['mana'] ?>/<?= $_SESSION['monster']['mana_max'] ?>"></progress> : <img src="../../public/assets/PixelArt/Mana.png" width="42" height="42" /> <br /> 
                             Résultat <span id="monsterDice"></p>
                         </div>
                     </div>    

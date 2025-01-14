@@ -72,16 +72,11 @@ try{
         document.getElementById('startCombatButton').style.display = 'none';
         document.getElementById('combatActions').style.display = 'block';
 
-        document.getElementById('monsterPv').textContent = monster.pv;
-        document.getElementById('monsterPvMax').textContent = monster.pvMax;
-        document.getElementById('monsterMana').textContent = monster.mana;
-        document.getElementById('monsterManaMax').textContent = monster.manaMax;
+        document.getElementById('monsterPvBar').value = (monster.pv / monster.pvMax) * 100
 
-        document.getElementById('heroPv').textContent = hero.pv;
         document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
-        document.getElementById('heroPvMax').textContent = hero.pvMax;
-        document.getElementById('heroMana').textContent = hero.mana;
-        document.getElementById('heroManaMax').textContent = hero.manaMax;
+        document.getElementById('heroManaBar').value = (hero.mana / hero.manaMax) * 100
+
 
         setTimeout(() => {   
     
@@ -202,10 +197,9 @@ try{
         if ((user.mana - effectCost) >= 0){
             user.mana -= effectCost
             if(user.type == "hero"){
-                document.getElementById("heroMana").textContent = user.mana
+                document.getElementById('heroManaBar').value = (user.mana / user.manaMax) * 100
             }else{
-                document.getElementById("monsterMana").textContent = user.mana
-            }
+                document.getElementById('monsterManaBar').value = (user.mana / user.manaMax) * 100            }
             analyzeEffectFunction(effectFunction, user, cible, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData, family)
         } else {
             displayCombatMessage(`${user.name} ne dispose pas assez de mana pour lancer le sort !`);
@@ -257,7 +251,7 @@ try{
                     case 'gain_mana':
                         user.mana = Math.min(user.mana + parseInt(params[0]), user.manaMax);
                         if (user.type == "hero"){
-                            document.getElementById('heroMana').textContent = user.mana;
+                            document.getElementById('heroManaBar').value = (user.mana / user.manaMax) * 100
                         }else{
                             document.getElementById('monsterMana').textContent = user.mana;
                         }
@@ -266,9 +260,11 @@ try{
                     case 'heal_user':
                         user.pv = Math.min(user.pv + parseInt(params[0]), user.pvMax);
                         if (user.type == "hero"){
-                            document.getElementById('heroPv').textContent = user.pv;
+                            document.getElementById('heroPvBar').value = (user.pv / hero.pvMax) * 100
+
                         } else {
-                            document.getElementById('monsterPv').textContent = user.pv;
+                            document.getElementById('monsterPvBar').value = (user.pv / monster.pvMax) * 100
+
                         }
                         displayCombatMessage(`${user.name} se soigne de ${params[0]} points.`);
                         break;
@@ -299,7 +295,7 @@ try{
                     case 'restore_mana':
                         user.mana = Math.min(user.mana + parseInt(params[0]), user.manaMax);
                         if (user.type == 'hero'){
-                            document.getElementById('heroMana').textContent = user.mana;
+                            document.getElementById('heroManaBar').value = (user.mana / hero.manaMax) * 100
                         }else{
                             document.getElementById('monsterMana').textContent = user.mana;
                         }
@@ -329,9 +325,12 @@ try{
                                 displayCombatMessage(`${user.name} sacrifie ${params[0]} de vie.`);
                             }
                             if(user.type == "hero"){
-                                document.getElementById('heroPv').textContent = user.pv;
+                                document.getElementById('heroPvBar').value = (user.pv / user.pvMax) * 100
+
                             }else{
-                                document.getElementById('monsterPv').textContent = user.pv;
+                                ;
+                                document.getElementById('monsterPvBar').value = (user.pv / user.pvMax) * 100
+
                             }
                         }
                         break;
@@ -362,7 +361,7 @@ try{
                     case 'increase_mana':
                         user.manaMax += parseInt(params[0]);
                         user.valIncrease.push({ type : "mana", val : params[0], remainingTurns: params[1]});
-                        document.getElementById('heroManaMax').textContent = user.manaMax;
+                        document.getElementById('heroManaBar').value = (hero.mana / user.manaMax) * 100
                         displayCombatMessage(`${user.name} augmente sa capacité de mana de ${params[0]} pendant ${params[1]} tours.`);
                         break;
                     case 'blind_target':
@@ -392,8 +391,9 @@ try{
                                 `<br \><strong>Dégâts finaux : ${finalDamage}</strong>.`
                             );
                         
-                            cible.pv -= finalDamage;
-                            document.getElementById('monsterPv').textContent = Math.max(0, cible.pv);
+                            cible.pv -=  Math.max(0, finalDamage);;
+                            document.getElementById('monsterPvBar').value = (cible.pv / cible.pvMax) * 100
+
                             console.log(nextChapterWin);
                             if (cible.pv <= 0) {
                                 displayCombatMessage(`${cible.name} a été vaincu par le sort !`);
@@ -466,7 +466,8 @@ try{
                 displayCombatMessage('En raison de la Chaire putrifiée, les soins extérieurs voient leur quantité divisée par 2');
             }
             hero.pv = Math.min(hero.pv + qtSoins, hero.pvMax);
-            document.getElementById('heroPv').textContent = hero.pv;
+            document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
+
         } else if (item.effect_type === 'mana') {
             qtMana = item.mana_amount;
             if (hero.talent == "Chaire putrifiée") {
@@ -474,7 +475,7 @@ try{
                 displayCombatMessage('En raison de la Chaire putrifiée, les positions de mana extérieures voient leur quantité divisée par 2');
             }
             hero.mana = Math.min(hero.mana + qtMana, hero.manaMax);
-            document.getElementById('heroMana').textContent = hero.mana;
+            document.getElementById('heroManaBar').value = (hero.mana / hero.manaMax) * 100
         } else if (item.effect_type === 'buff') {
             if (item.attack_buff) {
                 hero.activeBonuses.push({ type: 'attack', value: item.attack_buff, remainingTurns: item.remainingTurns });
@@ -601,11 +602,11 @@ try{
 
         debuffMessages.forEach(message => displayCombatMessage(message));
         if(character == hero){
-            document.getElementById('heroPv').textContent = character.pv = Math.max(0, character.pv);
-            document.getElementById('heroPvMax').textContent = character.pvMax = Math.max(0, character.pvMax);
+            document.getElementById('heroPvBar').value = (character.pv / hero.pvMax) * 100
+
         }else{
-            document.getElementById('monsterPv').textContent = character.pv = Math.max(0, character.pv);
-            document.getElementById('monsterPvMax').textContent = character.pvMax = Math.max(0, character.pvMax);
+            document.getElementById('monsterPvBar').value = (character.pv / monster.pvMax) * 100
+
         }
     }    
 
@@ -723,10 +724,10 @@ try{
     function removeValIncreaseEffect(hero, effect) {
         if (effect.type === "mana") {
             hero.manaMax -= parseInt(effect.val);
-            document.getElementById('heroManaMax').textContent = hero.manaMax;
+            document.getElementById('heroManaBar').value = (hero.mana / hero.manaMax) * 100
             if (hero.mana > hero.manaMax) {
                 hero.mana = hero.manaMax;
-                document.getElementById('heroMana').textContent = hero.mana;
+                document.getElementById('heroManaBar').value = (hero.mana / hero.manaMax) * 100
             }
             displayCombatMessage(`${hero.name} perd ${effect.val} de mana max après la durée de l'effet.`);
         }
@@ -785,14 +786,17 @@ try{
             else if(damage > 0 && hero.talent == "Chaire putrifiée"){
                 displayCombatMessage(`La chaire putrifier de ${hero.name} lui permet de gagner 2 pv !`)
                 hero.pv = Math.min(hero.pv + 2, hero.pvMax);
-                document.getElementById('heroPv').textContent = hero.pv;
+                document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
+
             }else if(damage > 0 && hero.talent == "Puissance Fragile"){
                 const damageAgainstHero = Math.floor(damage/2);
                 displayCombatMessage(`Mais ${hero.name} se blaisse en contre coup !`);
                 hero.pv = Math.max(hero.pv - damageAgainstHero, 1);
-                document.getElementById('heroPv').textContent = hero.pv;
+                document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
+
            }
-            document.getElementById('monsterPv').textContent = Math.max(0, monster.pv);
+            document.getElementById('monsterPvBar').value = (monster.pv / monster.pvMax) * 100
+
 
 
             if (monster.pv <= 0) {
@@ -892,9 +896,7 @@ try{
                     hero.pv -= damage;
                 }
 
-                document.getElementById('heroPv').textContent = Math.max(0, hero.pv);
-                document.getElementById('monsterPv').textContent = Math.max(0, monster.pv);
-
+                document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
                 
                 const bonusesFlammeProtection = hero.activeBonuses.find(bonus => bonus.type === "flamme_body");
                 

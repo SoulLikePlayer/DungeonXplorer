@@ -299,3 +299,67 @@ button:not(.ChoiceButton, .SpellButton, .ConsButton):active {
 .CancelButton:hover {
     background: rgba(128, 0, 0, 1);
 }
+
+progress {
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    width: 200px;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #3a3a3a;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#heroPvBar,
+#monsterPvBar {
+    height: 20px;
+    width: 200px;
+}
+
+#heroManaBar,
+#monsterManaBar {
+    height: 12px;
+    width: 150px;
+}
+
+#heroPvBar::-webkit-progress-value,
+#monsterPvBar::-webkit-progress-value {
+    background: linear-gradient(90deg, #ff0000, #ff6b6b);
+    border-radius: 10px;
+    box-shadow: 0 0 5px #ff6b6b;
+}
+
+#heroManaBar::-webkit-progress-value,
+#monsterManaBar::-webkit-progress-value {
+    background: linear-gradient(90deg, #005eff, #6bc8ff);
+    border-radius: 10px;
+    box-shadow: 0 0 5px #6bc8ff;
+}
+
+progress::-moz-progress-bar {
+    border-radius: 10px;
+}
+
+#heroPvBar::-moz-progress-bar,
+#monsterPvBar::-moz-progress-bar {
+    background: linear-gradient(90deg, #ff0000, #ff6b6b);
+    box-shadow: 0 0 5px #ff6b6b;
+}
+
+#heroManaBar::-moz-progress-bar,
+#monsterManaBar::-moz-progress-bar {
+    background: linear-gradient(90deg, #005eff, #6bc8ff);
+    box-shadow: 0 0 5px #6bc8ff;
+}
+
+progress {
+    border: 2px solid #fff;
+    position: relative;
+}
+
+#monsterPvBar,
+#monsterManaBar {
+    direction: rtl;
+}
