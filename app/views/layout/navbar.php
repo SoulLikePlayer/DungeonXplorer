@@ -24,9 +24,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/DungeonXplorer">Accueil</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/DungeonXplorer/about">À propos</a>
-                </li>
 
                 <?php if (isset($_SESSION['user'])): ?>
                     <!-- Si l'utilisateur est connecté -->

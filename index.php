@@ -119,9 +119,6 @@ session_start();
                     $router->addRoute('monster/updateMonster', 'MonsterController@updateMonster');
                 }
             }
-
-            $router->addRoute('about', 'AboutController@index');
-
             $router->route(trim($_SERVER['REQUEST_URI'], '/'));
         ?>
         <?php require_once 'app/views/layout/footer.php'; ?>
