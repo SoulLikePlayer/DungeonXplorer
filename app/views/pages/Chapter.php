@@ -198,7 +198,7 @@
                 </div>
             </div> 
             <script src="../../public/assets/js/lootSystem.js"></script>
-            <script src="../../public/assets/js/CombatSystem.js"></script>
+            <script src="../../public/assets/js/CombatSysteme.js"></script>
         <?php elseif($chapter['chapter_type'] === 'npc_interaction' || $chapter['chapter_type'] === 'merchent'): ?>
             <div class="npc-container" id="npcContainer"
                 data-dialogues='<?= json_encode($_SESSION['npc']['dialogues'] ?? []) ?>'

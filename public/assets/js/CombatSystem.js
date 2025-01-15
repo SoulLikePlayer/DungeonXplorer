@@ -82,7 +82,7 @@ try{
         } else {
             document.getElementById('heroPvBar').classList.remove('shaking');
         }
-        document.getElementById('heroManaBar').value = (hero.mana / hero.manaMax) * 100
+        document.getElementById('heroManaBar').value = (hero.manaMax > 0 ? (hero.mana / hero.manaMax) : 0) * 100
 
 
         setTimeout(() => {   
@@ -204,7 +204,7 @@ try{
         if ((user.mana - effectCost) >= 0){
             user.mana -= effectCost
             if(user.type == "hero"){
-                document.getElementById('heroManaBar').value = (user.mana / user.manaMax) * 100
+                document.getElementById('heroManaBar').value = ((user.mana / user.manaMax)) * 100
             }else{
                 document.getElementById('monsterManaBar').value = (user.mana / user.manaMax) * 100            }
             analyzeEffectFunction(effectFunction, user, cible, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData, family)
@@ -756,7 +756,7 @@ try{
     function removeValIncreaseEffect(hero, effect) {
         if (effect.type === "mana") {
             hero.manaMax -= parseInt(effect.val);
-            document.getElementById('heroManaBar').value = (hero.mana / hero.manaMax) * 100
+            document.getElementById('heroManaBar').value = (hero.manaMax > 0 ? (hero.mana / hero.manaMax) : 0) * 100
             if (hero.mana > hero.manaMax) {
                 hero.mana = hero.manaMax;
                 document.getElementById('heroManaBar').value = (hero.mana / hero.manaMax) * 100
