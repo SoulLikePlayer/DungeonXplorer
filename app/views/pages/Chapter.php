@@ -181,7 +181,7 @@
                         </select>
                         <div id="ActionButton">
                             <button id="attackButton"><img src="../../public/assets/PixelArt/Arme.png" width="42" height="42" /></button>
-                            <button id="useSpellButton" data-spells='<?= json_encode($_SESSION['user']['inventoryCodex'] ?? []) ?>'><img src="../../public/assets/PixelArt/Sort.png" width="42" height="42" /></button>
+                            <button id="SpellButton" data-spells='<?= json_encode($_SESSION['user']['inventoryCodex'] ?? []) ?>'><img src="../../public/assets/PixelArt/Sort.png" width="42" height="42" /></button>
                             <button id="useItemButton" data-inventory='<?= json_encode($_SESSION['user']['inventoryCons'])?>'><img src="../../public/assets/PixelArt/Consomable.png" width="42" height="42" /></button>
                             <button id="runButton"><img src="../../public/assets/PixelArt/Fuite.png" width="42" height="42" /></button>
                         </div>
@@ -198,7 +198,7 @@
                 </div>
             </div> 
             <script src="../../public/assets/js/lootSystem.js"></script>
-            <script src="../../public/assets/js/CombatSysteme.js"></script>
+            <script src="../../public/assets/js/CombatSystem.js"></script>
         <?php elseif($chapter['chapter_type'] === 'npc_interaction' || $chapter['chapter_type'] === 'merchent'): ?>
             <div class="npc-container" id="npcContainer"
                 data-dialogues='<?= json_encode($_SESSION['npc']['dialogues'] ?? []) ?>'

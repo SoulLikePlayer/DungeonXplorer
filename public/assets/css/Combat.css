@@ -364,6 +364,10 @@ progress {
     direction: rtl;
 }
 
+.shaking {
+    animation: shake 0.3s ease-in-out infinite;
+}
+  
 @keyframes shake {
     0% { transform: translateX(0); }
     25% { transform: translateX(-2px); }
@@ -372,6 +376,82 @@ progress {
     100% { transform: translateX(0); }
 }
 
-.shaking {
-    animation: shake 0.3s ease-in-out infinite;
+#SpellButton.soul-recovery-active {
+    position: relative;
+    background: linear-gradient(45deg, #00ffcc, #00b3b3, #00ffff, #0099cc);
+    background-size: 300% 300%;
+    animation: manaOverchargeGradient 4s infinite, manaOverchargeElectricity 1.5s infinite alternate;
+    color: white;
+    border: transparent;
+    border-radius: 10px;
+    box-shadow: 0 0 25px 10px rgba(0, 255, 255, 0.8), 0 0 40px 15px rgba(0, 255, 255, 0.6);
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 1;
+}
+
+@keyframes manaOverchargeGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes manaOverchargeElectricity {
+    0% {
+        box-shadow: 0 0 25px 10px rgba(255, 255, 255, 0.6), 0 0 40px 15px rgba(0, 255, 255, 0.6);
+    }
+    50% {
+        box-shadow: 0 0 35px 15px rgba(0, 255, 255, 0.8), 0 0 50px 20px rgba(0, 191, 255, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 45px 20px rgba(0, 255, 255, 0.8), 0 0 60px 30px rgba(0, 191, 255, 0.9);
+    }
+}
+
+#SpellButton.soul-recovery-active ::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 250%;
+    height: 250%;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.7) 15%, rgba(0, 191, 255, 0) 85%);
+    border-radius: 50%;
+    animation: manaExplosion 1.5s infinite ease-out;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+@keyframes manaExplosion {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0.6;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+#SpellButton.soul-recovery-active {
+    box-shadow: 0 0 25px 10px rgba(0, 255, 255, 1), 0 0 40px 15px rgba(0, 191, 255, 0.9);
+}
+
+#SpellButton.soul-recovery-active img {
+    filter: brightness(1.5);
+    transition: transform 0.2s ease-in-out;
+}
+
+#SpellButton.soul-recovery-active:hover img {
+    transform: scale(1.2);
 }

@@ -51,7 +51,7 @@ try{
 
 
         const consumablesData = JSON.parse(document.getElementById('useItemButton').getAttribute('data-inventory'));
-        const codexData = JSON.parse(document.getElementById('useSpellButton').getAttribute('data-spells'));
+        const codexData = JSON.parse(document.getElementById('SpellButton').getAttribute('data-spells'));
 
         const nextChapterWin = this.dataset.nextChapterWin;
         const nextChapterLose = this.dataset.nextChapterLose;
@@ -111,7 +111,7 @@ try{
             }
 
     
-            document.getElementById('useSpellButton').addEventListener('click', function(){
+            document.getElementById('SpellButton').addEventListener('click', function(){
                 openSpellModal(codexData, hero, monster, consumablesData, nextChapterWin, nextChapterLose, nextChapterRun);
             })
     
@@ -343,11 +343,8 @@ try{
                                     document.getElementById('heroPvBar').classList.add('shaking');
                                 } else {
                                     document.getElementById('heroPvBar').classList.remove('shaking');
-                                }
-                                      
-
+                                }  
                             }else{
-                                ;
                                 document.getElementById('monsterPvBar').value = (user.pv / user.pvMax) * 100
 
                             }
@@ -368,6 +365,11 @@ try{
                     case 'soul_recovery':
                         user.activeBonuses.push({ type: "magick_attack", multiply: 2, remainingTurns: 1 });
                         displayCombatMessage(`La prochaine attaque magique de ${user.name} fera le double de ses dégâts.`);
+                        if(user.type === "hero"){
+                            console.log(document.getElementById('SpellButton'));
+                            document.getElementById('SpellButton').classList.add('soul-recovery-active');
+                            console.log(document.getElementById('SpellButton').classList.add('soul-recovery-active'));
+                        }
                         break;
                     case 'flame_protection':
                         user.activeBonuses.push({ type: "flamme_body", remainingTurns: parseInt(params[0]) });
@@ -390,23 +392,30 @@ try{
                     case 'damage':
                             const dieRoll = rollDie();
                             const defenseRoll = rollDie();
-                            const rawDamage = dieRoll + parseInt(params[0]);
+                            const rawDamage = parseInt(params[0]);
                             const defense = calculateDefense(cible, defenseRoll);
                         
-                            let finalDamage = Math.max(0, rawDamage - defense);
                             const soulRecoveryIndex = user.activeBonuses.findIndex(bonus => bonus.type === "magick_attack");
+                            let finalDamage = 0;
                             if (soulRecoveryIndex !== -1) {
-                                finalDamage *= user.activeBonuses[soulRecoveryIndex].multiply;
+                                finalDamage = Math.max(0, ((rawDamage + dieRoll) * 2) - defense);
                                 displayCombatMessage(`<strong>Effet Soul Recovery activé : Dégâts multipliés par ${user.activeBonuses[soulRecoveryIndex].multiply} !</strong>`);
                                 user.activeBonuses[soulRecoveryIndex].remainingTurns -= 1;
                                 if (user.activeBonuses[soulRecoveryIndex].remainingTurns <= 0) {
                                     user.activeBonuses.splice(soulRecoveryIndex, 1);
                                 }
+
+                                if(user.type === "hero"){
+                                    document.getElementById('SpellButton').classList.remove('soul-recovery-active');
+                                }
+                            }else{
+                                finalDamage = Math.max(0, ((rawDamage + dieRoll)) - defense);
                             }
                         
                             displayCombatMessage(
                                 `${user.name} utilise un sort ! Lancer de dé : ${dieRoll}, ` +
-                                `<br \>dégâts initiaux : ${rawDamage}, défense de ${cible.name} : ${defense}.<br \> ` +
+                                `<br \>dégâts initiaux : ${rawDamage}.` + `
+                                <br \> défense de ${cible.name} : ${defense}.<br \> ` +
                                 `<br \><strong>Dégâts finaux : ${finalDamage}</strong>.`
                             );
                         
