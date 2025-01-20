@@ -62,6 +62,8 @@
                 <li>PV maximum : <strong>+<span id="newPVBonus"></<span></strong></li>
                 <li>Mana maximum : <strong>+<span id="newManaBonus"></<span></strong></li>
                 <li>Force : <strong>+<span id="newStrenghtBonus"></<span></strong></li>
+                <li>Dexterité : <strong>+<span id="newDexterityBonus"></<span></strong></li>
+                <li>Connaissance Interdite : <strong>+<span id="newForbiddenKnowledgeBonus"></span></strong></li>
                 <li>Initiative : <strong>+<span id="newInitiativeBonus"></<span></strong></li>
                 <li>Domination : <strong>+<span id="newDominationBonus"></span></strong></li>
                 </ul>
@@ -132,22 +134,34 @@
                 <button id="startCombatButton" 
                     data-hero-name="<?= htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname']) ?>"
                     data-hero-talent="<?=htmlspecialchars($_SESSION['user']['hero']['talent_name'] ?? "Aucun talent") ?>"
-                    data-hero-level="<?= htmlspecialchars($_SESSION['user']['hero']['current_level'])?>"
+                    data-hero-level ="<?= htmlspecialchars($_SESSION['user']['hero']['current_level'])?>"
                     data-hero-pv="<?= htmlspecialchars($_SESSION['user']['hero']['current_pv']) ?>"
                     data-hero-pv-max="<?= htmlspecialchars($_SESSION['user']['hero']['pv_max']) ?>"
                     data-hero-mana="<?= htmlspecialchars($_SESSION['user']['hero']['current_mana']) ?>"
                     data-hero-mana-max="<?= htmlspecialchars($_SESSION['user']['hero']['mana_max']) ?>"
                     data-hero-strength="<?= htmlspecialchars($_SESSION['user']['hero']['strength']) ?>"
+                    data-hero-dexterity="<?= htmlspecialchars($_SESSION['user']['hero']['dexterity']) ?>"
+                    data-hero-forbidden-know="<?=htmlspecialchars($_SESSION['user']['hero']['forbidden_knowledge'])?>"
                     data-hero-initiative="<?= htmlspecialchars($_SESSION['user']['hero']['initiative']) ?>"
                     data-hero-is-thief="<?= htmlspecialchars($_SESSION['user']['hero']['class_id'] == 3 ? 'true' : 'false') ?>"
                     data-hero-primary-weapon-name="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_name']) ?>"
                     data-hero-primary-weapon-damage-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_damage_bonus']) ?>"
                     data-hero-primary-weapon-defense-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_defense_bonus']) ?>"
                     data-hero-primary-weapon-effect="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_effect'] ?? 'Aucune') ?>"
+
+                    data-hero-primary-weapon-scaling-strengh="<?= htmlspecialchars($_SESSION['user']['hero']["primary_weapon_strength_scaling"]) ?>"
+                    data-hero-primary-weapon-scaling-dexterity="<?= htmlspecialchars($_SESSION['user']['hero']["primary_weapon_dexterity_scaling"]) ?>"
+                    data-hero-primary-weapon-scaling-forbidden-knowledge="<?= htmlspecialchars($_SESSION['user']['hero']["primary_weapon_forbidden_knowledge_scaling"]) ?>"
+
                     data-hero-secondary-weapon-name="<?= htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_name']) ?>"
                     data-hero-secondary-weapon-damage-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_damage_bonus']) ?>"
                     data-hero-secondary-weapon-defense-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_defense_bonus']) ?>"
                     data-hero-secondary-weapon-effect="<?=htmlspecialchars($_SESSION['user']['hero']['secondary_weapon_effect'] ?? 'Aucune')?>"
+
+                    data-hero-secondary-weapon-scaling-strengh="<?= htmlspecialchars($_SESSION['user']['hero']["secondary_weapon_strength_scaling"]) ?>"
+                    data-hero-secondary-weapon-scaling-dexterity="<?= htmlspecialchars($_SESSION['user']['hero']["secondary_weapon_dexterity_scaling"]) ?>"
+                    data-hero-secondary-weapon-scaling-forbidden-knowledge="<?= htmlspecialchars($_SESSION['user']['hero']["secondary_weapon_forbidden_knowledge_scaling"]) ?>"
+
                     data-hero-total-defense-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['total_defense_bonus']) ?>"
                     data-monster-name="<?= htmlspecialchars($_SESSION['monster']['name']) ?>"
                     data-monster-pv="<?= htmlspecialchars($_SESSION['monster']['pv']) ?>"

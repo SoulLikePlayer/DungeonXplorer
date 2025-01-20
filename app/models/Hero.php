@@ -2,11 +2,11 @@
 
 class Hero extends Model {
 
-    public function createHero($lastname, $firstname, $classId, $raceId, $biography, $pv, $mana, $strength, $initiative, $domination, $talentId) {
+    public function createHero($lastname, $firstname, $classId, $raceId, $biography, $pv, $mana, $strength, $dexterity, $forbiddenKnowledge, $initiative, $domination, $talentId) {
         $db = $this->getDatabaseConnection();
         $idt = $_SESSION['user']['id'];  // Récupérer l'ID du compte
-        $query = 'INSERT INTO Hero (lastname, firstname, class_id, race_id, biography, pv_max, mana_max, strength, initiative, domination, talent_id)
-                  VALUES (:lastname, :firstname, :classId, :raceId, :biography, :pv_max, :mana_max, :strength, :initiative, :domination, :talentId)';
+        $query = 'INSERT INTO Hero (lastname, firstname, class_id, race_id, biography, pv_max, mana_max, strength, dexterity, forbidden_knowledge, initiative, domination, talent_id)
+                  VALUES (:lastname, :firstname, :classId, :raceId, :biography, :pv_max, :mana_max, :strength, :dexterity, :forbidden_knowledge, :initiative, :domination, :talentId)';
         
         // Préparer la requête d'insertion pour le héros
         $stmt = $db->prepare($query);
@@ -18,6 +18,8 @@ class Hero extends Model {
         $stmt->bindParam(':pv_max', $pv);
         $stmt->bindParam(':mana_max', $mana);
         $stmt->bindParam(':strength', $strength);
+        $stmt->bindParam(':dexterity', $dexterity);
+        $stmt->bindParam(':forbidden_knowledge', $forbiddenKnowledge);
         $stmt->bindParam(':initiative', $initiative);
         $stmt->bindParam(':domination', $domination);
         $stmt->bindParam(':talentId', $talentId);        
@@ -85,96 +87,108 @@ class Hero extends Model {
     public function getHeroById($userId) {
         $db = $this->getDatabaseConnection();
         $query = 'SELECT 
-            h.id AS hero_id,
-            h.lastname AS hero_lastname,
-            h.firstname AS hero_firstname,
-            h.biography,
-            h.class_id,
-            c.name AS class_name,
-            h.race_id,
-            r.name AS race_name,
-            h.talent_id,
-            t.name AS talent_name,
-            h.pv_max,
-            h.mana_max,
-            h.strength,
-            h.initiative,
-            h.domination,
-            h.madness,
-            h.xp,
-            h.current_level,
-            h.nb_items_max,
-            hw.primary_weapon_id,
-            hw.secondary_weapon_id,
-            primary_weapon.name AS primary_weapon_name,
-            COALESCE(primary_weapon_weapon.damage_bonus, 0) AS primary_weapon_damage_bonus,
-            COALESCE(primary_weapon_weapon.defense_bonus, 0) AS primary_weapon_defense_bonus,
-            primary_weapon_effect.effect_function AS primary_weapon_effect,
-            secondary_weapon.name AS secondary_weapon_name,
-            COALESCE(secondary_weapon_weapon.damage_bonus, 0) AS secondary_weapon_damage_bonus,
-            COALESCE(secondary_weapon_weapon.defense_bonus, 0) AS secondary_weapon_defense_bonus,
-            secondary_weapon_effect.effect_function AS secondary_weapon_effect,
-            (COALESCE(primary_weapon_weapon.damage_bonus, 0) + COALESCE(secondary_weapon_weapon.damage_bonus, 0)) AS total_damage_bonus,
-            (COALESCE(primary_weapon_weapon.defense_bonus, 0) + COALESCE(secondary_weapon_weapon.defense_bonus, 0) 
-                + COALESCE(helmet_armor.defense, 0) + COALESCE(body_armor.defense, 0) 
-                + COALESCE(greaves_armor.defense, 0) + COALESCE(gloves_armor.defense, 0)) AS total_defense_bonus,
-            ha.helmet_id,
-            ha.armor_id,
-            ha.greaves_id,
-            ha.gloves_id,
-            helmet.name AS helmet_name,
-            armor.name AS armor_name,
-            greaves.name AS greaves_name,
-            gloves.name AS gloves_name,
-            hs.pv AS current_pv,
-            hs.mana AS current_mana,
-            h.gold
-        FROM 
-            Hero h
-        LEFT JOIN
-            Class c ON c.id = h.class_id
-        LEFT JOIN
-            Race r ON r.id = h.race_id
-        LEFT JOIN 
-            Hero_Weapons hw ON h.id = hw.hero_id
-        LEFT JOIN 
-            Items primary_weapon ON hw.primary_weapon_id = primary_weapon.id
-        LEFT JOIN 
-            Weapon primary_weapon_weapon ON primary_weapon.id = primary_weapon_weapon.item_id
-        LEFT JOIN 
-            WeaponEffect primary_weapon_effect ON primary_weapon_weapon.item_id = primary_weapon_effect.weapon_id
-        LEFT JOIN 
-            Items secondary_weapon ON hw.secondary_weapon_id = secondary_weapon.id
-        LEFT JOIN 
-            Weapon secondary_weapon_weapon ON secondary_weapon.id = secondary_weapon_weapon.item_id
-        LEFT JOIN 
-            WeaponEffect secondary_weapon_effect ON secondary_weapon_weapon.item_id = secondary_weapon_effect.weapon_id
-        LEFT JOIN 
-            Hero_Armor ha ON h.id = ha.hero_id
-        LEFT JOIN 
-            Items helmet ON ha.helmet_id = helmet.id
-        LEFT JOIN 
-            Armor helmet_armor ON helmet.id = helmet_armor.item_id
-        LEFT JOIN 
-            Items armor ON ha.armor_id = armor.id
-        LEFT JOIN 
-            Armor body_armor ON armor.id = body_armor.item_id
-        LEFT JOIN 
-            Items greaves ON ha.greaves_id = greaves.id
-        LEFT JOIN 
-            Armor greaves_armor ON greaves.id = greaves_armor.item_id
-        LEFT JOIN 
-            Items gloves ON ha.gloves_id = gloves.id
-        LEFT JOIN 
-            Armor gloves_armor ON gloves.id = gloves_armor.item_id
-        LEFT JOIN 
-            Hero_Story hs ON h.id = hs.hero_id
-        LEFT JOIN
-            Talent_Race tr ON tr.race_id = h.race_id
-        LEFT JOIN
-            Talent t ON h.talent_id = t.id
-        WHERE
-            h.id = :userId;';
+        h.id AS hero_id,
+        h.lastname AS hero_lastname,
+        h.firstname AS hero_firstname,
+        h.biography,
+        h.class_id,
+        c.name AS class_name,
+        h.race_id,
+        r.name AS race_name,
+        h.talent_id,
+        t.name AS talent_name,
+        h.pv_max,
+        h.mana_max,
+        h.strength,
+        h.dexterity,
+        h.initiative,
+        h.domination,
+        h.madness,
+        h.forbidden_knowledge,
+        h.xp,
+        h.current_level,
+        h.nb_items_max,
+        hw.primary_weapon_id,
+        hw.secondary_weapon_id,
+        primary_weapon.name AS primary_weapon_name,
+        COALESCE(primary_weapon_weapon.damage_bonus, 0) AS primary_weapon_damage_bonus,
+        COALESCE(primary_weapon_weapon.defense_bonus, 0) AS primary_weapon_defense_bonus,
+        ws_primary.strenght_scaling AS primary_weapon_strength_scaling,
+        ws_primary.dext_scaling AS primary_weapon_dexterity_scaling,
+        ws_primary.forb_know_scaling AS primary_weapon_forbidden_knowledge_scaling,
+        primary_weapon_effect.effect_function AS primary_weapon_effect,
+        secondary_weapon.name AS secondary_weapon_name,
+        COALESCE(secondary_weapon_weapon.damage_bonus, 0) AS secondary_weapon_damage_bonus,
+        COALESCE(secondary_weapon_weapon.defense_bonus, 0) AS secondary_weapon_defense_bonus,
+        ws_secondary.strenght_scaling AS secondary_weapon_strength_scaling,
+        ws_secondary.dext_scaling AS secondary_weapon_dexterity_scaling,
+        ws_secondary.forb_know_scaling AS secondary_weapon_forbidden_knowledge_scaling,
+        secondary_weapon_effect.effect_function AS secondary_weapon_effect,
+        (COALESCE(primary_weapon_weapon.damage_bonus, 0) + COALESCE(secondary_weapon_weapon.damage_bonus, 0)) AS total_damage_bonus,
+        (COALESCE(primary_weapon_weapon.defense_bonus, 0) + COALESCE(secondary_weapon_weapon.defense_bonus, 0) 
+            + COALESCE(helmet_armor.defense, 0) + COALESCE(body_armor.defense, 0) 
+            + COALESCE(greaves_armor.defense, 0) + COALESCE(gloves_armor.defense, 0)) AS total_defense_bonus,
+        ha.helmet_id,
+        ha.armor_id,
+        ha.greaves_id,
+        ha.gloves_id,
+        helmet.name AS helmet_name,
+        armor.name AS armor_name,
+        greaves.name AS greaves_name,
+        gloves.name AS gloves_name,
+        hs.pv AS current_pv,
+        hs.mana AS current_mana,
+        h.gold
+    FROM 
+        Hero h
+    LEFT JOIN
+        Class c ON c.id = h.class_id
+    LEFT JOIN
+        Race r ON r.id = h.race_id
+    LEFT JOIN 
+        Hero_Weapons hw ON h.id = hw.hero_id
+    LEFT JOIN 
+        Items primary_weapon ON hw.primary_weapon_id = primary_weapon.id
+    LEFT JOIN 
+        Weapon primary_weapon_weapon ON primary_weapon.id = primary_weapon_weapon.item_id
+    LEFT JOIN 
+        weapon_scaling ws_primary ON primary_weapon_weapon.item_id = ws_primary.weapon_id
+    LEFT JOIN 
+        WeaponEffect primary_weapon_effect ON primary_weapon_weapon.item_id = primary_weapon_effect.weapon_id
+    LEFT JOIN 
+        Items secondary_weapon ON hw.secondary_weapon_id = secondary_weapon.id
+    LEFT JOIN 
+        Weapon secondary_weapon_weapon ON secondary_weapon.id = secondary_weapon_weapon.item_id
+    LEFT JOIN 
+        weapon_scaling ws_secondary ON secondary_weapon_weapon.item_id = ws_secondary.weapon_id
+    LEFT JOIN 
+        WeaponEffect secondary_weapon_effect ON secondary_weapon_weapon.item_id = secondary_weapon_effect.weapon_id
+    LEFT JOIN 
+        Hero_Armor ha ON h.id = ha.hero_id
+    LEFT JOIN 
+        Items helmet ON ha.helmet_id = helmet.id
+    LEFT JOIN 
+        Armor helmet_armor ON helmet.id = helmet_armor.item_id
+    LEFT JOIN 
+        Items armor ON ha.armor_id = armor.id
+    LEFT JOIN 
+        Armor body_armor ON armor.id = body_armor.item_id
+    LEFT JOIN 
+        Items greaves ON ha.greaves_id = greaves.id
+    LEFT JOIN 
+        Armor greaves_armor ON greaves.id = greaves_armor.item_id
+    LEFT JOIN 
+        Items gloves ON ha.gloves_id = gloves.id
+    LEFT JOIN 
+        Armor gloves_armor ON gloves.id = gloves_armor.item_id
+    LEFT JOIN 
+        Hero_Story hs ON h.id = hs.hero_id
+    LEFT JOIN
+        Talent_Race tr ON tr.race_id = h.race_id
+    LEFT JOIN
+        Talent t ON h.talent_id = t.id
+    WHERE
+        h.id = :userId';
         $stmt = $db->prepare($query);
         $stmt->bindParam(':userId', $userId);
         $stmt->execute();
@@ -221,7 +235,7 @@ class Hero extends Model {
         $_SESSION['user']['hero']['madness'] += $madnessQuantity;
     }
 
-    public function updateHeroStatsAndLevel($heroId, $pvMax, $manaMax, $strength, $initiative, $domination, $xp, $newLevel) {
+    public function updateHeroStatsAndLevel($heroId, $pvMax, $manaMax, $strength, $dexterity,  $forbiddenKnowledge, $initiative, $domination, $xp, $newLevel) {
         $db = $this->getDatabaseConnection();
     
         $query = 'UPDATE Hero_Story 
@@ -243,13 +257,15 @@ class Hero extends Model {
         $result2 = $stmt2->execute();
     
         $query3 = 'UPDATE Hero
-                   SET pv_max = :pv_max, mana_max = :mana_max, strength = :strength, initiative = :initiative, domination = :domination
+                   SET pv_max = :pv_max, mana_max = :mana_max, strength = :strength, dexterity = :dexterity, initiative = :initiative, forbidden_knowledge = :forbiddenKnowledge, domination = :domination
                    WHERE id = :heroId';
         $stmt3 = $db->prepare($query3);
         $stmt3->bindParam(":pv_max", $pvMax);
         $stmt3->bindParam(":mana_max", $manaMax);
         $stmt3->bindParam(":strength", $strength);
+        $stmt3->bindParam(":dexterity", $dexterity);
         $stmt3->bindParam(":initiative", $initiative);
+        $stmt3->bindParam(":forbiddenKnowledge", $forbiddenKnowledge);
         $stmt3->bindParam(':domination', $domination);
         $stmt3->bindParam(":heroId", $heroId);
         $result3 = $stmt3->execute();

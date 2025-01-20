@@ -23,6 +23,8 @@
                         <?php endif; ?>
 
                         <li><strong>Force:</strong> <?= htmlspecialchars($hero['strength']) ?></li>
+                        <li><strong>Dexterité:</strong> <?= htmlspecialchars($hero['dexterity']) ?></li>
+                        <li><strong>Connaissance Interdite:</strong> <?= htmlspecialchars($hero['forbidden_knowledge'])?></li>
                         <li><strong>Initiative:</strong> <?= htmlspecialchars($hero['initiative']) ?></li>
                         <li><strong>Domination:</strong> <?=htmlspecialchars($hero['domination']) ?></li>
                         <li><strong>Folie: </strong> <?=htmlspecialchars($hero['madness'])?></li>

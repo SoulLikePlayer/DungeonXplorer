@@ -2,7 +2,7 @@ try{
     document.getElementById('startCombatButton').addEventListener('click', function () {
         const hero = {
             type: "hero",
-            talent : this.dataset.heroTalent,
+            talent: this.dataset.heroTalent,
             name: this.dataset.heroName,
             level: this.dataset.heroLevel,
             pv: parseInt(this.dataset.heroPv),
@@ -10,25 +10,38 @@ try{
             mana: parseInt(this.dataset.heroMana),
             manaMax: parseInt(this.dataset.heroManaMax),
             strength: parseInt(this.dataset.heroStrength),
+            dexterity: parseInt(this.dataset.heroDexterity),
+            forbiddenKnowledge: parseInt(this.dataset.heroForbiddenKnow),
             initiative: parseInt(this.dataset.heroInitiative),
             isThief: this.dataset.heroIsThief === 'true',
             primaryWeaponName: this.dataset.heroPrimaryWeaponName,
             primaryWeaponDamageBonus: parseInt(this.dataset.heroPrimaryWeaponDamageBonus),
             primaryWeaponDefenseBonus: parseInt(this.dataset.heroPrimaryWeaponDefenseBonus),
             primaryWeaponEffect: this.dataset.heroPrimaryWeaponEffect,
+            primaryWeaponScaling: {
+                strength: this.dataset.heroPrimaryWeaponScalingStrengh,
+                dexterity: this.dataset.heroPrimaryWeaponScalingDexterity,
+                forbiddenKnowledge: this.dataset.heroPrimaryWeaponScalingForbiddenKnowledge
+            },
             secondaryWeaponName: this.dataset.heroSecondaryWeaponName,
             secondaryWeaponDamageBonus: parseInt(this.dataset.heroSecondaryWeaponDamageBonus),
             secondaryWeaponDefenseBonus: parseInt(this.dataset.heroSecondaryWeaponDefenseBonus),
             secondaryWeaponEffect: this.dataset.heroSecondaryWeaponEffect,
+            secondaryWeaponScaling: {
+                strength: this.dataset.heroSecondaryWeaponScalingStrengh,
+                dexterity: this.dataset.heroSecondaryWeaponScalingDexterity,
+                forbiddenKnowledge: this.dataset.heroSecondaryWeaponScalingForbiddenKnowledge
+            },
             totalDefenseBonus: parseInt(this.dataset.heroTotalDefenseBonus),
             activeBonuses: [],
             activeDebuff: [],
-            xp : 0,
-            isParalyzed : Boolean(false),
-            isBind : Boolean(false),
+            xp: 0,
+            isParalyzed: Boolean(false),
+            isBind: Boolean(false),
             isImmobelize: Boolean(false),
             valIncrease: []
         };
+        
 
         const monster = {
             type: "monster",
@@ -48,6 +61,8 @@ try{
             isBind : Boolean(false),
             valIncrease: []
         };
+
+        console.log(hero.primaryWeaponScaling)
 
 
         const consumablesData = JSON.parse(document.getElementById('useItemButton').getAttribute('data-inventory'));
@@ -150,7 +165,9 @@ try{
                 spellList.appendChild(listItem);
     
                 itemArray[3].forEach(spell => {
+                    console.log(spell)
                     if (spell.level_required <= hero.level) {
+                        console.log()
                         const spellItem = document.createElement('button');
                         spellItem.className = "SpellButton";
                         spellItem.textContent = `${spell.name}`;
@@ -673,13 +690,31 @@ try{
         }
     }    
 
-    function calculateAttack(character, dieRoll) {
+    function calculateScale(str){
+        switch(str){
+           
+            case "D" :
+                return 1.0
+            case "C" :
+                return 1.5
+            case "B" :
+                return 2.0
+            case "A" :
+                return 2.5
+            case "S" :
+                return 3.0
+            default:
+                return 0.0
+        }
+    }
+
+    function calculateAttack(character, dieRoll, scaling = {}) {
         if (!Array.isArray(character.activeBonuses)) {
             character.activeBonuses = []; 
         }
     
-        let baseAttack = dieRoll + character.strength;
-    
+        
+        let baseAttack = dieRoll
         const bonusAttack = character.activeBonuses
             .filter(bonus => bonus.type === 'attack')
             .reduce((total, bonus) => total + bonus.value, 0);
@@ -688,15 +723,34 @@ try{
             .filter(debuff => debuff.type === 'attack')
             .reduce((total, debuff) => total + debuff.value, 0);
     
+        if(character.type == "hero"){
+            StrenghtCalcule = character.strength * calculateScale(scaling.strength)
+            DexCalcule = character.dexterity * calculateScale(scaling.dexterity)
+
+            baseAttack += StrenghtCalcule + DexCalcule
+            console.log(scaling)
+            displayCombatMessage(
+                `Lancer d'attaque: ${dieRoll} <br>` +
+                (StrenghtCalcule > 0 ?` <span style="color: #00ff00;">+${StrenghtCalcule} (Bonus de force)</span><br>` : '' )+
+                (DexCalcule > 0 ?` <span style="color: #00ff00;">+${DexCalcule} (Bonus de dexterité)</span><br>` : '' )+
+
+                (bonusAttack > 0 ? ` <span style="color: #00ff00;">+${bonusAttack}</span><br>` : '') +
+                (debuffAttack > 0 ? ` <span style="color: #ff0000;">-${debuffAttack}</span><br>` : '') +
+                ` = Total: <strong>${baseAttack}</strong>`
+            );
+        }else{
+            baseAttack += character.strength;
+
+            displayCombatMessage(
+                `Lancer d'attaque: ${dieRoll} <span style="color: #85c1e9;">+${character.strength}</span><br>` +
+                (bonusAttack > 0 ? ` <span style="color:green;">+${bonusAttack}</span><br>` : '') +
+                (debuffAttack > 0 ? ` <span style="color:red;">-${debuffAttack}</span><br>` : '') +
+                ` = Total: <strong>${baseAttack}</strong>`
+            );
+        }
+
         baseAttack += bonusAttack - debuffAttack;
-    
-        displayCombatMessage(
-            `Lancer d'attaque: ${dieRoll} <span style="color: #85c1e9;">+${character.strength}</span>` +
-            (bonusAttack > 0 ? ` <span style="color:green;">+${bonusAttack}</span>` : '') +
-            (debuffAttack > 0 ? ` <span style="color:red;">-${debuffAttack}</span>` : '') +
-            ` = Total: <strong>${baseAttack}</strong>`
-        );
-    
+
         return Math.max(0, baseAttack);
     }
     
@@ -733,12 +787,12 @@ try{
     
         displayCombatMessage(
             `Lancer de défense: ${dieRoll} ` +
-            `<span style="color: #85c1e9;">+${character.isThief ? Math.floor(character.initiative / 2) : Math.floor(character.strength / 2)}</span>` +
-            (bonusDefense > 0 ? ` <span style="color:green;">+${bonusDefense}</span>` : '') +
-            (debuffDefense > 0 ? ` <span style="color:red;">-${debuffDefense}</span>` : '') +
-            ` <span style="color: #85c1e9;">+${character.totalDefenseBonus || 0}</span>` +
-            (frostMultiplier > 1 ? ` <span style="color: #add8e6;">x${frostMultiplier.toFixed(1)}</span>` : '') +
-            ` = Total: <strong>${baseDefense + (character.totalDefenseBonus || 0)}</strong>`
+            `<span style="color: #85c1e9;">+${character.isThief ? Math.floor(character.initiative / 2) : Math.floor(character.strength / 2)}</span><br>` +
+            (bonusDefense > 0 ? ` <span style="color:green;">+${bonusDefense}</span><br>` : '') +
+            (debuffDefense > 0 ? ` <span style="color:red;">-${debuffDefense}</span><br>` : '') +
+            ` <span style="color: #85c1e9;">+${character.totalDefenseBonus || 0}</span><br>` +
+            (frostMultiplier > 1 ? ` <span style="color: #add8e6;">x${frostMultiplier.toFixed(1)}</span><br>` : '') +
+            ` = Total: <strong>${baseDefense + (character.totalDefenseBonus || 0)}</strong><br>`
         );
     
         return Math.max(0, baseDefense + (character.totalDefenseBonus || 0));
@@ -751,13 +805,15 @@ try{
                 damageBonus: hero.primaryWeaponDamageBonus,
                 defenseBonus: hero.primaryWeaponDefenseBonus,
                 weaponName: hero.primaryWeaponName,
-                effect : hero.primaryWeaponEffect
+                effect : hero.primaryWeaponEffect,
+                scaling : hero.primaryWeaponScaling
             }
             : {
                 damageBonus: hero.secondaryWeaponDamageBonus,
                 defenseBonus: hero.secondaryWeaponDefenseBonus,
                 weaponName: hero.secondaryWeaponName,
-                effect: hero.secondaryWeaponEffect
+                effect: hero.secondaryWeaponEffect,
+                scaling : hero.secondaryWeaponScaling
             };
     }
 
@@ -836,7 +892,7 @@ try{
 
         afficherNombreAleatoire(attackRoll, defenseRoll, 2000);
         setTimeout(() => {
-            const attack = calculateAttack(hero, attackRoll) + weaponBonus.damageBonus
+            const attack = calculateAttack(hero, attackRoll, weaponBonus.scaling) + weaponBonus.damageBonus
             
             const defense = calculateDefense(monster, defenseRoll);
             const damage = Math.max(0, attack - defense);
@@ -1117,6 +1173,8 @@ try{
                             document.getElementById("newPVBonus").textContent=modalContent.pvBonus
                             document.getElementById("newManaBonus").textContent=modalContent.manaBonus
                             document.getElementById("newStrenghtBonus").textContent=modalContent.strengthBonus
+                            document.getElementById("newDexterityBonus").textContent = modalContent.dexterityBonus
+                            document.getElementById("newForbiddenKnowledgeBonus").textContent = modalContent.forbiddenKnowledgeBonus
                             document.getElementById("newInitiativeBonus").textContent=modalContent.initiativeBonus
                             document.getElementById("newDominationBonus").textContent = modalContent.dominationBonus
 

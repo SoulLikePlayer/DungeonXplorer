@@ -105,6 +105,7 @@ select#weaponChoice:hover {
     border-radius: 10px;
     margin-top: 20px;
     font-family: var(--font-family-classic);
+    text-align: left !important;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
 }
 

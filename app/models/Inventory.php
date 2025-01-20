@@ -96,19 +96,30 @@ class Inventory extends Model {
         $db = $this->getDatabaseConnection();
     
         $query = '
-            SELECT w.item_id, i.name, i.description, inv.quantity, w.damage_bonus, w.defense_bonus
+            SELECT 
+                w.item_id, 
+                i.name, 
+                i.description, 
+                inv.quantity, 
+                w.damage_bonus, 
+                w.defense_bonus,
+                ws.strenght_scaling, 
+                ws.dext_scaling, 
+                ws.forb_know_scaling
             FROM Weapon w
             JOIN Items i ON w.item_id = i.id
             JOIN Inventory inv ON inv.item_id = i.id
+            LEFT JOIN weapon_scaling ws ON ws.weapon_id = w.item_id
             WHERE inv.hero_id = :hero_id
         ';
     
         $stmt = $db->prepare($query);
-        $stmt->bindParam(':hero_id',  $_SESSION['user']['hero']['hero_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':hero_id', $_SESSION['user']['hero']['hero_id'], PDO::PARAM_INT);
         $stmt->execute();
     
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
     
     public function getInventoryArmors() {
         $db = $this->getDatabaseConnection();

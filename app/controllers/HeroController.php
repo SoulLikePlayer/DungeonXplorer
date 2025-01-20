@@ -59,6 +59,8 @@ class HeroController extends Controller {
                 $classData['base_pv'],
                 $classData['base_mana'],
                 $classData['strength'],
+                $classData['dexterity'],
+                $classData['forbidden_knowledge'],
                 $classData['initiative'],
                 $classData['domination'],
                 $talentId
@@ -171,6 +173,8 @@ class HeroController extends Controller {
                 $pvMax = $_SESSION['user']['hero']['pv_max'] + $level['pv_bonus'];
                 $manaMax = $_SESSION['user']['hero']['mana_max'] + $level['mana_bonus'];
                 $strength = $_SESSION['user']['hero']['strength'] + $level['strength_bonus'];
+                $dexterity = $_SESSION['user']['hero']['dexterity'] + $level['dexterity_bonus'];
+                $forbiddenKnowledge = $_SESSION['user']['hero']['forbidden_knowledge'] + $level['forbidden_knowledge_bonus'];
                 $initiative = $_SESSION['user']['hero']['initiative'] + $level['initiative_bonus'];
                 $domination = $_SESSION['user']['hero']['domination'] + $level['domination_bonus'];
                 $remainingXp -= $level['required_xp'];
@@ -180,6 +184,8 @@ class HeroController extends Controller {
                     $pvMax, 
                     $manaMax, 
                     $strength, 
+                    $dexterity,
+                    $forbiddenKnowledge,
                     $initiative, 
                     $domination,
                     $remainingXp, 
@@ -191,6 +197,8 @@ class HeroController extends Controller {
                     $_SESSION['user']['hero']['pv_max'] = $pvMax;
                     $_SESSION['user']['hero']['mana_max'] = $manaMax;
                     $_SESSION['user']['hero']['strength'] = $strength;
+                    $_SESSION['user']['hero']['dexterity'] = $dexterity;
+                    $_SESSION['user']['hero']["forbidden_knowledge"] = $forbiddenKnowledge;
                     $_SESSION['user']['hero']['initiative'] = $initiative;
                     $_SESSION['user']['hero']['domination'] = $domination;
                     $_SESSION['user']['hero']['xp'] = 0;
@@ -206,6 +214,8 @@ class HeroController extends Controller {
                                 'pvBonus' => $level['pv_bonus'],
                                 'manaBonus' => $level['mana_bonus'],
                                 'strengthBonus' => $level['strength_bonus'],
+                                'dexterityBonus' => $level['dexterity_bonus'],
+                                'forbiddenKnowledgeBonus' => $level['forbidden_knowledge_bonus'],
                                 'initiativeBonus' => $level['initiative_bonus'],
                                 'dominationBonus' => $level['domination_bonus']
                             ],
@@ -223,6 +233,8 @@ class HeroController extends Controller {
                                 'pvBonus' => $level['pv_bonus'],
                                 'manaBonus' => $level['mana_bonus'],
                                 'strengthBonus' => $level['strength_bonus'],
+                                'dexterityBonus' => $level['dexterity_bonus'],
+                                'forbiddenKnowledgeBonus' => $level['forbidden_knowledge_bonus'],
                                 'initiativeBonus' => $level['initiative_bonus'],
                                 'dominationBonus' => $level['domination_bonus']
                             ],
@@ -474,6 +486,8 @@ class HeroController extends Controller {
             $classData['base_pv'],
             $classData['base_mana'],
             $classData['strength'],
+            $classData['dexterity'],
+            $classData['forbidden_knowledge'],
             $classData['initiative'],
             $classData['domination'],
             $talentId
