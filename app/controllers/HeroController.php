@@ -4,7 +4,7 @@ class HeroController extends Controller {
 
     public function create() {
         $classModel = new ClassModel();
-        $classes = $classModel->getAllClasses();
+        $classes = $classModel->getAllInitialClasses();
     
         $raceModel = new RaceModel();
         $races = $raceModel->getAllRace();
@@ -194,22 +194,43 @@ class HeroController extends Controller {
                     $_SESSION['user']['hero']['initiative'] = $initiative;
                     $_SESSION['user']['hero']['domination'] = $domination;
                     $_SESSION['user']['hero']['xp'] = 0;
-                    
-                    ob_clean();
-                    echo json_encode([
-                        'success' => true,
-                        'modalContent' => [
-                            'newLevel' => $newLevel,
-                            'pvBonus' => $level['pv_bonus'],
-                            'manaBonus' => $level['mana_bonus'],
-                            'strengthBonus' => $level['strength_bonus'],
-                            'initiativeBonus' => $level['initiative_bonus'],
-                            'dominationBonus' => $level['domination_bonus']
-                        ],
-                        'chapter' => $_SESSION['Chapitre'],
-                        'chapter2' => $data['nextChapterWin']
-                    ]);
-                    exit; 
+
+                    if($newLevel % 5 == 0){
+                        $classModel = new ClassModel();
+                        $subClass = $classModel->getAllSubclassesById($_SESSION['user']['hero']['class_id']);
+                        ob_clean();
+                        echo json_encode([
+                            'success' => true,
+                            'modalContent' => [
+                                'newLevel' => $newLevel,
+                                'pvBonus' => $level['pv_bonus'],
+                                'manaBonus' => $level['mana_bonus'],
+                                'strengthBonus' => $level['strength_bonus'],
+                                'initiativeBonus' => $level['initiative_bonus'],
+                                'dominationBonus' => $level['domination_bonus']
+                            ],
+                            'subclassChoice' => $subClass,
+                            'chapter' => $_SESSION['Chapitre'],
+                            'chapter2' => $data['nextChapterWin']
+                        ]);
+                        exit;    
+                    }else{
+                        ob_clean();
+                        echo json_encode([
+                            'success' => true,
+                            'modalContent' => [
+                                'newLevel' => $newLevel,
+                                'pvBonus' => $level['pv_bonus'],
+                                'manaBonus' => $level['mana_bonus'],
+                                'strengthBonus' => $level['strength_bonus'],
+                                'initiativeBonus' => $level['initiative_bonus'],
+                                'dominationBonus' => $level['domination_bonus']
+                            ],
+                            'chapter' => $_SESSION['Chapitre'],
+                            'chapter2' => $data['nextChapterWin']
+                        ]);
+                        exit; 
+                    }                    
                 } else {
 
                     ob_clean();
@@ -236,6 +257,34 @@ class HeroController extends Controller {
         } else {
             ob_clean();
             echo json_encode(['success' => false, 'message' => 'Héros introuvable dans la session.']);
+            exit;
+        }
+    }
+
+    public function updateClass(){
+        ob_clean();
+        header('Content-Type: application/json');
+
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (isset($data['classId'])){
+            $heroId = $_SESSION['user']['hero']['hero_id'];
+            $classId = $data['classId'];
+
+            $heroModel = new Hero();
+            $updateSuccess = false;
+
+            $updateSuccess = $heroModel->updateHeroClass($heroId, $classId);
+
+            if($updateSuccess){
+                echo json_encode(['success' => true, 'message' => 'mise a jour de la classe']);
+                exit;
+            }else{
+                echo json_encode(['success' => false, 'message' => 'erreur l\'ors de la MaJ']);
+                exit;
+            }
+        }else{
+            echo json_encode(['success' => false, 'message' => 'Données manquantes.']);
             exit;
         }
     }

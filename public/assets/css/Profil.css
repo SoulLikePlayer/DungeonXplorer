@@ -3,71 +3,83 @@
     background-color: #2e2e2e;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .profil-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 30px;
 }
 
 .profil-header h3 {
-    font-family: var(--font-family-title);
-    color: var(--accent-color);
+    font-family: 'Pirata One';
+    color: #c4975e;
     font-size: 2.5em;
     margin: 0;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-}
-
-.profil-header p {
-    font-family: var(--font-family-classic);
-    color: var(--text-color);
-    font-size: 1.2em;
-    margin: 5px 0;
+    text-align: center;
 }
 
 .profil-info {
     margin-bottom: 30px;
+    text-align: center;
 }
 
 .profil-info p {
     font-size: 1.2em;
-    font-family: var(--font-family-classic);
-    color: var(--primary-color);
+    font-family: 'Roboto';
+    color: #c0c0c0;
     margin: 10px 0;
 }
 
 .profil-select-hero {
     margin-bottom: 20px;
+    text-align: center;
 }
 
 .profil-select-hero select {
     padding: 10px;
     width: 100%;
-    border: 1px solid var(--border-color);
+    max-width: 300px;
+    border: 1px solid #5e4b3c;
     border-radius: 5px;
     background-color: rgba(30, 30, 30, 0.9);
-    color: var(--text-color);
+    color: #e5e5e5;
     font-size: 1.1em;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.7);
+    appearance: none;
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 12px;
+    transition: border-color 0.3s, box-shadow 0.3s ease;
 }
 
 .profil-select-hero select:focus {
     outline: none;
-    border-color: var(--gold-hover);
-    box-shadow: 0 0 8px var(--gold-hover);
+    border-color: #d4af37;
+    box-shadow: 0 0 8px #d4af37;
 }
 
-.profil-buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
+.hero-select-container {
+    margin: 20px 0;
+    position: relative;
 }
 
-.profil-buttons button {
-    background-color: var(--button-color);
-    color: var(--text-color);
+.hero-select-label {
+    font-family: 'Pirata One';
+    font-size: 1.2em;
+    color: #e5e5e5;
+    margin-bottom: 10px;
+    display: block;
+    text-align: center;
+}
+
+.hero-select-button {
+    background-color: #c4975e;
+    color: #e5e5e5;
     border: none;
     padding: 12px 30px;
     font-size: 1.1em;
@@ -76,10 +88,46 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    margin-top: 20px;
+}
+
+.hero-select-button:hover {
+    background-color: #ffd700;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.7);
+}
+
+.hero-select-button:active {
+    transform: translateY(1px);
+}
+
+.profil-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.profil-buttons a {
+    flex: 1;
+    text-align: center;
+}
+
+.profil-buttons button {
+    background-color: #c4975e;
+    color: #e5e5e5;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    width: 100%;
 }
 
 .profil-buttons button:hover {
-    background-color: var(--hover-color);
+    background-color: #ffd700;
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(255, 215, 0, 0.7);
 }
@@ -94,32 +142,31 @@
     border-radius: 5px;
     margin-bottom: 20px;
     font-size: 1.2em;
-    font-family: var(--font-family-classic);
+    font-family: 'Roboto';
 }
 
 .profil-message.error {
-    background-color: var(--error-red);
+    background-color: #8b1e1e;
     color: #fff;
     box-shadow: 0 0 10px rgba(128, 0, 0, 0.8);
 }
 
 .profil-message.success {
-    background-color: var(--success-green);
+    background-color: #4a7a66;
     color: #fff;
     box-shadow: 0 0 10px rgba(0, 128, 0, 0.8);
 }
 
-.profil-select-hero p {
-    font-family: var(--font-family-classic);
-    color: var(--text-color);
-    font-size: 1.2em;
-    margin-bottom: 10px;
-}
-
 form.profil-delete button {
-    background-color: var(--error-red);
-    border-color: var(--error-red);
-    font-family: var(--font-family-classic);
+    background-color: #8b1e1e;
+    border: none;
+    color: #e5e5e5;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(139, 30, 30, 0.8);
 }
 
 form.profil-delete button:hover {
@@ -128,158 +175,22 @@ form.profil-delete button:hover {
 }
 
 form.profil-delete {
-    margin-top: 20px;
-}
-
-.profil-container:hover {
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
-}
-
-.profil-header h3,
-.profil-header p {
-    text-align: center;
-}
-
-.profil-select-hero {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.hero-select-container {
-    margin: 20px 0;
-    position: relative;
-}
-
-.hero-select-label {
-    font-family: var(--font-family-title);
-    font-size: 1.2em;
-    color: var(--text-color);
-    margin-bottom: 10px;
-    display: block;
-}
-
-.hero-dropdown {
-    display: inline-block;
-    width: 100%;
-    max-width: 300px;
-    position: relative;
-}
-
-.hero-select {
-    width: 100%;
-    padding: 12px;
-    font-size: 1.1em;
-    border: 2px solid var(--border-color);
-    background-color: rgba(30, 30, 30, 0.8);
-    color: var(--text-color);
-    border-radius: 8px;
-    appearance: none;  
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
-    cursor: pointer;
-    transition: border-color 0.3s, box-shadow 0.3s ease;
-}
-
-.hero-select:focus {
-    outline: none;
-    border-color: var(--gold-hover);
-    box-shadow: 0 0 10px var(--gold-hover);
-}
-
-.hero-select-button {
-    background-color: var(--button-color);
-    color: var(--text-color);
-    border: none;
-    padding: 12px 30px;
-    font-size: 1.1em;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
-    margin-top: 20px;
-}
-
-.hero-select-button:hover {
-    background-color: var(--hover-color);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.7);
-}
-
-.hero-select-button:active {
-    transform: translateY(1px);
-}
-
-.form-title {
-    font-family: var(--font-family-title);
-    font-size: 2.5em;
-    color: var(--accent-color);
-    text-align: center;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-}
-
-.form-creation-container {
-    padding: 30px;
-    background-color: #2e2e2e;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.9);
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-label {
-    font-family: var(--font-family-classic);
-    color: var(--text-color);
-    font-size: 1.2em;
-    margin-bottom: 5px;
-    display: block;
-}
-
-/* Champs de saisie */
-.form-input {
-    width: 100%;
-    padding: 10px;
-    font-size: 1.1em;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    background-color: rgba(30, 30, 30, 0.9);
-    color: var(--text-color);
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.7);
-    transition: border-color 0.3s, box-shadow 0.3s ease;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: var(--gold-hover);
-    box-shadow: 0 0 10px var(--gold-hover);
-}
-
-.hero-select-button {
-    width: 100%;
-    padding: 12px;
-    font-size: 1.2em;
-    margin-top: 20px;
-}
-
-.form-row {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.form-group.half-width {
+    margin: 0;
     flex: 1;
 }
 
-@media (max-width: 768px) {
-    .form-row {
-        flex-direction: column;
-        gap: 10px;
+.hero-forms-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .hero-forms-container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
     }
 }

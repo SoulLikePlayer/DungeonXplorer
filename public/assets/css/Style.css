@@ -496,7 +496,7 @@ div.links button.view-future-btn {
     text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.8);
 }
 
-div.links button.view-future-btn:hover {
+div.links button.view-future-btn:hover:not(:disabled) {
     background: linear-gradient(135deg, #7f3fff, #22a6f0);
     transform: translateY(-3px) scale(1.05);
     box-shadow: 0 6px 20px rgba(94, 23, 235, 0.9), 0 0 15px rgba(34, 166, 240, 0.8);
@@ -510,6 +510,7 @@ div.links button.view-future-btn:active {
 
 div.links button.view-future-btn:disabled {
     background: linear-gradient(135deg, #2e2e2e, #6b6b6b);
+    border: transparent;
     color: #b0b0b0;
     cursor: not-allowed;
     box-shadow: none;

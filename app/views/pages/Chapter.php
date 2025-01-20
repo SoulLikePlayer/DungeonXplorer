@@ -69,6 +69,14 @@
             </div>
         </div>
 
+        <!--Modal de choix de la sous classe-->
+
+        <div id="subclassModal" class="modal">
+            <div class="modal-content">
+                <h3>Choix des sous-classes</h3>
+            </div>
+        </div>
+
 
         <!-- Modale pour utiliser un consommable en combat -->
         <div id="consumableModal" class="modal">
@@ -117,6 +125,7 @@
             <p><?= nl2br(htmlspecialchars($chapter['content'] ?? 'Aucun contenu disponible')) ?></p> 
         </div>
 
+
         <?php if ($chapter['chapter_type'] === 'combat'): ?>
             <div class="combat-container" id="combatContainer">
                 <h3 id="combatMessage">Un combat commence contre <?= htmlspecialchars($_SESSION['monster']['name']) ?></h3>
@@ -162,15 +171,15 @@
                     <div id="combatInfoContainer">
                         <div id="heroDies-container">
                             <p><span id="heroName"><?=htmlspecialchars($_SESSION['user']['hero']['hero_firstname'] . ' ' . $_SESSION['user']['hero']['hero_lastname'])?></span><br />
-                            <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" /> : <progress id="heroPvBar" max="100" value="" data-label="<?= $_SESSION['user']['hero']['current_pv'] ?>/<?= $_SESSION['user']['hero']['pv_max'] ?>"></progress><br /> 
-                             <img src="../../public/assets/PixelArt/Mana.png" width="42" height="42" /> : <progress id="heroManaBar" max="100" value="" data-label="<?= $_SESSION['user']['hero']['current_mana'] ?>/<?= $_SESSION['user']['hero']['mana_max'] ?>"></progress><br />
+                            <img src="../../public/assets/PixelArt/Coeur.png" width="20" height="20" /> : <progress id="heroPvBar" max="100" value="" data-label="<?= $_SESSION['user']['hero']['current_pv'] ?>/<?= $_SESSION['user']['hero']['pv_max'] ?>"></progress><span id="heroPvText"></span> / <span id="heroPvMax"></span><br /> 
+                             <img src="../../public/assets/PixelArt/Mana.png" width="20" height="20" /> : <progress id="heroManaBar" max="100" value="" data-label="<?= $_SESSION['user']['hero']['current_mana'] ?>/<?= $_SESSION['user']['hero']['mana_max'] ?>"></progress><span id="heroManaText"></span> / <span id="heroManaMax"></span><br />
                             Résultat <span id="heroDice"></p>
                         </div>
                         <div id="combatMessages" class="combat-messages"></div>
                         <div id="monsterDies-container">
                             <p><span id="monsterName"><?= htmlspecialchars($_SESSION['monster']['name'])?></span><br />
-                            <progress id="monsterPvBar" max="100" value="" data-label="<?= $_SESSION['monster']['pv'] ?>/<?= $_SESSION['monster']['pv_max'] ?>"></progress> : <img src="../../public/assets/PixelArt/Coeur.png" width="42" height="42" /> <br />
-                            <progress id="monsterManaBar" max="100" value="" data-label="<?= $_SESSION['monster']['mana'] ?>/<?= $_SESSION['monster']['mana_max'] ?>"></progress> : <img src="../../public/assets/PixelArt/Mana.png" width="42" height="42" /> <br /> 
+                            <progress id="monsterPvBar" max="100" value="" data-label="<?= $_SESSION['monster']['pv'] ?>/<?= $_SESSION['monster']['pv'] ?>"></progress> : <img src="../../public/assets/PixelArt/Coeur.png" width="20" height="20" /> <br />
+                            <progress id="monsterManaBar" max="100" value="" data-label="<?= $_SESSION['monster']['mana'] ?>/<?= $_SESSION['monster']['mana'] ?>"></progress> : <img src="../../public/assets/PixelArt/Mana.png" width="20" height="20" /> <br /> 
                             Résultat <span id="monsterDice"></p>
                         </div>
                     </div>    
@@ -198,7 +207,7 @@
                 </div>
             </div> 
             <script src="../../public/assets/js/lootSystem.js"></script>
-            <script src="../../public/assets/js/CombatSystem.js"></script>
+            <script src="../../public/assets/js/CombatSysteme.js"></script>
         <?php elseif($chapter['chapter_type'] === 'npc_interaction' || $chapter['chapter_type'] === 'merchent'): ?>
             <div class="npc-container" id="npcContainer"
                 data-dialogues='<?= json_encode($_SESSION['npc']['dialogues'] ?? []) ?>'
@@ -407,7 +416,7 @@
         <a href="/DungeonXplorer">Retour à l'accueil</a> 
     </div>
 </main>
-<script src="../../public/assets/js/typewritingSystem.js"></script>
+<script src="../../public/assets/js/TypeWritingSystem.js"></script>
 <script src="../../public/assets/js/inventoryModal.js"></script>
 <script src="../../public/assets/js/curseModal.js"></script>
 <script src="../../public/assets/js/songSystem.js"></script>

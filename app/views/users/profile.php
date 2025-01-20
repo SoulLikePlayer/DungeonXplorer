@@ -1,5 +1,3 @@
-<h2>Profil de l'utilisateur</h2>
-
 <?php if (isset($error)): ?>
     <div class="profil-message error"><?= htmlspecialchars($error) ?></div>
 <?php endif; ?>
@@ -19,41 +17,39 @@
     </div>
 
     <div class="profil-select-hero">
-    <h4>Choisissez votre héros actuel :</h4>
-    <?php if (!empty($heroes)): ?>
-        <form action="/DungeonXplorer/user/selectHero" method="POST">
-            <div class="hero-select-container">
-                <label for="hero_id" class="hero-select-label">Sélectionnez un héros :</label>
-                <div class="hero-dropdown">
-                    <select name="hero_id" id="hero_id" class="hero-select">
-                        <?php foreach ($heroes as $hero): ?>
-                            <option value="<?= $hero['hero_id'] ?>" <?= ($hero['hero_id'] == $_SESSION['user']['hero']['hero_id']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($hero['hero_firstname'] . ' ' . $hero['hero_lastname']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            </div>
-            <button type="submit" class="hero-select-button">Sélectionner ce héros</button>
-        </form>
+        <h4>Choisissez votre héros actuel :</h4>
+        <?php if (!empty($heroes)): ?>
+            <div class="hero-forms-container">
+                <!-- Formulaire pour sélectionner un héros -->
+                <form class="hero-form" action="/DungeonXplorer/user/selectHero" method="POST">
+                    <div class="hero-select-container">
+                        <label for="hero_id" class="hero-select-label">Sélectionnez un héros :</label>
+                        <select name="hero_id" id="hero_id" class="hero-select">
+                            <?php foreach ($heroes as $hero): ?>
+                                <option value="<?= $hero['hero_id'] ?>" <?= ($hero['hero_id'] == $_SESSION['user']['hero']['hero_id']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($hero['hero_firstname'] . ' ' . $hero['hero_lastname']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <button type="submit" class="hero-select-button">Sélectionner ce héros</button>
+                </form>
 
-        <!-- Formulaire pour supprimer le héros -->
-        <form action="/DungeonXplorer/user/deleteHero" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce héros ?');">
-            <div class="hero-select-container">
-                <label for="hero_id_delete" class="hero-select-label">Héros à supprimer :</label>
-                <div class="hero-dropdown">
-                    <select name="hero_id" id="hero_id_delete" class="hero-select">
-                        <?php foreach ($heroes as $hero): ?>
-                            <option value="<?= $hero['hero_id'] ?>" <?= ($hero['hero_id'] == $_SESSION['user']['hero']['hero_id']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($hero['hero_firstname'] . ' ' . $hero['hero_lastname']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+                <!-- Formulaire pour supprimer un héros -->
+                <form class="hero-form" action="/DungeonXplorer/user/deleteHero" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce héros ?');">
+                    <div class="hero-select-container">
+                        <label for="hero_id_delete" class="hero-select-label">Héros à supprimer :</label>
+                        <select name="hero_id" id="hero_id_delete" class="hero-select">
+                            <?php foreach ($heroes as $hero): ?>
+                                <option value="<?= $hero['hero_id'] ?>" <?= ($hero['hero_id'] == $_SESSION['user']['hero']['hero_id']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($hero['hero_firstname'] . ' ' . $hero['hero_lastname']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <button type="submit" class="hero-select-button" style="background-color: red;">Supprimer ce héros</button>
+                </form>
             </div>
-            <button type="submit" class="hero-select-button" style="background-color: red;">Supprimer ce héros</button>
-</form>
-
         <?php else: ?>
             <p>Vous n'avez pas de héros associé à votre compte.</p>
         <?php endif; ?>

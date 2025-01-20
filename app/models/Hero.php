@@ -265,6 +265,16 @@ class Hero extends Model {
         $stmt->bindParam(':heroId', $heroId, PDO::PARAM_INT);
         return $stmt->execute();
     }
+
+    public function updateHeroClass($heroId, $newClassId){
+        $db = $this->getDatabaseConnection();
+        $query = 'UPDATE Hero SET class_id = :newClass WHERE id = :heroId';
+
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':newClass', $newClassId);
+        $stmt->bindParam(':heroId', $heroId);
+        return $stmt->execute();
+    }
     
     
 

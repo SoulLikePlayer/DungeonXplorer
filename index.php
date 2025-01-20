@@ -91,6 +91,7 @@ session_start();
                 $router->addRoute('hero/reset', 'HeroController@reset');
                 $router->addRoute('hero/updateWeaponSet','HeroController@equipWeapon');
                 $router->addRoute('hero/updateArmorSet', 'HeroController@equipArmor');
+                $router->addRoute('hero/updateClass', 'HeroController@updateClass');
 
                 if (isset($_SESSION['user']['hero'])){
                     /* Routes liées à l'histoire */

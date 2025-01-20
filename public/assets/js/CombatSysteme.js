@@ -73,16 +73,20 @@ try{
         document.getElementById('combatActions').style.display = 'block';
 
         document.getElementById('monsterPvBar').value = (monster.pv / monster.pvMax) * 100
-
-        document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
+        document.getElementById('monsterManaBar').value = (monster.manaMax > 0 ? (monster.mana / monster.manaMax) : 0) * 100
         
-
+        document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
         if ((hero.pv / hero.pvMax) * 100 <= 15) { 
             document.getElementById('heroPvBar').classList.add('shaking');
         } else {
             document.getElementById('heroPvBar').classList.remove('shaking');
         }
+        document.getElementById('heroPvText').textContent = hero.pv
+        document.getElementById('heroPvMax').textContent = hero.pvMax
+
         document.getElementById('heroManaBar').value = (hero.manaMax > 0 ? (hero.mana / hero.manaMax) : 0) * 100
+        document.getElementById('heroManaText').textContent = hero.mana
+        document.getElementById('heroManaMax').textContent = hero.manaMax
 
 
         setTimeout(() => {   
@@ -205,8 +209,11 @@ try{
             user.mana -= effectCost
             if(user.type == "hero"){
                 document.getElementById('heroManaBar').value = ((user.mana / user.manaMax)) * 100
+                document.getElementById('heroManaText').textContent = user.mana
+                document.getElementById('heroManaMax').textContent = user.manaMax
             }else{
-                document.getElementById('monsterManaBar').value = (user.mana / user.manaMax) * 100            }
+                document.getElementById('monsterManaBar').value = (user.mana / user.manaMax) * 100            
+            }
             analyzeEffectFunction(effectFunction, user, cible, nextChapterWin, nextChapterLose, nextChapterRun, consumablesData, family)
         } else {
             displayCombatMessage(`${user.name} ne dispose pas assez de mana pour lancer le sort !`);
@@ -259,21 +266,24 @@ try{
                         user.mana = Math.min(user.mana + parseInt(params[0]), user.manaMax);
                         if (user.type == "hero"){
                             document.getElementById('heroManaBar').value = (user.mana / user.manaMax) * 100
+                            document.getElementById('heroManaText').textContent = user.mana
+                            document.getElementById('heroManaMax').textContent = user.manaMax
                         }else{
-                            document.getElementById('monsterMana').textContent = user.mana;
+                            document.getElementById('monsterManaBar').value = (user.mana / user.manaMax) * 100
                         }
                         displayCombatMessage(`${user.name} regagne ${params[0]} points de mana.`);
                         break;
                     case 'heal_user':
                         user.pv = Math.min(user.pv + parseInt(params[0]), user.pvMax);
                         if (user.type == "hero"){
-                            document.getElementById('heroPvBar').value = (user.pv / hero.pvMax) * 100
+                            document.getElementById('heroPvBar').value = (user.pv / user.pvMax) * 100
                             if ((user.pv / hero.pvMax) * 100 <= 15) { 
                                 document.getElementById('heroPvBar').classList.add('shaking');
                             } else {
                                 document.getElementById('heroPvBar').classList.remove('shaking');
-                            }
-                                  
+                            }      
+                            document.getElementById('heroPvText').textContent = user.pv
+                            document.getElementById('heroPvMax').textContent = user.pvMax                          
 
                         } else {
                             document.getElementById('monsterPvBar').value = (user.pv / monster.pvMax) * 100
@@ -308,9 +318,11 @@ try{
                     case 'restore_mana':
                         user.mana = Math.min(user.mana + parseInt(params[0]), user.manaMax);
                         if (user.type == 'hero'){
-                            document.getElementById('heroManaBar').value = (user.mana / hero.manaMax) * 100
+                            document.getElementById('heroManaBar').value = (user.mana / user.manaMax) * 100
+                            document.getElementById('heroManaText').textContent = user.mana
+                            document.getElementById('heroManaMax').textContent = user.manaMax
                         }else{
-                            document.getElementById('monsterMana').textContent = user.mana;
+                            document.getElementById('monsterManaBar').value = (user.mana / user.manaMax) * 100
                         }
                         displayCombatMessage(`${user.name} restaure ${params[0]} points de mana.`);
                         break;
@@ -343,7 +355,9 @@ try{
                                     document.getElementById('heroPvBar').classList.add('shaking');
                                 } else {
                                     document.getElementById('heroPvBar').classList.remove('shaking');
-                                }  
+                                } 
+                                document.getElementById('heroPvText').textContent = user.pv
+                                document.getElementById('heroPvMax').textContent = user.pvMax 
                             }else{
                                 document.getElementById('monsterPvBar').value = (user.pv / user.pvMax) * 100
 
@@ -382,7 +396,9 @@ try{
                     case 'increase_mana':
                         user.manaMax += parseInt(params[0]);
                         user.valIncrease.push({ type : "mana", val : params[0], remainingTurns: params[1]});
-                        document.getElementById('heroManaBar').value = (hero.mana / user.manaMax) * 100
+                        document.getElementById('heroManaBar').value = (user.mana / user.manaMax) * 100
+                        document.getElementById('heroManaText').textContent = user.mana
+                        document.getElementById('heroManaMax').textContent = user.manaMax
                         displayCombatMessage(`${user.name} augmente sa capacité de mana de ${params[0]} pendant ${params[1]} tours.`);
                         break;
                     case 'blind_target':
@@ -495,6 +511,8 @@ try{
             }
             hero.pv = Math.min(hero.pv + qtSoins, hero.pvMax);
             document.getElementById('heroPvBar').value = (hero.pv / hero.pvMax) * 100
+            document.getElementById('heroPvText').textContent = hero.pv
+            document.getElementById('heroPvMax').textContent = hero.pvMax
             
             
             if ((hero.pv / hero.pvMax) * 100 <= 15) { 
@@ -511,6 +529,8 @@ try{
             }
             hero.mana = Math.min(hero.mana + qtMana, hero.manaMax);
             document.getElementById('heroManaBar').value = (hero.mana / hero.manaMax) * 100
+            document.getElementById('heroManaText').textContent = hero.mana
+            document.getElementById('heroManaMax').textContent = hero.manaMax
         } else if (item.effect_type === 'buff') {
             if (item.attack_buff) {
                 hero.activeBonuses.push({ type: 'attack', value: item.attack_buff, remainingTurns: item.remainingTurns });
@@ -612,7 +632,7 @@ try{
                 case 'bind' :
                     const baseRoll = rollDie() 
                     const InitiativeRoll = baseRoll + character.initiative; 
-                    const bindSuccess = (InitiativeRoll / 2) > character.initiative; // Diviser le jet d'initiative par 2 et comparer avec l'initiative du personnage
+                    const bindSuccess = (InitiativeRoll / 2) > character.initiative;
                     displayCombatMessage(`Lancer d'initiative de ${character.name}: ${baseRoll}  <span style="color: #85c1e9;">+${character.initiative}</span> <span style="color: red;">/2</span> = ${(InitiativeRoll / 2)}`);
                     if (bindSuccess) {
                         debuffMessages.push(`${character.name} a échappé au lien grâce à son initiative !`);
@@ -644,6 +664,8 @@ try{
             } else {
                 document.getElementById('heroPvBar').classList.remove('shaking');
             }
+            document.getElementById('heroPvText').textContent = character.pv
+            document.getElementById('heroPvMax').textContent = character.pvMax
 
         }else{
             document.getElementById('monsterPvBar').value = (character.pv / monster.pvMax) * 100
@@ -770,6 +792,8 @@ try{
                 hero.mana = hero.manaMax;
                 document.getElementById('heroManaBar').value = (hero.mana / hero.manaMax) * 100
             }
+            document.getElementById('heroManaText').textContent = hero.mana
+            document.getElementById('heroManaMax').textContent = hero.manaMax
             displayCombatMessage(`${hero.name} perd ${effect.val} de mana max après la durée de l'effet.`);
         }
     }
@@ -834,6 +858,8 @@ try{
                 } else {
                     document.getElementById('heroPvBar').classList.remove('shaking');
                 }
+                document.getElementById('heroPvText').textContent = hero.pv
+                document.getElementById('heroPvMax').textContent = hero.pvMax
 
             }else if(damage > 0 && hero.talent == "Puissance Fragile"){
                 const damageAgainstHero = Math.floor(damage/2);
@@ -847,6 +873,8 @@ try{
                 } else {
                     document.getElementById('heroPvBar').classList.remove('shaking');
                 }
+                document.getElementById('heroPvText').textContent = hero.pv
+                document.getElementById('heroPvMax').textContent = hero.pvMax
 
            }
             document.getElementById('monsterPvBar').value = (monster.pv / monster.pvMax) * 100
@@ -957,6 +985,8 @@ try{
                 } else {
                     document.getElementById('heroPvBar').classList.remove('shaking');
                 }
+                document.getElementById('heroPvText').textContent = hero.pv
+                document.getElementById('heroPvMax').textContent = hero.pvMax
                 
                 const bonusesFlammeProtection = hero.activeBonuses.find(bonus => bonus.type === "flamme_body");
                 
@@ -1093,6 +1123,53 @@ try{
 
                             document.getElementById("continueButtonNewLevel").addEventListener('click',  function() {
                                 levelModal.style.display = "none";
+                                if (data.subclassChoice) {
+                                    const choiceContainer = document.createElement("div");
+                                    choiceContainer.id = "choiceSubClassesContainer";
+                                    const choiceModal = document.getElementById("subclassModal").querySelector(".modal-content");
+                                    choiceModal.appendChild(choiceContainer);
+                                    data.subclassChoice.forEach(subclass => {
+                                        const card = document.createElement("div");
+                                        
+                                        card.classList.add("choice-card");
+                                        const title = document.createElement("h4");
+                                        
+                                        title.textContent = subclass.name;
+                                        const description = document.createElement("p");
+                                        
+                                        description.textContent = subclass.description;
+                                        description.classList.add("description");
+                                        
+                                        card.appendChild(title);
+                                        card.appendChild(description);
+                                        choiceContainer.appendChild(card);
+
+
+                                        card.addEventListener('click', function() {
+                                            const data = {'classId' : subclass.id}
+                                            fetch('/DungeonXplorer/hero/updateClass',{
+                                                method : 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json'
+                                                },
+                                                body: JSON.stringify(data)
+                                            })
+                                            .then(response => response.json())  
+                                            .then(data_fuite => {
+                                                if (data_fuite.success) {
+                                                    document.getElementById("subclassModal").style.display = "none";
+                                                    console.log(`classe mise a jour`);
+                                                } else {
+                                                    console.error(`Erreur lors de la mise a jour de la classe`);
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Erreur de communication avec le serveur:', error);
+                                            });
+                                        });
+                                    });
+                                    document.getElementById("subclassModal").style.display = "flex";
+                                }                                                              
                             });
                         }
                     } else {

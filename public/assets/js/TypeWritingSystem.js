@@ -8,18 +8,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function typeWriter() {
         if (skipTyping) {
-            chapterContent.innerHTML = chapterText; 
+            chapterContent.innerHTML = highlightCarnifex(chapterText); 
             showNextSection();
             return;
         }
 
         if (i < chapterText.length) {
-            chapterContent.innerHTML += chapterText.charAt(i);
+            const currentChar = chapterText.charAt(i);
+            chapterContent.innerHTML += currentChar;
+
+            const displayedText = chapterContent.innerHTML;
+            chapterContent.innerHTML = highlightCarnifex(displayedText);
+
             i++;
             setTimeout(typeWriter, 25);
         } else {
             showNextSection();
         }
+    }
+
+    function highlightCarnifex(text) {
+        const regex = /(carnifex)/gi;
+        return text.replace(regex, '<span style="color: #8B0000;">$1</span>');
     }
 
     function showNextSection() {
@@ -30,8 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (combatContainer) {
             combatContainer.style.display = 'block';
-        }else if(treasureContainer){
-            treasureContainer.style.display="block";
+        } else if (treasureContainer) {
+            treasureContainer.style.display = "block";
         } else if (linksContainer) {
             linksContainer.style.display = 'flex';
         } else if (npcContainer) {
