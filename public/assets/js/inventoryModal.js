@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function createWeaponButtons(item) {
+        console.log(item)
         const primaryButton = document.createElement('button');
         primaryButton.textContent = 'Equiper en arme principal';
         primaryButton.addEventListener('click', () => equipWeapon(item.item_id, 'primary'));

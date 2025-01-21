@@ -357,6 +357,7 @@ progress {
     animation: shake 0.3s ease-in-out infinite;
 }
 
+
 #SpellButton.soul-recovery-active {
     position: relative;
     background: linear-gradient(45deg, #00ffcc, #00b3b3, #00ffff, #0099cc);
