@@ -726,13 +726,15 @@ try{
         if(character.type == "hero"){
             StrenghtCalcule = character.strength * calculateScale(scaling.strength)
             DexCalcule = character.dexterity * calculateScale(scaling.dexterity)
+            forbCalcule = character.forbiddenKnowledge * calculateScale(scaling.forbiddenKnowledge)
 
-            baseAttack += StrenghtCalcule + DexCalcule
+            baseAttack += Math.floor(StrenghtCalcule + DexCalcule + forbCalcule)
             console.log(scaling)
             displayCombatMessage(
                 `Lancer d'attaque: ${dieRoll} <br>` +
                 (StrenghtCalcule > 0 ?` <span style="color: #00ff00;">+${StrenghtCalcule} (Bonus de force)</span><br>` : '' )+
                 (DexCalcule > 0 ?` <span style="color: #00ff00;">+${DexCalcule} (Bonus de dexterité)</span><br>` : '' )+
+                (forbCalcule > 0 ?` <span style="color: #00ff00;">+${forbCalcule} (Bonus de Connaissance Interdite)</span><br>` : '' )+
 
                 (bonusAttack > 0 ? ` <span style="color: #00ff00;">+${bonusAttack}</span><br>` : '') +
                 (debuffAttack > 0 ? ` <span style="color: #ff0000;">-${debuffAttack}</span><br>` : '') +

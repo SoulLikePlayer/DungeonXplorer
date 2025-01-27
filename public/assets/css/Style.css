@@ -71,7 +71,6 @@ h2 {
 }
 
 .container-items {
-    border: 2px solid var(--primary-color);
     padding: 20px;
     background-color: #2e2e2e;
     width: 30%;
@@ -81,6 +80,7 @@ h2 {
     transition: all 0.3s ease;
     background-size: cover;
     background-position: center;
+    border: 2px solid #ffff;
 }
 
 .container-items:not(:nth-child(2)) {

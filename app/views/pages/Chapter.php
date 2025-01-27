@@ -1,3 +1,6 @@
+<?php
+$isThief = in_array($_SESSION['user']['hero']['class_id'], [3, 17, 18, 19] );
+?>
 <main 
     data-chapter-type="<?= htmlspecialchars($chapter['chapter_type']) ?>" 
     data-ost-normal="<?= htmlspecialchars($_SESSION['ost']['normal']) ?>" 
@@ -143,7 +146,7 @@
                     data-hero-dexterity="<?= htmlspecialchars($_SESSION['user']['hero']['dexterity']) ?>"
                     data-hero-forbidden-know="<?=htmlspecialchars($_SESSION['user']['hero']['forbidden_knowledge'])?>"
                     data-hero-initiative="<?= htmlspecialchars($_SESSION['user']['hero']['initiative']) ?>"
-                    data-hero-is-thief="<?= htmlspecialchars($_SESSION['user']['hero']['class_id'] == 3 ? 'true' : 'false') ?>"
+                    data-hero-is-thief="<?= htmlspecialchars($isThief) ?>"
                     data-hero-primary-weapon-name="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_name']) ?>"
                     data-hero-primary-weapon-damage-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_damage_bonus']) ?>"
                     data-hero-primary-weapon-defense-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['primary_weapon_defense_bonus']) ?>"
