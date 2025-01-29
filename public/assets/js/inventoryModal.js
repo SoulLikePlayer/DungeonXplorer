@@ -51,9 +51,9 @@ document.addEventListener('DOMContentLoaded', function () {
             itemImage.style.display = 'none'; 
         }
 
-        if (item.item_type === 'weapon') {
+        if (item.item_type === 'arme') {
             createWeaponButtons(item);
-        } else if (item.item_type === 'armor') {
+        } else if (item.item_type === 'armure') {
             createArmorButton(item);
         }
     }

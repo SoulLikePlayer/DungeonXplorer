@@ -8,7 +8,7 @@ $isThief = in_array($_SESSION['user']['hero']['class_id'], [3, 17, 18, 19] );
 >
     <div class="story-container">
         <!-- Bouton pour afficher l'inventaire général -->
-        <button id="showInventoryButton" data-inventory='<?= json_encode($_SESSION['user']['inventory'] ?? []) ?>'>Afficher l'inventaire</button>
+        <button id="showInventoryButton" data-inventory='<?= nl2br(json_encode($_SESSION['user']['inventory'] ?? [])) ?>'>Afficher l'inventaire</button>
         
         <div id="inventoryModal" class="modal">
             <div class="modal-content">

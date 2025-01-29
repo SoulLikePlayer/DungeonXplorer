@@ -16,7 +16,8 @@ class Monster extends Model {
                 m.strength,
                 m.xp,
                 m.mana,
-                m.ost
+                m.ost,
+                m.souls
             FROM Monster m
             WHERE m.id = :monsterId
         ");
