@@ -17,8 +17,11 @@ class Monster extends Model {
                 m.xp,
                 m.mana,
                 m.ost,
-                m.souls
+                i.name as ItemSoulName,
+                i.id as ItemSoulId
             FROM Monster m
+            JOIN Souls s ON s.soul_id = m.SoulId
+            JOIN Items i ON i.id = s.item_id
             WHERE m.id = :monsterId
         ");
         $stmt->bindParam(':monsterId', $monsterId, PDO::PARAM_INT);

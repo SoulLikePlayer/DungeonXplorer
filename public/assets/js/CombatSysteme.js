@@ -59,10 +59,14 @@ try{
             activeDebuff: [],
             isParalyzed : Boolean(false),
             isBind : Boolean(false),
-            valIncrease: []
+            valIncrease: [],
+            soul : {
+                id : parseInt(this.dataset.monsterSoulId),
+                name : this.dataset.monsterSoulName
+            }
         };
 
-        console.log(hero.primaryWeaponScaling)
+        console.log(monster.soul)
 
 
         const consumablesData = JSON.parse(document.getElementById('useItemButton').getAttribute('data-inventory'));
@@ -1141,7 +1145,7 @@ try{
                 const xpGained = monster.xp;
                 hero.xp += xpGained;
                 displayCombatMessage(`${hero.name} gagne <span style="color:gold;">${xpGained} xp</span> !`);
-                handleLoot(monster.loot);
+                handleLoot(monster.loot, monster.soul);
             
                 const data = {
                     pv: hero.pv,

@@ -166,6 +166,7 @@ $isThief = in_array($_SESSION['user']['hero']['class_id'], [3, 17, 18, 19] );
                     data-hero-secondary-weapon-scaling-forbidden-knowledge="<?= htmlspecialchars($_SESSION['user']['hero']["secondary_weapon_forbidden_knowledge_scaling"]) ?>"
 
                     data-hero-total-defense-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['total_defense_bonus']) ?>"
+
                     data-monster-name="<?= htmlspecialchars($_SESSION['monster']['name']) ?>"
                     data-monster-pv="<?= htmlspecialchars($_SESSION['monster']['pv']) ?>"
                     data-monster-mana="<?= htmlspecialchars($_SESSION['monster']['mana']) ?>"
@@ -178,6 +179,9 @@ $isThief = in_array($_SESSION['user']['hero']['class_id'], [3, 17, 18, 19] );
                     data-next-chapter-run="<?= htmlspecialchars($links[2]['next_chapter_id']) ?>"
                     data-monster-loot='<?= json_encode($_SESSION['monster']['loot']) ?>'
                     data-monster-attack='<?= json_encode($_SESSION['monster']['attack']) ?>'
+                    data-monster-soul-id='<?= htmlspecialchars($_SESSION['monster']['ItemSoulId'])?>'
+                    data-monster-soul-name='<?= htmlspecialchars($_SESSION['monster']['ItemSoulName'])?>'
+
                 >
                     Commencer le combat
                 </button>
@@ -434,6 +438,6 @@ $isThief = in_array($_SESSION['user']['hero']['class_id'], [3, 17, 18, 19] );
     </div>
 </main>
 <script src="../../public/assets/js/TypeWritingSystem.js"></script>
-<script src="../../public/assets/js/inventoryModal.js"></script>
+<script src="../../public/assets/js/InventoryModal.js"></script>
 <script src="../../public/assets/js/curseModal.js"></script>
 <script src="../../public/assets/js/songSystem.js"></script>

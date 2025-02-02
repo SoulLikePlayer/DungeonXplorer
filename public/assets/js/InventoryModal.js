@@ -55,6 +55,8 @@ document.addEventListener('DOMContentLoaded', function () {
             createWeaponButtons(item);
         } else if (item.item_type === 'armure') {
             createArmorButton(item);
+        }else if (item.item_type === "âme") {
+            createSoulButton(item)
         }
     }
 
@@ -76,6 +78,17 @@ document.addEventListener('DOMContentLoaded', function () {
         equipButton.textContent = 'Equiper';
         equipButton.addEventListener('click', () => equipArmor(item.item_id));
         itemActionButtons.appendChild(equipButton);
+    }
+
+    function createSoulButton(item) {
+        const consSoulButton = document.createElement('button');
+        consSoulButton.textContent = "Consomer l'"+item.name;
+        consSoulButton.addEventListener('click', () => consSoul(item.item_id));
+        itemActionButtons.appendChild(consSoulButton);
+    }
+
+    function consSoul(itemId){
+        //TODO : Requête au php
     }
 
     function equipWeapon(itemId, type) {

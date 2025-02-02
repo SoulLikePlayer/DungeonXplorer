@@ -1,4 +1,4 @@
-function rollForLoot(lootTable) {
+function rollForLoot(lootTable, soul) {
     const obtainedLoot = [];
     for (let i = 0; i < 3; i++) {
         const randomIndex = Math.floor(Math.random() * lootTable.length);
@@ -8,6 +8,8 @@ function rollForLoot(lootTable) {
             obtainedLoot.push({ id: loot.id, name: loot.name, quantity: loot.quantity });
         }
     }
+
+    obtainedLoot.push({ id: soul.id, name : soul.name, quantity : 1});
     return obtainedLoot;
 }
 
@@ -64,7 +66,7 @@ function saveLootToInventory(obtainedLoot) {
 }
 
 
-function handleLoot(lootTable) {
-    const obtainedLoot = rollForLoot(lootTable);
+function handleLoot(lootTable, soul) {
+    const obtainedLoot = rollForLoot(lootTable, soul);
     saveLootToInventory(obtainedLoot);
 }
