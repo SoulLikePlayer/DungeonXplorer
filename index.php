@@ -55,6 +55,7 @@ session_start();
             require 'app/controllers/HeroController.php';
             require 'app/controllers/AboutController.php';
             require 'app/controllers/MonsterController.php';
+            require 'app/controllers/SoulController.php';
 
             $router = Router::getInstance('DungeonXplorer');
 
@@ -73,6 +74,10 @@ session_start();
             $router->addRoute('user/delete', 'UserController@delete');
             $router->addRoute('user/selectHero','UserController@selectHero');
             $router->addRoute('user/deleteHero', 'UserController@deleteHero');
+
+            $router->addRoute('soul/getSoulCapacity/{itemId}', 'SoulController@getSoulCapacity');
+            $router->addRoute('soul/applyEffect', 'SoulController@applyEffect');
+
 
             if (isset($_SESSION['user'])){             
 

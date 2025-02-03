@@ -116,6 +116,13 @@ $isThief = in_array($_SESSION['user']['hero']['class_id'], [3, 17, 18, 19] );
             </div>
         </div>
 
+        <!-- Modal de choix des compétence d'âme--> 
+        <div id="soulChoiceModal" class="modal">
+            <div class="modal-content">
+                <h2>Choix pour l'<span id="SoulName"></span></h2>
+            </div>
+        </div>
+
         <?php if($chapter['chapter_type'] !== 'death'): ?>
             <h2 id="ChapterTitle"><?= htmlspecialchars($chapter['titre'] ?? 'Inconnu') ?></h2>
         <?php else: ?>
