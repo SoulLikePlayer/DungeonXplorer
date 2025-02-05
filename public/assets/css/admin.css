@@ -1,0 +1,22 @@
+.container-admin {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    flex-wrap: wrap;
+}
+
+.container-detail-admin {
+    border: 2px solid var(--primary-color);
+    padding: 20px;
+    background-color: #2e2e2e;
+    width: 30%;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+    transition: all 0.3s ease;
+    background-size: cover;
+    background-position: center;
+}

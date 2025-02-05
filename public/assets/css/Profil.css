@@ -1,0 +1,196 @@
+.profil-container {
+    padding: 20px;
+    background-color: #2e2e2e;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.profil-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.profil-header h3 {
+    font-family: 'Pirata One';
+    color: #c4975e;
+    font-size: 2.5em;
+    margin: 0;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    text-align: center;
+}
+
+.profil-info {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.profil-info p {
+    font-size: 1.2em;
+    font-family: 'Roboto';
+    color: #c0c0c0;
+    margin: 10px 0;
+}
+
+.profil-select-hero {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.profil-select-hero select {
+    padding: 10px;
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid #5e4b3c;
+    border-radius: 5px;
+    background-color: rgba(30, 30, 30, 0.9);
+    color: #e5e5e5;
+    font-size: 1.1em;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.7);
+    appearance: none;
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 12px;
+    transition: border-color 0.3s, box-shadow 0.3s ease;
+}
+
+.profil-select-hero select:focus {
+    outline: none;
+    border-color: #d4af37;
+    box-shadow: 0 0 8px #d4af37;
+}
+
+.hero-select-container {
+    margin: 20px 0;
+    position: relative;
+}
+
+.hero-select-label {
+    font-family: 'Pirata One';
+    font-size: 1.2em;
+    color: #e5e5e5;
+    margin-bottom: 10px;
+    display: block;
+    text-align: center;
+}
+
+.hero-select-button {
+    background-color: #c4975e;
+    color: #e5e5e5;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    margin-top: 20px;
+}
+
+.hero-select-button:hover {
+    background-color: #ffd700;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.7);
+}
+
+.hero-select-button:active {
+    transform: translateY(1px);
+}
+
+.profil-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.profil-buttons a {
+    flex: 1;
+    text-align: center;
+}
+
+.profil-buttons button {
+    background-color: #c4975e;
+    color: #e5e5e5;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    width: 100%;
+}
+
+.profil-buttons button:hover {
+    background-color: #ffd700;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.7);
+}
+
+.profil-buttons button:active {
+    transform: translateY(1px);
+}
+
+.profil-message {
+    text-align: center;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    font-family: 'Roboto';
+}
+
+.profil-message.error {
+    background-color: #8b1e1e;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(128, 0, 0, 0.8);
+}
+
+.profil-message.success {
+    background-color: #4a7a66;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 128, 0, 0.8);
+}
+
+form.profil-delete button {
+    background-color: #8b1e1e;
+    border: none;
+    color: #e5e5e5;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(139, 30, 30, 0.8);
+}
+
+form.profil-delete button:hover {
+    background-color: #a82222;
+    box-shadow: 0 0 15px rgba(139, 30, 30, 0.8);
+}
+
+form.profil-delete {
+    margin: 0;
+    flex: 1;
+}
+
+.hero-forms-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .hero-forms-container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+}

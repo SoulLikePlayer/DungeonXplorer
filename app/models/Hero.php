@@ -2,21 +2,75 @@
 
 class Hero extends Model {
 
-    public function createHero($lastname, $firstname, $classId, $biography, $pv, $mana, $strength, $initiative) {
+    public function createHero($lastname, $firstname, $classId, $raceId, $biography, $pv, $mana, $strength, $dexterity, $forbiddenKnowledge, $initiative, $domination, $talentId) {
         $db = $this->getDatabaseConnection();
-        $idt = $_SESSION['user']['id'];
-        $query = 'INSERT INTO Hero (id, lastname, firstname, class_id, biography, pv, mana, strength, initiative)
-                  VALUES (:idt, :lastname, :firstname, :classId, :biography, :pv, :mana, :strength, :initiative)';
+        $idt = $_SESSION['user']['id'];  // Récupérer l'ID du compte
+        $query = 'INSERT INTO Hero (lastname, firstname, class_id, race_id, biography, pv_max, mana_max, strength, dexterity, forbidden_knowledge, initiative, domination, talent_id)
+                  VALUES (:lastname, :firstname, :classId, :raceId, :biography, :pv_max, :mana_max, :strength, :dexterity, :forbidden_knowledge, :initiative, :domination, :talentId)';
+        
+        // Préparer la requête d'insertion pour le héros
         $stmt = $db->prepare($query);
-        $stmt->bindParam(':idt', $idt);
         $stmt->bindParam(':lastname', $lastname);
         $stmt->bindParam(':firstname', $firstname);
         $stmt->bindParam(':classId', $classId);
+        $stmt->bindParam(':raceId', $raceId);
         $stmt->bindParam(':biography', $biography);
-        $stmt->bindParam(':pv', $pv);
-        $stmt->bindParam(':mana', $mana);
+        $stmt->bindParam(':pv_max', $pv);
+        $stmt->bindParam(':mana_max', $mana);
         $stmt->bindParam(':strength', $strength);
+        $stmt->bindParam(':dexterity', $dexterity);
+        $stmt->bindParam(':forbidden_knowledge', $forbiddenKnowledge);
         $stmt->bindParam(':initiative', $initiative);
+        $stmt->bindParam(':domination', $domination);
+        $stmt->bindParam(':talentId', $talentId);        
+        $resCreaHero = $stmt->execute();
+
+        $_SESSION['heroId'] =  $db->lastInsertId(); 
+
+    
+        if ($resCreaHero) {
+            $heroId =  $_SESSION['heroId'];
+    
+            $query2 = 'INSERT INTO Account_Hero (Account_id, Hero_id) VALUES (:idt, :hero_id)';
+            $stmt2 = $db->prepare($query2);
+            $stmt2->bindParam(':idt', $idt);  // ID du compte
+            $stmt2->bindParam(':hero_id', $heroId);  // ID du héros
+            
+            $resCreaAccountHero = $stmt2->execute();
+    
+            return $resCreaHero && $resCreaAccountHero;
+        }
+    
+        return false;
+    }
+    
+
+    public function deleteHero($id){
+        $db = $this->getDatabaseConnection();
+        $query = 'DELETE FROM Hero WHERE id = :heroId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':heroId', $id);
+        return $stmt->execute();
+    }
+
+    public function createHeroStory($heroId, $pvMax, $manaMax) {
+        $db = $this->getDatabaseConnection();
+        $query = 'INSERT INTO Hero_Story (hero_id, pv, mana, chapter) VALUES (:hero_id, :pv_max, :mana_max, :chapter)';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':hero_id', $heroId);
+        $chap = 1;
+        $stmt->bindParam(':chapter', $chap);
+        $stmt->bindParam(':pv_max', $pvMax);
+        $stmt->bindParam(':mana_max', $manaMax);
+        return $stmt->execute();
+    }
+
+    public function updateHeroStoryChapter($heroId, $chapter) {
+        $db = $this->getDatabaseConnection();
+        $query = 'UPDATE Hero_Story SET chapter = :chapter WHERE hero_id = :hero_id';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':hero_id', $heroId);
+        $stmt->bindParam(':chapter', $chapter);
         return $stmt->execute();
     }
 
@@ -30,55 +84,290 @@ class Hero extends Model {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getHeroByUserId($userId) {
+    public function getHeroById($userId) {
         $db = $this->getDatabaseConnection();
-        $query = '
-        SELECT 
+        $query = 'SELECT 
         h.id AS hero_id,
         h.lastname AS hero_lastname,
         h.firstname AS hero_firstname,
+        h.biography,
         h.class_id,
-        h.pv,
-        h.mana,
+        c.name AS class_name,
+        h.race_id,
+        r.name AS race_name,
+        h.talent_id,
+        t.name AS talent_name,
+        h.pv_max,
+        h.mana_max,
         h.strength,
+        h.dexterity,
         h.initiative,
-        h.armor,
+        h.domination,
+        h.madness,
+        h.forbidden_knowledge,
         h.xp,
         h.current_level,
-        h.poids_max,
         h.nb_items_max,
         hw.primary_weapon_id,
         hw.secondary_weapon_id,
         primary_weapon.name AS primary_weapon_name,
+        COALESCE(primary_weapon_weapon.damage_bonus, 0) AS primary_weapon_damage_bonus,
+        COALESCE(primary_weapon_weapon.defense_bonus, 0) AS primary_weapon_defense_bonus,
+        ws_primary.strenght_scaling AS primary_weapon_strength_scaling,
+        ws_primary.dext_scaling AS primary_weapon_dexterity_scaling,
+        ws_primary.forb_know_scaling AS primary_weapon_forbidden_knowledge_scaling,
+        primary_weapon_effect.effect_function AS primary_weapon_effect,
         secondary_weapon.name AS secondary_weapon_name,
+        COALESCE(secondary_weapon_weapon.damage_bonus, 0) AS secondary_weapon_damage_bonus,
+        COALESCE(secondary_weapon_weapon.defense_bonus, 0) AS secondary_weapon_defense_bonus,
+        ws_secondary.strenght_scaling AS secondary_weapon_strength_scaling,
+        ws_secondary.dext_scaling AS secondary_weapon_dexterity_scaling,
+        ws_secondary.forb_know_scaling AS secondary_weapon_forbidden_knowledge_scaling,
+        secondary_weapon_effect.effect_function AS secondary_weapon_effect,
+        (COALESCE(primary_weapon_weapon.damage_bonus, 0) + COALESCE(secondary_weapon_weapon.damage_bonus, 0)) AS total_damage_bonus,
+        (COALESCE(primary_weapon_weapon.defense_bonus, 0) + COALESCE(secondary_weapon_weapon.defense_bonus, 0) 
+            + COALESCE(helmet_armor.defense, 0) + COALESCE(body_armor.defense, 0) 
+            + COALESCE(greaves_armor.defense, 0) + COALESCE(gloves_armor.defense, 0)) AS total_defense_bonus,
         ha.helmet_id,
         ha.armor_id,
         ha.greaves_id,
+        ha.gloves_id,
         helmet.name AS helmet_name,
         armor.name AS armor_name,
-        greaves.name AS greaves_name
-        FROM 
-            Hero h
-        LEFT JOIN 
-            Hero_Weapons hw ON h.id = hw.hero_id
-        LEFT JOIN 
-            Items primary_weapon ON hw.primary_weapon_id = primary_weapon.id
-        LEFT JOIN 
-            Items secondary_weapon ON hw.secondary_weapon_id = secondary_weapon.id
-        LEFT JOIN 
-            Hero_Armor ha ON h.id = ha.hero_id
-        LEFT JOIN 
-            Items helmet ON ha.helmet_id = helmet.id
-        LEFT JOIN 
-            Items armor ON ha.armor_id = armor.id
-        LEFT JOIN 
-            Items greaves ON ha.greaves_id = greaves.id
-        WHERE 
-        h.id = :userId;
-        ';
+        greaves.name AS greaves_name,
+        gloves.name AS gloves_name,
+        hs.pv AS current_pv,
+        hs.mana AS current_mana,
+        h.gold
+    FROM 
+        Hero h
+    LEFT JOIN
+        Class c ON c.id = h.class_id
+    LEFT JOIN
+        Race r ON r.id = h.race_id
+    LEFT JOIN 
+        Hero_Weapons hw ON h.id = hw.hero_id
+    LEFT JOIN 
+        Items primary_weapon ON hw.primary_weapon_id = primary_weapon.id
+    LEFT JOIN 
+        Weapon primary_weapon_weapon ON primary_weapon.id = primary_weapon_weapon.item_id
+    LEFT JOIN 
+        weapon_scaling ws_primary ON primary_weapon_weapon.item_id = ws_primary.weapon_id
+    LEFT JOIN 
+        WeaponEffect primary_weapon_effect ON primary_weapon_weapon.item_id = primary_weapon_effect.weapon_id
+    LEFT JOIN 
+        Items secondary_weapon ON hw.secondary_weapon_id = secondary_weapon.id
+    LEFT JOIN 
+        Weapon secondary_weapon_weapon ON secondary_weapon.id = secondary_weapon_weapon.item_id
+    LEFT JOIN 
+        weapon_scaling ws_secondary ON secondary_weapon_weapon.item_id = ws_secondary.weapon_id
+    LEFT JOIN 
+        WeaponEffect secondary_weapon_effect ON secondary_weapon_weapon.item_id = secondary_weapon_effect.weapon_id
+    LEFT JOIN 
+        Hero_Armor ha ON h.id = ha.hero_id
+    LEFT JOIN 
+        Items helmet ON ha.helmet_id = helmet.id
+    LEFT JOIN 
+        Armor helmet_armor ON helmet.id = helmet_armor.item_id
+    LEFT JOIN 
+        Items armor ON ha.armor_id = armor.id
+    LEFT JOIN 
+        Armor body_armor ON armor.id = body_armor.item_id
+    LEFT JOIN 
+        Items greaves ON ha.greaves_id = greaves.id
+    LEFT JOIN 
+        Armor greaves_armor ON greaves.id = greaves_armor.item_id
+    LEFT JOIN 
+        Items gloves ON ha.gloves_id = gloves.id
+    LEFT JOIN 
+        Armor gloves_armor ON gloves.id = gloves_armor.item_id
+    LEFT JOIN 
+        Hero_Story hs ON h.id = hs.hero_id
+    LEFT JOIN
+        Talent_Race tr ON tr.race_id = h.race_id
+    LEFT JOIN
+        Talent t ON h.talent_id = t.id
+    WHERE
+        h.id = :userId';
         $stmt = $db->prepare($query);
         $stmt->bindParam(':userId', $userId);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    
+
+    public function updateHeroStats($heroId, $pv, $mana, $xp) {
+        $db = $this->getDatabaseConnection();
+        $query = 'UPDATE Hero_Story 
+                  SET pv = :pv, mana = :mana 
+                  WHERE hero_id = :heroId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':heroId', $heroId);
+        $stmt->bindParam(':pv', $pv);
+        $stmt->bindParam(':mana', $mana);
+        $result = $stmt->execute();
+
+        $queryXp = 'UPDATE Hero
+                    SET xp = xp + :xp
+                    WHERE id = :heroId';
+        
+        $stmtXp = $db->prepare($queryXp);
+        $stmtXp->bindParam(":xp", $xp);
+        $stmtXp->bindParam(":heroId", $heroId);
+
+        $result2 = $stmtXp->execute();
+        return $result && $result2;
+    }
+
+    public function updateHeroMadness($madnessQuantity, $heroId){
+        $db = $this->getDatabaseConnection();
+
+        $query = 'UPDATE Hero
+                  SET madness = madness + :madness
+                  WHERE id = :heroId';
+
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':madness', $madnessQuantity);
+        $stmt->bindParam(':heroId', $heroId);
+
+        $stmt->execute();
+
+        $_SESSION['user']['hero']['madness'] += $madnessQuantity;
+    }
+
+    public function updateHeroStatsAndLevel($heroId, $pvMax, $manaMax, $strength, $dexterity,  $forbiddenKnowledge, $initiative, $domination, $xp, $newLevel) {
+        $db = $this->getDatabaseConnection();
+    
+        $query = 'UPDATE Hero_Story 
+                  SET pv = :pv, mana = :mana 
+                  WHERE hero_id = :heroId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':heroId', $heroId);
+        $stmt->bindParam(':pv', $pvMax);
+        $stmt->bindParam(':mana', $manaMax);
+        $result1 = $stmt->execute();
+    
+        $query2 = 'UPDATE Hero
+                   SET xp = :xp, current_level = :current_level
+                   WHERE id = :heroId';
+        $stmt2 = $db->prepare($query2);
+        $stmt2->bindParam(":xp", $xp);
+        $stmt2->bindParam(":current_level", $newLevel);
+        $stmt2->bindParam(":heroId", $heroId);
+        $result2 = $stmt2->execute();
+    
+        $query3 = 'UPDATE Hero
+                   SET pv_max = :pv_max, mana_max = :mana_max, strength = :strength, dexterity = :dexterity, initiative = :initiative, forbidden_knowledge = :forbiddenKnowledge, domination = :domination
+                   WHERE id = :heroId';
+        $stmt3 = $db->prepare($query3);
+        $stmt3->bindParam(":pv_max", $pvMax);
+        $stmt3->bindParam(":mana_max", $manaMax);
+        $stmt3->bindParam(":strength", $strength);
+        $stmt3->bindParam(":dexterity", $dexterity);
+        $stmt3->bindParam(":initiative", $initiative);
+        $stmt3->bindParam(":forbiddenKnowledge", $forbiddenKnowledge);
+        $stmt3->bindParam(':domination', $domination);
+        $stmt3->bindParam(":heroId", $heroId);
+        $result3 = $stmt3->execute();
+    
+        return $result1 && $result2 && $result3;
+    }
+
+    public function updateHeroGold($heroId, $gold) {
+        $db = $this->getDatabaseConnection();
+        $query = 'UPDATE Hero SET gold = :gold WHERE id = :heroId';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':gold', $gold, PDO::PARAM_INT);
+        $stmt->bindParam(':heroId', $heroId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function updateHeroClass($heroId, $newClassId){
+        $db = $this->getDatabaseConnection();
+        $query = 'UPDATE Hero SET class_id = :newClass WHERE id = :heroId';
+
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':newClass', $newClassId);
+        $stmt->bindParam(':heroId', $heroId);
+        return $stmt->execute();
+    }
+    
+    
+
+    public function getChapterByHeroId($heroId) {
+        $db = $this->getDatabaseConnection();
+        $stmt = $db->prepare("SELECT * FROM Hero_Story WHERE hero_id = :hero_id");
+        $stmt->bindParam(':hero_id', $heroId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getLastInsertedHeroId() {
+        $db = $this->getDatabaseConnection();
+        return $db->lastInsertId();  // Retourne le dernier ID inséré dans la base de données
+    }
+    
+
+    public function updatePrimaryWeapon($heroId, $weaponId) {
+        $db = $this->getDatabaseConnection();
+        
+        $query = 'SELECT * FROM Hero_Weapons WHERE hero_id = :hero_id';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':hero_id', $heroId);
+        $stmt->execute();
+        $heroWeapon = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($heroWeapon) {
+            $query = 'UPDATE Hero_Weapons SET primary_weapon_id = :weaponId WHERE hero_id = :heroId';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':heroId', $heroId);
+            $stmt->bindParam(':weaponId', $weaponId);
+            return $stmt->execute();
+        } else {
+            $query = 'INSERT INTO Hero_Weapons (hero_id, primary_weapon_id) VALUES (:hero_id, :weaponId)';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':heroId', $heroId);
+            $stmt->bindParam(':weaponId', $weaponId);
+            return $stmt->execute();
+        }
+    }
+
+    public function updateSecondaryWeapon($heroId, $weaponId) {
+        $db = $this->getDatabaseConnection();
+        
+        $query = 'SELECT * FROM Hero_Weapons WHERE hero_id = :hero_id';
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':hero_id', $heroId);
+        $stmt->execute();
+        $heroWeapon = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($heroWeapon) {
+            $query = 'UPDATE Hero_Weapons SET secondary_weapon_id = :weaponId WHERE hero_id = :heroId';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':heroId', $heroId);
+            $stmt->bindParam(':weaponId', $weaponId);
+            return $stmt->execute();
+        } else {
+            $query = 'INSERT INTO Hero_Weapons (hero_id, secondary_weapon_id) VALUES (:hero_id, :weaponId)';
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':heroId', $heroId);
+            $stmt->bindParam(':weaponId', $weaponId);
+            return $stmt->execute();
+        }
+    }
+    
+    public function updateHeroArmorSlot($heroId, $slotColumn, $itemId) {
+        $db = $this->getDatabaseConnection();
+    
+        $updateQuery = "UPDATE Hero_Armor SET $slotColumn = :itemId WHERE hero_id = :heroId";
+    
+        $stmt = $db->prepare($updateQuery);
+        $stmt->bindParam(':itemId', $itemId);
+        $stmt->bindParam(':heroId', $heroId);
+    
+        return $stmt->execute();
+    }
+    
+    
 }
+?>

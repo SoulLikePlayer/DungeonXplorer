@@ -1,4 +1,3 @@
-<!-- app/views/layout/navbar.php -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/DungeonXplorer">DungeonXplorer</a>
@@ -7,11 +6,23 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                <?php if (isset($_SESSION['user']) && $_SESSION['user']['is_admin']===1):?>
+                    <!-- Si l'admin est connecté -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/DungeonXplorer/admin/pannel">Pannel Admin</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/DungeonXplorer/admin/chapterList">liste des chapitres</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/DungeonXplorer/admin/monsterList">liste des monstres</a>
+                    </li>
+                <?php endif?>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/DungeonXplorer">Accueil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/DungeonXplorer/about">À propos</a>
                 </li>
 
                 <?php if (isset($_SESSION['user'])): ?>

@@ -1,0 +1,57 @@
+#class-description, #race-description, #race-talent {
+    display: none;
+    padding: 10px;
+    background-color: var(--background-dark);
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 10px var(--shadow-light);
+    margin-bottom: 10px;
+}
+
+#class-description h3, #race-description h3, #race-talent h3 {
+    font-size: 1.25rem;
+    color: var(--primary-color);
+}
+
+#description-text-class, #description-text-race {
+    font-size: 1rem;
+    color: var(--text-light);
+}
+
+#description-question-race {
+    font-size: 1rem;
+    color: var(--text-light);
+    font-style: italic;
+}
+
+#race-description p, #description-text-class p {
+    margin-top: 10px;
+}
+
+#race-description #description-question-race::before{
+    content: '"';
+    font-style: italic;
+    color: var(--text-light);
+}
+
+#race-description #description-question-race::after {
+    content: '"';
+    font-style: italic;
+    color: var(--text-light);
+}
+
+.nothing{
+    color: var(--primary-color)
+}
+
+.talent{
+    color: var(--link-color)
+}
+
+.curse{
+    color : #ff8000;
+}
+
+.final-curse{
+    color : #ac0a0a;
+}

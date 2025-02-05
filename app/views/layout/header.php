@@ -1,4 +1,5 @@
-<header>
+
+<header>    
     <?php
         require_once 'app/views/layout/navbar.php';
     ?>
