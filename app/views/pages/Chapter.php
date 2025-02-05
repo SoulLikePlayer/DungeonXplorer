@@ -447,6 +447,6 @@ $isThief = in_array($_SESSION['user']['hero']['class_id'], [3, 17, 18, 19] );
     </div>
 </main>
 <script src="../../public/assets/js/TypeWritingSystem.js"></script>
-<script src="../../public/assets/js/InventoryModal.js"></script>
+<script src="../../public/assets/js/inventoryModal.js"></script>
 <script src="../../public/assets/js/curseModal.js"></script>
 <script src="../../public/assets/js/songSystem.js"></script>
