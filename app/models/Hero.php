@@ -84,6 +84,21 @@ class Hero extends Model {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getCompetenceByHeroId($heroId, $type){
+        $db = $this->getDatabaseConnection();
+        $query = 'SELECT c.name, c.description, c.RechargeTurns, c.capacity_effect
+                  FROM HeroCapacity hc
+                  JOIN SoulCapacity c ON c.CapacityId = hc.Capacity_id
+                  WHERE hc.Hero_id = :heroId
+                  AND c.CapacityType LIKE :ctype';
+
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':heroId', $heroId);
+        $stmt->bindParam(':ctype', $type);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getHeroById($userId) {
         $db = $this->getDatabaseConnection();
         $query = 'SELECT 

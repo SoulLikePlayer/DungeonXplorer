@@ -120,6 +120,8 @@ class UserController extends Controller {
     
             if ($hero) {
                 $_SESSION['user']['hero'] = $hero;
+                $_SESSION['user']['hero']['passif'] = $heroModel->getCompetenceByHeroId($heroId, "passif");
+                $_SESSION['user']['hero']['compétence'] = $heroModel->getCompetenceByHeroId($heroId, "compétence");
                 if(isset($_SESSION['Chapitre'])){
                     unset($_SESSION['Chapitre']);
                 }

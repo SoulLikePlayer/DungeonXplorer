@@ -50,6 +50,15 @@ class SoulController extends Controller {
         $soulModel = new SoulsModel();
         $result = $soulModel->ApplyHeroEffect($heroId, $capacityId);
 
+        $inventoryModel = new Inventory();
+        $inventoryModel->removeItemFromInventory($heroId, $data["item"], 1);
+
+        $heroModel = new Hero();
+        
+        $_SESSION['user']['hero'] = $heroModel->getHeroById($heroId);
+        $_SESSION['user']['hero']['passif'] = $heroModel->getCompetenceByHeroId($heroId, "passif");
+        $_SESSION['user']['hero']['compétence'] = $heroModel->getCompetenceByHeroId($heroId, "compétence");
+
         ob_clean();
         if ($result) {
             echo json_encode(['success' => true, 'message' => 'Effet appliqué avec succès']);

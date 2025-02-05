@@ -174,6 +174,8 @@ $isThief = in_array($_SESSION['user']['hero']['class_id'], [3, 17, 18, 19] );
 
                     data-hero-total-defense-bonus="<?= htmlspecialchars($_SESSION['user']['hero']['total_defense_bonus']) ?>"
 
+                    data-hero-passif="<?= htmlspecialchars($_SESSION['user']['hero']['passif'])?>"
+
                     data-monster-name="<?= htmlspecialchars($_SESSION['monster']['name']) ?>"
                     data-monster-pv="<?= htmlspecialchars($_SESSION['monster']['pv']) ?>"
                     data-monster-mana="<?= htmlspecialchars($_SESSION['monster']['mana']) ?>"

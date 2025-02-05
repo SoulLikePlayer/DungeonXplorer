@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     data.capacities.forEach(capacity => {
                         const button = document.createElement('button');
                         button.textContent = capacity.name;
-                        button.addEventListener('click', () => new InventoryStrategy('/DungeonXplorer/soul/applyEffect', {capacityId: capacity.id}).sendRequest());
+                        button.addEventListener('click', () => new InventoryStrategy('/DungeonXplorer/soul/applyEffect', {capacityId: capacity.id, item : item.item_id}).sendRequest());
                         soulContent.appendChild(button);
                     });
                 } else {

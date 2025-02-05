@@ -698,15 +698,15 @@ try{
         switch(str){
            
             case "D" :
-                return 1.0
+                return 0.1
             case "C" :
-                return 1.5
+                return 0.4
             case "B" :
-                return 2.0
+                return 0.6
             case "A" :
-                return 2.5
+                return 0.8
             case "S" :
-                return 3.0
+                return 1.0
             default:
                 return 0.0
         }
@@ -728,9 +728,9 @@ try{
             .reduce((total, debuff) => total + debuff.value, 0);
     
         if(character.type == "hero"){
-            StrenghtCalcule = character.strength * calculateScale(scaling.strength)
-            DexCalcule = character.dexterity * calculateScale(scaling.dexterity)
-            forbCalcule = character.forbiddenKnowledge * calculateScale(scaling.forbiddenKnowledge)
+            StrenghtCalcule = Math.floor(character.strength * calculateScale(scaling.strength))
+            DexCalcule = Math.floor(character.dexterity * calculateScale(scaling.dexterity))
+            forbCalcule = Math.floor(character.forbiddenKnowledge * calculateScale(scaling.forbiddenKnowledge))
 
             baseAttack += Math.floor(StrenghtCalcule + DexCalcule + forbCalcule)
             console.log(scaling)

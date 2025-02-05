@@ -327,6 +327,9 @@ class HeroController extends Controller {
     
             if ($updateSuccess) {
                 $_SESSION['user']['hero'] = $heroModel->getHeroById( $heroId );
+                $_SESSION['user']['hero']['passif'] = $heroModel->getCompetenceByHeroId($heroId, "passif");
+                $_SESSION['user']['hero']['compétence'] = $heroModel->getCompetenceByHeroId($heroId, "compétence");
+
                 echo json_encode(['success' => true, 'message' => 'Arme équipée avec succès.']);
                 exit;
             } else {
@@ -380,6 +383,8 @@ class HeroController extends Controller {
         
                 if ($updateSuccess) {
                     $_SESSION['user']['hero'] = $heroModel->getHeroById($heroId);
+                    $_SESSION['user']['hero']['passif'] = $heroModel->getCompetenceByHeroId($heroId, "passif");
+                    $_SESSION['user']['hero']['compétence'] = $heroModel->getCompetenceByHeroId($heroId, "compétence");
                     echo json_encode(['success' => true, 'message' => 'Armure équipée avec succès.']);
                     exit;
                 } else {
@@ -497,6 +502,8 @@ class HeroController extends Controller {
             $heroId = $_SESSION['heroId'];
     
             $_SESSION['user']['hero'] = $heroModel->getHeroById($heroId);
+            $_SESSION['user']['hero']['passif'] = $heroModel->getCompetenceByHeroId($heroId, "passif");
+            $_SESSION['user']['hero']['compétence'] = $heroModel->getCompetenceByHeroId($heroId, "compétence");
     
             $levelModel = new levelModel();
             $level = $levelModel->getNextLevelById($heroId, $_SESSION['user']['hero']['class_id']);

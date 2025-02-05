@@ -6,6 +6,8 @@ class HomeController
         if (isset($_SESSION['user']['hero'])){
             $heroModel = new Hero();
             $_SESSION['user']['hero'] = $heroModel->getHeroById($_SESSION['user']['hero']['hero_id']);
+            $_SESSION['user']['hero']['passif'] = $heroModel->getCompetenceByHeroId($_SESSION['user']['hero']['hero_id'], "passif");
+            $_SESSION['user']['hero']['compétence'] = $heroModel->getCompetenceByHeroId($_SESSION['user']['hero']['hero_id'], "compétence");
 
             /*Gestion de l'inventaire */
             $inventoryModel = new Inventory(); 
